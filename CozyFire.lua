@@ -19,6 +19,11 @@ local function AddCampingDetails(tooltip, data)
     tooltip:AddLine(" ")
     tooltip:AddLine(entry.buff, 0.25, 1, 0.25, true)
     tooltip:AddLine(entry.profession, 0.6, 0.6, 0.6, true)
+
+    if entry.exclusiveWith then
+        tooltip:AddLine(" ")
+        tooltip:AddLine("|cffff8080Exclusive with: |r" .. entry.exclusiveWith, 1, 1, 1, true)
+    end
 end
 
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, AddCampingDetails)
