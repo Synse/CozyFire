@@ -1,0 +1,8 @@
+## Interface: 16001
+## Title: CozyFire
+## Notes: Adds buff and profession details to Camping objects
+## Version: 0.1.0
+## IconTexture: Interface/Icons/Spell_Fire_Fire
+
+CampObjects.lua
+CozyFire.lua
