@@ -15,6 +15,12 @@ local function PlayerNearCampfire()
 end
 
 local function Mark()
+    -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
+    if InCombatLockdown() then
+        Print("Campfires can't be marked while in combat.")
+        return
+    end
+
     if not PlayerNearCampfire() then
         Print("No campfire nearby to mark.")
         return
