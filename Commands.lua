@@ -26,7 +26,7 @@ local function Mark()
     end
 
     if not PlayerNearCampfire() then
-        Print("No campfire found.")
+        Print("No nearby campfire found.")
         return
     end
 
