@@ -5,3 +5,4 @@ externals:
   Libs/HereBeDragons:
     url: https://github.com/Nevcairiel/HereBeDragons
     tag: 2.17-release
+  Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk
