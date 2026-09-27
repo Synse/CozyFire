@@ -6,7 +6,8 @@ local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 local PIN_TTL = 30                                             -- seconds; campfires despawn after ~10 min
 local DEDUP_RANGE = 100                                         -- yards; only one campfire per 100 yds
 local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\flame.tga"
-local PIN_SIZE = 16
+local WORLD_PIN_SIZE = 28                                       -- world map pin size
+local MINI_PIN_SIZE = 24                                        -- minimap pin size
 local SWEEP_INTERVAL = 5
 local REF = addonName                                          -- HBD-Pins registry reference
 
@@ -16,9 +17,9 @@ addon.pins = pins
 local active = {}
 local nextId = 1
 
-local function CreateIcon()
+local function CreateIcon(size)
     local icon = CreateFrame("Frame", nil, UIParent)
-    icon:SetSize(PIN_SIZE, PIN_SIZE)
+    icon:SetSize(size, size)
     local tex = icon:CreateTexture(nil, "OVERLAY")
     tex:SetAllPoints()
     tex:SetTexture(PIN_TEXTURE)
@@ -48,10 +49,11 @@ function pins:AddPin(instanceID, x, y, campName, ttl)
         return existingId, false
     end
 
-    local worldIcon = CreateIcon()
-    local miniIcon = CreateIcon()
+    local worldIcon = CreateIcon(WORLD_PIN_SIZE)
+    local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
-    HBDPins:AddWorldMapIconWorld(REF, worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT)
+    -- PIN_FRAME_LEVEL_TOPMOST draws the world map pin above the player arrow.
+    HBDPins:AddWorldMapIconWorld(REF, worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
     HBDPins:AddMinimapIconWorld(REF, miniIcon, instanceID, x, y, true)
 
     local id = nextId
