@@ -22,7 +22,7 @@ local function Mark()
     end
 
     if not PlayerNearCampfire() then
-        Print("No campfire nearby to mark.")
+        Print("No campfire found.")
         return
     end
 
@@ -39,6 +39,8 @@ local function Mark()
         Print("Campfire already marked.")
     end
 end
+
+addon.MarkCampfire = Mark
 
 SLASH_COZYFIRE1 = "/cf"
 SLASH_COZYFIRE2 = "/cozyfire"
