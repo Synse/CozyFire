@@ -3,7 +3,7 @@ local addonName, addon = ...
 local HBD = LibStub("HereBeDragons-2.0")
 local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 
-local PIN_TTL = 600                                             -- seconds; campfires despawn after ~10 min
+local PIN_TTL = 30                                             -- seconds; campfires despawn after ~10 min
 local DEDUP_RANGE = 100                                         -- yards; only one campfire per 100 yds
 local PIN_TEXTURE = "Interface/Icons/INV_Summerfest_FireSpirit"
 local PIN_SIZE = 16
@@ -38,14 +38,14 @@ local function FindNearby(instanceID, x, y)
     end
 end
 
--- Add a campfire pin at world coordinates
+-- Add a campfire pin at world coordinates. Returns id, created (true for a new pin, false if an existing pin was found)
 function pins:AddPin(instanceID, x, y, campName, ttl)
     if not instanceID or not x or not y then return end
 
     -- A campfire already known within 100 yds is the same one; leave its fixed lifetime untouched
     local existingId, existing = FindNearby(instanceID, x, y)
     if existing then
-        return existingId
+        return existingId, false
     end
 
     local worldIcon = CreateIcon()
@@ -65,7 +65,8 @@ function pins:AddPin(instanceID, x, y, campName, ttl)
         miniIcon = miniIcon,
         expires = GetTime() + (ttl or PIN_TTL),
     }
-    return id
+
+    return id, true
 end
 
 function pins:RemovePin(id)

@@ -32,8 +32,12 @@ local function Mark()
         return
     end
 
-    addon.pins:AddPin(instanceID, x, y, "Campfire")
-    Print("Campfire marked.")
+    local _, created = addon.pins:AddPin(instanceID, x, y, "Campfire")
+    if created then
+        Print("Campfire marked.")
+    else
+        Print("Campfire already marked.")
+    end
 end
 
 SLASH_COZYFIRE1 = "/cf"
