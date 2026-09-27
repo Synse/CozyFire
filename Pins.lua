@@ -39,16 +39,8 @@ local function FindNearby(instanceID, x, y)
     end
 end
 
--- Add a campfire pin at world coordinates. Returns id, created (true for a new pin, false if an existing pin was found)
-function pins:AddPin(instanceID, x, y, campName, ttl)
-    if not instanceID or not x or not y then return end
-
-    -- A campfire already known within 100 yds is the same one; leave its fixed lifetime untouched
-    local existingId, existing = FindNearby(instanceID, x, y)
-    if existing then
-        return existingId, false
-    end
-
+-- Build the pin frames and register it. Returns the new id
+local function CreatePin(instanceID, x, y, campName, approximate, expires)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -63,12 +55,31 @@ function pins:AddPin(instanceID, x, y, campName, ttl)
         x = x,
         y = y,
         campName = campName,
+        approximate = approximate,
         worldIcon = worldIcon,
         miniIcon = miniIcon,
-        expires = GetTime() + (ttl or PIN_TTL),
+        expires = expires,
     }
+    return id
+end
 
-    return id, true
+-- Add a campfire pin at world coordinates. `approximate` is true for fuzzy (manual) marks and false when the
+-- player gains the "Welcoming Campfire" buff. Returns id, action ("created"/"replaced"/"exists")
+function pins:AddPin(instanceID, x, y, campName, approximate, ttl)
+    if not instanceID or not x or not y then return end
+
+    local existingId, existing = FindNearby(instanceID, x, y)
+    if existing then
+        -- An exact mark repositions a fuzzy pin, keeping its original lifetime
+        if not approximate and existing.approximate then
+            local carriedExpires = existing.expires
+            self:RemovePin(existingId)
+            return CreatePin(instanceID, x, y, campName, approximate, carriedExpires), "replaced"
+        end
+        return existingId, "exists"
+    end
+
+    return CreatePin(instanceID, x, y, campName, approximate, GetTime() + (ttl or PIN_TTL)), "created"
 end
 
 function pins:RemovePin(id)
