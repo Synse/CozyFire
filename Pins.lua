@@ -3,7 +3,7 @@ local addonName, addon = ...
 local HBD = LibStub("HereBeDragons-2.0")
 local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 
-local PIN_TTL = 30                                             -- seconds; campfires despawn after ~10 min
+local PIN_TTL = 600                                             -- seconds; campfires despawn after ~10 min
 local DEDUP_RANGE = 100                                         -- yards; only one campfire per 100 yds
 local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\flame.tga"
 local WORLD_PIN_SIZE = 28                                       -- world map pin size
