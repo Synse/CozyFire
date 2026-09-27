@@ -10,7 +10,9 @@ local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
     OnClick = function(_, mouseButton)
         if mouseButton == "LeftButton" then
             addon.MarkCampfire()
-            DoEmote("SIT")
+            if addon.IsNearCampfire and addon.IsNearCampfire() then
+                DoEmote("SIT")
+            end
         end
     end,
     OnTooltipShow = function(tooltip)
