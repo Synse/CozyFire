@@ -80,6 +80,10 @@ auraFrame:SetScript("OnEvent", function(_, _, _, updateInfo)
     if not updateInfo or not updateInfo.addedAuras then
         return
     end
+    -- addedAuras is a secret table in combat and can't be iterated; we can't mark in combat anyway
+    if issecretvalue and issecretvalue(updateInfo.addedAuras) then
+        return
+    end
     for _, aura in ipairs(updateInfo.addedAuras) do
         local spellId = aura and aura.spellId
         if spellId and not (issecretvalue and issecretvalue(spellId)) and WELCOMING_CAMPFIRE_SPELLS[spellId] then
