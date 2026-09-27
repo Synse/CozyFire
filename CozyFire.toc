@@ -4,5 +4,14 @@
 ## Version: 0.1.0
 ## IconTexture: Interface/Icons/Spell_Fire_Fire
 
+# Libraries
+Libs\HereBeDragons\LibStub\LibStub.lua
+Libs\HereBeDragons\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\HereBeDragons\HereBeDragons-2.0.lua
+Libs\HereBeDragons\HereBeDragons-Pins-2.0.lua
+
+# Core
 CampObjects.lua
 CozyFire.lua
+Pins.lua
+Commands.lua

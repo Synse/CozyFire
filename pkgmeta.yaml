@@ -1,2 +1,7 @@
 ---
 package-as: CozyFire
+
+externals:
+  Libs/HereBeDragons:
+    url: https://github.com/Nevcairiel/HereBeDragons
+    tag: 2.17-release
