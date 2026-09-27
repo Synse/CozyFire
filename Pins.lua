@@ -5,7 +5,7 @@ local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 
 local PIN_TTL = 30                                             -- seconds; campfires despawn after ~10 min
 local DEDUP_RANGE = 100                                         -- yards; only one campfire per 100 yds
-local PIN_TEXTURE = "Interface/Icons/INV_Summerfest_FireSpirit"
+local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\flame.tga"
 local PIN_SIZE = 16
 local SWEEP_INTERVAL = 5
 local REF = addonName                                          -- HBD-Pins registry reference
