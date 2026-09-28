@@ -1,6 +1,6 @@
 ---
 package-as: CozyFire
-
+enable-nolib-creation: no
 externals:
   Libs/HereBeDragons: git://git.wowace.com/wow/herebedragons/mainline.git
   Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk
