@@ -79,7 +79,7 @@ function pins:AddPin(instanceID, x, y, campName, approximate, ttl)
         return existingId, "exists"
     end
 
-    return CreatePin(instanceID, x, y, campName, approximate, GetTime() + (ttl or PIN_TTL)), "created"
+    return CreatePin(instanceID, x, y, campName, approximate, time() + (ttl or PIN_TTL)), "created"
 end
 
 function pins:RemovePin(id)
@@ -91,7 +91,7 @@ function pins:RemovePin(id)
 end
 
 C_Timer.NewTicker(SWEEP_INTERVAL, function()
-    local now = GetTime()
+    local now = time()
     for id, pin in pairs(active) do
         if now >= pin.expires then
             pins:RemovePin(id)
