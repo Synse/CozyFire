@@ -98,3 +98,45 @@ C_Timer.NewTicker(SWEEP_INTERVAL, function()
         end
     end
 end)
+
+-- Persists pins to saved variables
+function pins:Save()
+    CozyFireDB = CozyFireDB or {}
+    local saved = {}
+    for _, pin in pairs(active) do
+        saved[#saved + 1] = {
+            instanceID = pin.instanceID,
+            x = pin.x,
+            y = pin.y,
+            campName = pin.campName,
+            approximate = pin.approximate,
+            expires = pin.expires,
+        }
+    end
+    CozyFireDB.pins = saved
+end
+
+-- Restores pins from saved variables
+function pins:Restore()
+    local saved = CozyFireDB and CozyFireDB.pins
+    if not saved then return end
+    local now = GetServerTime()
+    for _, pin in ipairs(saved) do
+        if pin.expires > now then
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.campName, pin.approximate, pin.expires)
+        end
+    end
+end
+
+-- Save pins to saved variables on logout and restore them on login
+-- This also covers reloading the UI
+local eventFrame = CreateFrame("Frame")
+eventFrame:RegisterEvent("PLAYER_LOGIN")
+eventFrame:RegisterEvent("PLAYER_LOGOUT")
+eventFrame:SetScript("OnEvent", function(_, event)
+    if event == "PLAYER_LOGIN" then
+        pins:Restore()
+    else
+        pins:Save()
+    end
+end)
