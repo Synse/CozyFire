@@ -44,9 +44,9 @@ local function CreatePin(instanceID, x, y, campName, approximate, expires)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
-    -- PIN_FRAME_LEVEL_TOPMOST draws the world map pin above the player arrow.
+    -- PIN_FRAME_LEVEL_TOPMOST draws the world map pin above the player arrow
     HBDPins:AddWorldMapIconWorld(REF, worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
-    HBDPins:AddMinimapIconWorld(REF, miniIcon, instanceID, x, y, true)
+    HBDPins:AddMinimapIconWorld(REF, miniIcon, instanceID, x, y, false)
 
     local id = nextId
     nextId = nextId + 1
