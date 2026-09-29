@@ -36,7 +36,7 @@ local function Mark()
         return
     end
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, "Campfire", true)
+    local _, action = addon.pins:AddPin(instanceID, x, y, true)
     if action == "created" then
         Print("Campfire marked.")
     end
@@ -67,7 +67,7 @@ local function AutoMark()
         return
     end
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, "Campfire", false)
+    local _, action = addon.pins:AddPin(instanceID, x, y, false)
     if action == "created" then
         Print("Campfire automatically marked.")
     end
