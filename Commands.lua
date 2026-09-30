@@ -2,9 +2,10 @@ local addonName, addon = ...
 
 local HBD = LibStub("HereBeDragons-2.0")
 local CAMPFIRE_NEARBY_SPELL = 1283391  -- "Campfire Nearby" aura, 100-yard radius
-local WELCOMING_CAMPFIRE_SPELLS = {
-    [1229739] = true,
-    [1289723] = true,
+local CAMPFIRE_SPELLS = {
+    [1229739] = true,  -- Welcoming Campfire
+    [1229741] = true,  -- Camp Benefits
+    [1289723] = true,  -- Welcoming Campfire
 }
 
 local function Print(msg)
@@ -86,7 +87,7 @@ auraFrame:SetScript("OnEvent", function(_, _, _, updateInfo)
     end
     for _, aura in ipairs(updateInfo.addedAuras) do
         local spellId = aura and aura.spellId
-        if spellId and not (issecretvalue and issecretvalue(spellId)) and WELCOMING_CAMPFIRE_SPELLS[spellId] then
+        if spellId and not (issecretvalue and issecretvalue(spellId)) and CAMPFIRE_SPELLS[spellId] then
             AutoMark()
             return
         end
