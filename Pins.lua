@@ -9,7 +9,6 @@ local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\flame.tga"
 local WORLD_PIN_SIZE = 28  -- world map pin size
 local MINI_PIN_SIZE = 24   -- minimap pin size
 local SWEEP_INTERVAL = 5   -- seconds; how often to cleanup expired pins
-local REF = addonName      -- HBD-Pins registry reference
 
 local pins = {}
 addon.pins = pins
@@ -45,8 +44,8 @@ local function CreatePin(instanceID, x, y, approximate, expires)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
     -- PIN_FRAME_LEVEL_TOPMOST draws the world map pin above the player arrow
-    HBDPins:AddWorldMapIconWorld(REF, worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
-    HBDPins:AddMinimapIconWorld(REF, miniIcon, instanceID, x, y, false)
+    HBDPins:AddWorldMapIconWorld(addonName, worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
+    HBDPins:AddMinimapIconWorld(addonName, miniIcon, instanceID, x, y, false)
 
     local id = nextId
     nextId = nextId + 1
@@ -84,8 +83,8 @@ end
 function pins:RemovePin(id)
     local pin = active[id]
     if not pin then return end
-    HBDPins:RemoveWorldMapIcon(REF, pin.worldIcon)
-    HBDPins:RemoveMinimapIcon(REF, pin.miniIcon)
+    HBDPins:RemoveWorldMapIcon(addonName, pin.worldIcon)
+    HBDPins:RemoveMinimapIcon(addonName, pin.miniIcon)
     active[id] = nil
 end
 
