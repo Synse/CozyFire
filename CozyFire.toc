@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: CozyFire
 ## Notes: Adds buff and profession details to Camping objects
-## Version: 0.4.0
+## Version: 0.4.1
 ## IconTexture: Interface\AddOns\CozyFire\Media\flame
 ## SavedVariables: CozyFireDB
 ## X-Wago-ID: mKOaDgNx
