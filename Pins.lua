@@ -39,7 +39,7 @@ local function FindNearby(instanceID, x, y)
 end
 
 -- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximate, expires)
+local function CreatePin(instanceID, x, y, approximateLocation, expires)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -53,7 +53,7 @@ local function CreatePin(instanceID, x, y, approximate, expires)
         instanceID = instanceID,
         x = x,
         y = y,
-        approximate = approximate,
+        approximateLocation = approximateLocation,
         worldIcon = worldIcon,
         miniIcon = miniIcon,
         expires = expires,
@@ -61,23 +61,23 @@ local function CreatePin(instanceID, x, y, approximate, expires)
     return id
 end
 
--- Add a campfire pin at world coordinates. `approximate` is true for fuzzy (manual) marks and false when the
+-- Add a campfire pin at world coordinates. `approximateLocation` is true for fuzzy (manual) marks and false when the
 -- player gains the "Welcoming Campfire" buff. Returns id, action ("created"/"replaced"/"exists")
-function pins:AddPin(instanceID, x, y, approximate, ttl)
+function pins:AddPin(instanceID, x, y, approximateLocation, ttl)
     if not instanceID or not x or not y then return end
 
     local existingId, existing = FindNearby(instanceID, x, y)
     if existing then
         -- An exact mark repositions a fuzzy pin, keeping its original lifetime
-        if not approximate and existing.approximate then
+        if not approximateLocation and existing.approximateLocation then
             local carriedExpires = existing.expires
             self:RemovePin(existingId)
-            return CreatePin(instanceID, x, y, approximate, carriedExpires), "replaced"
+            return CreatePin(instanceID, x, y, approximateLocation, carriedExpires), "replaced"
         end
         return existingId, "exists"
     end
 
-    return CreatePin(instanceID, x, y, approximate, GetServerTime() + (ttl or PIN_TTL)), "created"
+    return CreatePin(instanceID, x, y, approximateLocation, GetServerTime() + (ttl or PIN_TTL)), "created"
 end
 
 function pins:RemovePin(id)
@@ -106,7 +106,7 @@ function pins:Save()
             instanceID = pin.instanceID,
             x = pin.x,
             y = pin.y,
-            approximate = pin.approximate,
+            approximateLocation = pin.approximateLocation,
             expires = pin.expires,
         }
     end
@@ -120,7 +120,7 @@ function pins:Restore()
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximate, pin.expires)
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.expires)
         end
     end
 end
