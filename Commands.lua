@@ -4,7 +4,6 @@ local HBD = LibStub("HereBeDragons-2.0")
 local CAMPFIRE_NEARBY_SPELL = 1283391  -- "Campfire Nearby" aura, 100-yard radius
 local CAMPFIRE_SPELLS = {
     [1229739] = true,  -- Welcoming Campfire
-    [1229741] = true,  -- Camp Benefits
     [1289723] = true,  -- Welcoming Campfire
 }
 
