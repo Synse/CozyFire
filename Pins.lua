@@ -38,6 +38,25 @@ local function FindNearby(instanceID, x, y)
     end
 end
 
+-- Tooltips for pins on the world map
+local function ShowPinTooltip(self)
+    local pin = self.pin
+    if not pin then return end
+
+    local remaining = math.max(0, pin.expires - GetServerTime())
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:AddLine("Campfire")
+
+    -- Fires placed by other players have an unknown remaining time (less than the displayed value)
+    local prefix = pin.approximateTime and "~" or ""
+    GameTooltip:AddLine("Time remaining: " .. prefix .. SecondsToTime(remaining), 1, 1, 1)
+    GameTooltip:Show()
+end
+
+local function HidePinTooltip()
+    GameTooltip:Hide()
+end
+
 -- Build the pin frames and register it. Returns the new id
 local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
@@ -49,7 +68,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
 
     local id = nextId
     nextId = nextId + 1
-    active[id] = {
+    local pin = {
         instanceID = instanceID,
         x = x,
         y = y,
@@ -59,6 +78,13 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         miniIcon = miniIcon,
         expires = expires,
     }
+    active[id] = pin
+
+    worldIcon.pin = pin
+    worldIcon:EnableMouse(true)
+    worldIcon:SetScript("OnEnter", ShowPinTooltip)
+    worldIcon:SetScript("OnLeave", HidePinTooltip)
+
     return id
 end
 
@@ -86,6 +112,12 @@ end
 function pins:RemovePin(id)
     local pin = active[id]
     if not pin then return end
+
+    -- Hide the tooltip if it is showing for this pin
+    if GameTooltip:GetOwner() == pin.worldIcon then
+        GameTooltip:Hide()
+    end
+
     HBDPins:RemoveWorldMapIcon(addonName, pin.worldIcon)
     HBDPins:RemoveMinimapIcon(addonName, pin.miniIcon)
     active[id] = nil
