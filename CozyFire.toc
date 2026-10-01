@@ -5,6 +5,7 @@
 ## IconTexture: Interface\AddOns\CozyFire\Media\flame
 ## SavedVariables: CozyFireDB
 ## X-Wago-ID: mKOaDgNx
+## X-WoWI-ID: 27228
 
 # Libraries
 Libs\LibDBIcon-1.0\embeds.xml
