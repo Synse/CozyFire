@@ -89,8 +89,8 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
 end
 
 -- Add a campfire pin at world coordinates. `approximateLocation` is true for manual marks and false when the
--- player gains the "Welcoming Campfire" buff. `approximateTime` is true when the player places the campfire,
--- and false otherwise. Returns id, action ("created"/"replaced"/"exists")
+-- player gains the "Welcoming Campfire" buff. `approximateTime` is false when the player places the campfire,
+-- and true otherwise. Returns id, action ("created"/"replaced"/"exists")
 function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl)
     if not instanceID or not x or not y then return end
 
