@@ -126,7 +126,7 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
             return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL)), "replaced"
         end
 
-        -- An exact mark repositions a fuzzy pin, keeping its original lifetime and time accuracy
+        -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
         if not approximateLocation and existing.approximateLocation then
             local carriedExpires = existing.expires
             local carriedApproximateTime = existing.approximateTime
