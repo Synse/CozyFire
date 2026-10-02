@@ -47,6 +47,9 @@ local function RenderPinTooltip(pin)
     -- Fires placed by other players have an unknown remaining time (less than the displayed value)
     local prefix = pin.approximateTime and "~" or ""
     GameTooltip:AddLine("Time remaining: |cffff7f00" .. prefix .. SecondsToTime(remaining) .. "|r", 1, 1, 1)
+    if pin.approximateLocation then
+        GameTooltip:AddLine("Location is approximate", 1, 1, 1)
+    end
     GameTooltip:Show()
 end
 
