@@ -1,7 +1,7 @@
 ## Interface: 16001
 ## Title: CozyFire
 ## Notes: Improvements for the Camping features in WoW Forever
-## Version: 0.4.1
+## Version: 0.5.0
 ## IconTexture: Interface\AddOns\CozyFire\Media\flame
 ## SavedVariables: CozyFireDB
 ## X-Wago-ID: mKOaDgNx
