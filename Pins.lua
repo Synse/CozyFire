@@ -38,13 +38,10 @@ local function FindNearby(instanceID, x, y)
     end
 end
 
--- Tooltips for pins on the world map
-local function ShowPinTooltip(self)
-    local pin = self.pin
-    if not pin then return end
-
+-- Render the tooltip for a map pin
+local function RenderPinTooltip(pin)
     local remaining = math.max(0, pin.expires - GetServerTime())
-    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
     GameTooltip:AddLine("CozyFire")
 
     -- Fires placed by other players have an unknown remaining time (less than the displayed value)
@@ -53,7 +50,25 @@ local function ShowPinTooltip(self)
     GameTooltip:Show()
 end
 
-local function HidePinTooltip()
+-- Show a map pin tooltip, refreshing every second
+local function ShowPinTooltip(self)
+    local pin = self.pin
+    if not pin then return end
+
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    RenderPinTooltip(pin)
+
+    self.ticker = C_Timer.NewTicker(1, function()
+        RenderPinTooltip(pin)
+    end)
+end
+
+-- Hide a map pin tooltip
+local function HidePinTooltip(self)
+    if self.ticker then
+        self.ticker:Cancel()
+        self.ticker = nil
+    end
     GameTooltip:Hide()
 end
 
@@ -113,7 +128,11 @@ function pins:RemovePin(id)
     local pin = active[id]
     if not pin then return end
 
-    -- Hide the tooltip if it is showing for this pin
+    -- Stop the live countdown and hide the tooltip if it is showing for this pin
+    if pin.worldIcon.ticker then
+        pin.worldIcon.ticker:Cancel()
+        pin.worldIcon.ticker = nil
+    end
     if GameTooltip:GetOwner() == pin.worldIcon then
         GameTooltip:Hide()
     end
