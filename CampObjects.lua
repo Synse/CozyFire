@@ -4,6 +4,7 @@ local addonName, addon = ...
 local professions = {
     Alchemy = {
         { name = "Mana Well", buff = "+10 Mana every 5 sec", exclusiveWith = "Blessing of Wisdom" },
+        { name = "Fermenter", buff = "+10 Mana every 5 sec", exclusiveWith = "Blessing of Wisdom" },
     },
     Blacksmithing = {
         { name = "Sharpening Wheel", buff = "+6 Strength", exclusiveWith = "Strength of Earth Totem" },
