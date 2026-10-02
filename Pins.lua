@@ -44,9 +44,15 @@ local function RenderPinTooltip(pin)
     GameTooltip:ClearLines()
     GameTooltip:AddLine("CozyFire")
 
-    -- Fires placed by other players have an unknown remaining time (less than the displayed value)
-    local prefix = pin.approximateTime and "~" or ""
-    GameTooltip:AddLine("Time remaining: |cffff7f00" .. prefix .. SecondsToTime(remaining) .. "|r", 1, 1, 1)
+    -- Fires placed by other players have an approximate time remaining
+    -- but fires placed by the player have an exact time remaining
+    local remainingTime = "|cffff7f00" .. SecondsToTime(remaining) .. "|r"
+    if pin.approximateTime then
+        GameTooltip:AddLine("Less than " .. remainingTime .. " remaining", 1, 1, 1)
+    else
+        GameTooltip:AddLine("Time remaining: " .. remainingTime, 1, 1, 1)
+    end
+    -- Manually placed pins have an approximate location
     if pin.approximateLocation then
         GameTooltip:AddLine("Location is approximate", 1, 1, 1)
     end
