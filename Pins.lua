@@ -120,6 +120,12 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
 
     local existingId, existing = FindNearby(instanceID, x, y)
     if existing then
+        -- Placing a campfire replaces any nearby pins
+        if not approximateLocation and not approximateTime then
+            self:RemovePin(existingId)
+            return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL)), "replaced"
+        end
+
         -- An exact mark repositions a fuzzy pin, keeping its original lifetime and time accuracy
         if not approximateLocation and existing.approximateLocation then
             local carriedExpires = existing.expires
