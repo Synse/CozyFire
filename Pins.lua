@@ -45,7 +45,7 @@ local function ShowPinTooltip(self)
 
     local remaining = math.max(0, pin.expires - GetServerTime())
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:AddLine("Campfire")
+    GameTooltip:AddLine("CozyFire")
 
     -- Fires placed by other players have an unknown remaining time (less than the displayed value)
     local prefix = pin.approximateTime and "~" or ""
