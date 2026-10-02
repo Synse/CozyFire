@@ -50,7 +50,7 @@ local function RenderPinTooltip(pin)
     if pin.approximateTime then
         GameTooltip:AddLine("Less than " .. remainingTime .. " remaining", 1, 1, 1)
     else
-        GameTooltip:AddLine("Time remaining: " .. remainingTime, 1, 1, 1)
+        GameTooltip:AddLine(remainingTime .. " remaining", 1, 1, 1)
     end
     -- Manually placed pins have an approximate location
     if pin.approximateLocation then
