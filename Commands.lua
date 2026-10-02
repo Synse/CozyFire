@@ -6,6 +6,9 @@ local CAMPFIRE_SPELLS = {
     [1229739] = true,  -- Welcoming Campfire
     [1289723] = true,  -- Welcoming Campfire
 }
+local CAMPFIRE_KIT_SPELLS = {
+    [1307227] = true,  -- Basic Campfire Kit
+}
 
 local function Print(msg)
     DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r " .. msg)
@@ -90,5 +93,31 @@ auraFrame:SetScript("OnEvent", function(_, _, _, updateInfo)
             AutoMark()
             return
         end
+    end
+end)
+
+-- Mark the campfire when the player uses a campfire kit
+local function CampfirePlaced()
+    if InCombatLockdown() then
+        return
+    end
+
+    local x, y, instanceID = HBD:GetPlayerWorldPosition()
+    if not x or not y then
+        return
+    end
+
+    local _, action = addon.pins:AddPin(instanceID, x, y, false, false)
+    if action == "created" then
+        Print("Campfire marked.")
+    end
+end
+
+-- Create a frame to listen for spell casts
+local castFrame = CreateFrame("Frame")
+castFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
+castFrame:SetScript("OnEvent", function(_, _, _, _, spellID)
+    if spellID and CAMPFIRE_KIT_SPELLS[spellID] then
+        CampfirePlaced()
     end
 end)
