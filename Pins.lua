@@ -49,7 +49,7 @@ local function ShowPinTooltip(self)
 
     -- Fires placed by other players have an unknown remaining time (less than the displayed value)
     local prefix = pin.approximateTime and "~" or ""
-    GameTooltip:AddLine("Time remaining: " .. prefix .. SecondsToTime(remaining), 1, 1, 1)
+    GameTooltip:AddLine("Time remaining: |cffff7f00" .. prefix .. SecondsToTime(remaining) .. "|r", 1, 1, 1)
     GameTooltip:Show()
 end
 
