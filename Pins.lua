@@ -159,8 +159,28 @@ end
 
 C_Timer.NewTicker(SWEEP_INTERVAL, function()
     local now = GetServerTime()
+
+    -- When not in combat, check for nearby campfire pins
+    local px, py, pInstance, nearCampfire
+    if not InCombatLockdown() then
+        px, py, pInstance = HBD:GetPlayerWorldPosition()
+        nearCampfire = addon.IsNearCampfire()
+    end
+
     for id, pin in pairs(active) do
-        if now >= pin.expires then
+        local expired = now >= pin.expires
+
+        -- If we are within 20 yards of a pin and do not have the "Campfire Nearby" buff, mark it as expired
+        if not expired and not pin.approximateLocation and not nearCampfire and pin.instanceID == pInstance then
+            local dist = HBD:GetWorldDistance(pInstance, px, py, pin.x, pin.y)
+            if dist and dist <= 20 then
+                DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r Nearby campfire not found, removed from map.")
+                expired = true
+            end
+        end
+
+        -- Remove expired pins
+        if expired then
             pins:RemovePin(id)
         end
     end
