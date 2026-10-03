@@ -11,6 +11,7 @@ local professions = {
     },
     Cooking = {
         { name = "Basic Campfire", buff = "Allows up to 3 camp features" },
+        { name = "Journeyman Campfire", buff = "Allows up to 5 camp features" }
     },
     Enchanting = {
         { name = "Enchanted Lute", buff = "+114 Armor, +4 All Stats", exclusiveWith = "Mark of the Wild" },
