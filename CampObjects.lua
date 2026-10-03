@@ -13,7 +13,7 @@ local professions = {
         { name = "Basic Campfire", buff = "Allows up to 3 camp features" },
     },
     Enchanting = {
-        { name = "Enchanted Lute", buff = "+71 Armor, +2 All Stats", exclusiveWith = "Mark of the Wild" },
+        { name = "Enchanted Lute", buff = "+114 Armor, +4 All Stats", exclusiveWith = "Mark of the Wild" },
     },
     Engineering = {
         { name = "Reagent Bot", buff = "Purchase Reagents" },
