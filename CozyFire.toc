@@ -1,6 +1,6 @@
 ## Interface: 16001
 ## Title: CozyFire
-## Notes: Improvements for the Camping features in WoW Forever
+## Notes: Automatically marks campfires on your map and minimap and adds buff tooltips to camp objects
 ## Version: 0.5.1
 ## IconTexture: Interface\AddOns\CozyFire\Media\flame
 ## SavedVariables: CozyFireDB
