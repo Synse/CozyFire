@@ -52,10 +52,16 @@ local function RenderPinTooltip(pin)
     else
         GameTooltip:AddLine(remainingTime .. " remaining", 1, 1, 1)
     end
+
     -- Manually placed pins have an approximate location
     if pin.approximateLocation then
         GameTooltip:AddLine("Location is approximate", 1, 1, 1)
     end
+
+    if pin.placedBy then
+        GameTooltip:AddLine("Placed by: |cffffd100" .. pin.placedBy .. "|r", 1, 1, 1)
+    end
+
     GameTooltip:Show()
 end
 
@@ -82,7 +88,7 @@ local function HidePinTooltip(self)
 end
 
 -- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires)
+local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -101,6 +107,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         worldIcon = worldIcon,
         miniIcon = miniIcon,
         expires = expires,
+        placedBy = placedBy,
     }
     active[id] = pin
 
@@ -114,8 +121,9 @@ end
 
 -- Add a campfire pin at world coordinates. `approximateLocation` is true for manual marks and false when the
 -- player gains the "Welcoming Campfire" buff. `approximateTime` is false when the player places the campfire,
--- and true otherwise. Returns id, action ("created"/"replaced"/"exists")
-function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl)
+-- and true otherwise. `placedBy` is the name of the player who placed the fire, if known.
+-- Returns id, action ("created"/"replaced"/"exists")
+function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl, placedBy)
     if not instanceID or not x or not y then return end
 
     local existingId, existing = FindNearby(instanceID, x, y)
@@ -123,20 +131,21 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
         -- Placing a campfire replaces any nearby pins
         if not approximateLocation and not approximateTime then
             self:RemovePin(existingId)
-            return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL)), "replaced"
+            return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy), "replaced"
         end
 
         -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
         if not approximateLocation and existing.approximateLocation then
             local carriedExpires = existing.expires
             local carriedApproximateTime = existing.approximateTime
+            local carriedPlacedBy = existing.placedBy
             self:RemovePin(existingId)
-            return CreatePin(instanceID, x, y, approximateLocation, carriedApproximateTime, carriedExpires), "replaced"
+            return CreatePin(instanceID, x, y, approximateLocation, carriedApproximateTime, carriedExpires, carriedPlacedBy), "replaced"
         end
         return existingId, "exists"
     end
 
-    return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL)), "created"
+    return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy), "created"
 end
 
 function pins:RemovePin(id)
@@ -198,6 +207,7 @@ function pins:Save()
             approximateLocation = pin.approximateLocation,
             approximateTime = pin.approximateTime,
             expires = pin.expires,
+            placedBy = pin.placedBy,
         }
     end
     CozyFireDB.pins = saved
@@ -210,7 +220,7 @@ function pins:Restore()
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires)
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy)
         end
     end
 end

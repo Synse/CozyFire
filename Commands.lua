@@ -109,7 +109,11 @@ local function CampfirePlaced()
         return
     end
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, false, false)
+    -- Players have a first and last name in WoW Forever
+    local firstName, lastName = UnitName("player")
+    local placedBy = lastName and lastName ~= "" and (firstName .. " " .. lastName) or firstName
+
+    local _, action = addon.pins:AddPin(instanceID, x, y, false, false, nil, placedBy)
     if action == "created" then
         Print("Campfire marked.")
     end
