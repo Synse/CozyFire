@@ -11,7 +11,7 @@ local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
         if mouseButton == "LeftButton" then
             addon.MarkCampfire()
             if addon.IsNearCampfire and addon.IsNearCampfire() then
-                DoEmote("SIT")
+                C_ChatInfo.PerformEmote("SIT", nil, true)
             end
         end
     end,
