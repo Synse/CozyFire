@@ -1,6 +1,6 @@
 local addonName, addon = ...
 
-local ICON_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\flame.tga"
+local ICON_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
 
 -- Broker object: assigning dataObject.icon/.text later auto-updates the LibDBIcon button.
 local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
