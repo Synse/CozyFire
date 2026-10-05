@@ -26,3 +26,24 @@ jobs:
         uses: BigWigsMods/packager@e50a250f8705041e40f2fa1ddcb280a686d65aa0  # v2.6.1
         with:
           args: -n "{package-name}-{project-version}"
+
+      # WoWInterface does not have a defined compatible game version for Forever/Camelot so uploads via
+      # BigWigsMods/packager are currently unsupported. For now we are directly uploading the file with
+      # no compatible game version defined.
+      #
+      # WoWInterface API docs: https://www.wowinterface.com/forums/showthread.php?t=51835
+      - name: Upload to WoWInterface
+        env:
+          WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+        run: |
+          response=$(curl -sS -X POST "https://api.wowinterface.com/addons/update" \
+            -H "x-api-token: $WOWI_API_TOKEN" \
+            -F "id=27228" \
+            -F "version=${{ github.ref_name }}" \
+            -F "updatefile=@.release/CozyFire-${{ github.ref_name }}.zip")
+          echo "$response"
+
+          if echo "$response" | jq -e '.[0].ERROR' > /dev/null 2>&1; then
+            echo "::error::WoWInterface upload failed"
+            exit 1
+          fi
