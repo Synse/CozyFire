@@ -8,7 +8,7 @@ local professions = {
             { name = "Fermenter" },
             { name = "Alchemy Laboratory" },
         },
-        buffScaled = {
+        buff = {
             { minLevel = 1,  buff = "+10 Mana every 5 sec" },
             { minLevel = 24, buff = "+15 Mana every 5 sec" },
             { minLevel = 34, buff = "+20 Mana every 5 sec" },
@@ -21,7 +21,7 @@ local professions = {
         objects = {
             { name = "Sharpening Wheel" },
         },
-        buffScaled = {
+        buff = {
             { minLevel = 1,  buff = "+6 Strength" },
             { minLevel = 24, buff = "+11 Strength" },
             { minLevel = 38, buff = "+20 Strength" },
@@ -39,7 +39,7 @@ local professions = {
         objects = {
             { name = "Enchanted Lute" },
         },
-        buffScaled = {
+        buff = {
             { minLevel = 1,  buff = "+28 Armor" },
             { minLevel = 10, buff = "+71 Armor, +2 All Stats" },
             { minLevel = 20, buff = "+114 Armor, +4 All Stats" },
@@ -59,7 +59,7 @@ local professions = {
         objects = {
             { name = "First Aid Kit" },
         },
-        buffScaled = {
+        buff = {
             { minLevel = 1,  buff = "+3 Stamina" },
             { minLevel = 12, buff = "+8 Stamina" },
             { minLevel = 24, buff = "+21 Stamina" },
@@ -80,7 +80,7 @@ local professions = {
         objects = {
             { name = "Incense Candle" },
         },
-        buffScaled = {
+        buff = {
             { minLevel = 1,  buff = "+2 Intellect" },
             { minLevel = 14, buff = "+6 Intellect" },
             { minLevel = 28, buff = "+12 Intellect" },
@@ -100,7 +100,7 @@ local professions = {
         objects = {
             { name = "Lodestone" },
         },
-        buffScaled = {
+        buff = {
             { minLevel = 1,  buff = "+12 Melee Attack Power" },
             { minLevel = 12, buff = "+20 Melee Attack Power" },
             { minLevel = 22, buff = "+32 Melee Attack Power" },
@@ -122,7 +122,7 @@ local professions = {
         objects = {
             { name = "Faction Banner" },
         },
-        buffScaled = {
+        buff = {
             { minLevel = 1,  buff = "+14 Spirit" },
             { minLevel = 40, buff = "+19 Spirit" },
             { minLevel = 50, buff = "+27 Spirit" },
@@ -133,16 +133,15 @@ local professions = {
 }
 
 -- Objects are flattened into a display-name-keyed index for O(1) tooltip lookup
--- Each object inherits the profession level buffScaled/exclusiveWith unless it defines its own
+-- Each object inherits the profession level buff/exclusiveWith unless it defines its own
 addon.campObjects = {}
 for profession, data in pairs(professions) do
     for _, object in ipairs(data.objects) do
         object.profession = profession
 
-        -- Inherit buff/buffScaled from the profession
-        if object.buff == nil and object.buffScaled == nil then
+        -- Inherit buff from the profession
+        if object.buff == nil then
             object.buff = data.buff
-            object.buffScaled = data.buffScaled
         end
 
         -- Inherit exclusiveWith from the profession
@@ -154,12 +153,12 @@ for profession, data in pairs(professions) do
     end
 end
 
--- Returns the buff scaled to the player's level, the base buff, or nil if neither exists
+-- Returns a level-scaled buff when buff is a scaled list, otherwise the flat buff, or nil
 function addon.GetCampObjectBuff(object)
-    if object.buffScaled then
+    if type(object.buff) == "table" then
         local level = UnitLevel("player")
         local buff
-        for _, scaled in ipairs(object.buffScaled) do
+        for _, scaled in ipairs(object.buff) do
             if level < scaled.minLevel then
                 break
             end
