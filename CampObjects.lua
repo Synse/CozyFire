@@ -55,7 +55,19 @@ local professions = {
         { name = "Reagent Bot", buff = "Purchase Reagents" },
     },
     ["First Aid"] = {
-        { name = "First Aid Kit", buff = "+8 Stamina", exclusiveWith = "Power Word: Fortitude" },
+        {
+            name = "First Aid Kit",
+            buff = "+3 Stamina",
+            buffScaled = {
+                { minLevel = 1,  buff = "+3 Stamina" },
+                { minLevel = 12, buff = "+8 Stamina" },
+                { minLevel = 24, buff = "+21 Stamina" },
+                { minLevel = 36, buff = "+34 Stamina" },
+                { minLevel = 48, buff = "+45 Stamina" },
+                { minLevel = 60, buff = "+56 Stamina" },
+            },
+            exclusiveWith = "Power Word: Fortitude",
+        },
     },
     Fishing = {
         { name = "Fish Bowl", buff = "+8% All Stats", exclusiveWith = "Blessing of Kings" },
