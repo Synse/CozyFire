@@ -134,20 +134,19 @@ for profession, objects in pairs(professions) do
     end
 end
 
--- Returns a buff scaled to the players level or the base buff if there is no scaling
+-- Returns the buff scaled to the player's level, the base buff, or nil if neither exists
 function addon.GetCampObjectBuff(object)
-    if not object.buffScaled then
-        return object.buff
-    end
-
-    local level = UnitLevel("player")
-    local buff = object.buff
-    for _, scaled in ipairs(object.buffScaled) do
-        if level < scaled.minLevel then
-            break
+    if object.buffScaled then
+        local level = UnitLevel("player")
+        local buff
+        for _, scaled in ipairs(object.buffScaled) do
+            if level < scaled.minLevel then
+                break
+            end
+            buff = scaled.buff
         end
-        buff = scaled.buff
+        return buff
     end
 
-    return buff
+    return object.buff
 end
