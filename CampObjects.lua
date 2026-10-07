@@ -39,7 +39,6 @@ local professions = {
                 { minLevel = 24, buff = "+11 Strength" },
                 { minLevel = 38, buff = "+20 Strength" },
                 { minLevel = 52, buff = "+34 Strength" },
-                { minLevel = 60, buff = "+42 Strength" },
             },
             exclusiveWith = "Strength of Earth Totem",
         },
