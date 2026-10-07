@@ -25,7 +25,7 @@ local function AddCampingDetails(tooltip, data)
     -- followed by the profession at the end
     tooltip:AddLine(" ")
     if entry.buff then
-        tooltip:AddLine(addon.GetCampObjectBuff(entry), 0.25, 1, 0.25, true)
+        tooltip:AddLine("|cff40ff40" .. addon.GetCampObjectBuff(entry) .. "|r", 0.7, 0.7, 0.7, true)
     end
     if entry.buffExclusiveWith then
         tooltip:AddLine("|cffff8080Exclusive with: |r" .. entry.buffExclusiveWith, 1, 1, 1, true)
