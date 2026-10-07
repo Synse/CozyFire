@@ -39,9 +39,13 @@ local function AddCampingDetails(tooltip, data)
         end
     end
 
-    -- Show the profession information
+    -- Show the profession, and required skill (if defined)
     tooltip:AddLine(" ")
-    tooltip:AddLine(entry.profession, 0.5, 0.5, 0.5, true)
+    local profession = entry.profession
+    if entry.requiredSkill then
+        profession = profession .. " (" .. entry.requiredSkill .. ")"
+    end
+    tooltip:AddLine(profession, 0.5, 0.5, 0.5, true)
 end
 
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, AddCampingDetails)
