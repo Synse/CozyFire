@@ -2,7 +2,7 @@ local addonName, addon = ...
 
 local ICON_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
 
--- Broker object: assigning dataObject.icon/.text later auto-updates the LibDBIcon button.
+-- Create the minimap button
 local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
     type = "data source",
     text = "CozyFire",
@@ -23,7 +23,7 @@ local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
 
 local DBIcon = LibStub("LibDBIcon-1.0")
 
--- Register once SavedVariables (CozyFireDB) is loaded so the button position persists
+-- Register the minimap button so the button position persists
 local frame = CreateFrame("Frame")
 frame:RegisterEvent("ADDON_LOADED")
 frame:SetScript("OnEvent", function(self, _, name)
