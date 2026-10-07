@@ -81,8 +81,8 @@ local professions = {
     Fishing = {
         objects = {
             { name = "Fish Bowl" },
-            { name = "Fishing Rack", perk = "Contains fishing lures" },  -- Catch uncommon fish for 1 hour
-            { name = "Fishing Hut", perk = "Contains fishing lures" },  -- Catch rare fish for 1 hour
+            { name = "Fishing Rack", perk = "Allows catching uncommon fish for 1 hour\nContains fishing lures" },
+            { name = "Fishing Hut", perk = "Allows catching rare fish for 1 hour\nContains fishing lures" },
         },
         buff = "+8% All Stats",
         buffExclusiveWith = "Blessing of Kings",
