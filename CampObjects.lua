@@ -108,13 +108,13 @@ local professions = {
             { name = "Tanning Rack", perk = "Required for certain reagents" },
             { name = "Sewing Machine", perk = "Required for certain recipes" },
         },
-        buff = "Increase Rested XP by 5% of a level",
+        buff = "+5% of a level Rested XP",
     },
     Mining = {
         objects = {
             { name = "Lodestone" },
             { name = "Rock Garden", perk = "Spawns a common mining node" },
-            { name = "Molten Foundary", perk = "Required for certain recipes" },
+            { name = "Molten Foundry", perk = "Required for certain recipes" },
         },
         buff = {
             { minLevel = 1,  buff = "+12 Melee Attack Power" },
