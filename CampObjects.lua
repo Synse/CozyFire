@@ -5,7 +5,7 @@ local professions = {
     Alchemy = {
         objects = {
             { name = "Mana Well" },
-            { name = "Fermenter", perk = "Required for certain recipes" },
+            { name = "Fermenter", perk = "Required for certain reagents" },
             { name = "Alchemy Laboratory", perk = "Required for certain recipes" },
         },
         buff = {
@@ -20,8 +20,8 @@ local professions = {
     Blacksmithing = {
         objects = {
             { name = "Sharpening Wheel" },
-            { name = "Anvil", perk = "Required for certain recipes"},
-            { name = "Master Forge", perk = "Required for certain recipes"},
+            { name = "Anvil", perk = "Required for certain recipes" },
+            { name = "Master Forge", perk = "Required for certain recipes" },
         },
         buff = {
             { minLevel = 1,  buff = "+6 Strength" },
@@ -57,8 +57,8 @@ local professions = {
     },
     Engineering = {
         objects = {
-            { name = "Reagent Bot", perk = "Purchase reagents" },
-            { name = "Repair Bot", perk = "Purchase reagents and repair gear" },
+            { name = "Reagent Bot", perk = "Buy reagents" },
+            { name = "Repair Bot", perk = "Buy reagents and repair gear" },
             { name = "Anarchist's Workbench", perk = "Required for certain recipes" },
         },
     },
@@ -91,7 +91,7 @@ local professions = {
         objects = {
             { name = "Incense Candle" },
             { name = "Greenhouse", perk = "Grow herbs from planted seeds" },
-            { name = "Seed Hybridizer", perk = "Multiply or combine seeds to rare seeds" },
+            { name = "Seed Hybridizer", perk = "Multiply or combine seeds" },
         },
         buff = {
             { minLevel = 1,  buff = "+2 Intellect" },
@@ -105,13 +105,16 @@ local professions = {
     Leatherworking = {
         objects = {
             { name = "Camp Tent" },
-            { name = "Tanning Rack" },
+            { name = "Tanning Rack", perk = "Required for certain reagents" },
+            { name = "Sewing Machine", perk = "Required for certain recipes" },
         },
-        buff = "Rested XP up to 5% of a level",
+        buff = "Increase Rested XP by 5% of a level",
     },
     Mining = {
         objects = {
             { name = "Lodestone" },
+            { name = "Rock Garden", perk = "Spawns a common mining node" },
+            { name = "Molten Foundary", perk = "Required for certain recipes" },
         },
         buff = {
             { minLevel = 1,  buff = "+12 Melee Attack Power" },
@@ -127,6 +130,8 @@ local professions = {
         objects = {
             -- The used item is "Camp Chair" but it appears as just "Chair" when placed
             { name = "Chair" },
+            { name = "Field Guide", perk = "Grants Track Beasts" },
+            { name = "Trapper's Workbench", perk = "Contains 1 trap" },
         },
         buff = "+2% Critical Strike",
         buffExclusiveWith = "Moonkin Aura",
@@ -134,6 +139,8 @@ local professions = {
     Tailoring = {
         objects = {
             { name = "Faction Banner" },
+            { name = "Spinning Wheel", perk = "Required for certain reagents" },
+            { name = "Loom", perk = "Required for certain recipes" },
         },
         buff = {
             { minLevel = 1,  buff = "+14 Spirit" },
