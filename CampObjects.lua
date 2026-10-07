@@ -92,15 +92,14 @@ local professions = {
     Mining = {
         {
             name = "Lodestone",
-            buff = "+11 Melee Attack Power",
+            buff = "+12 Melee Attack Power",
             buffScaled = {
-                { minLevel = 1,  buff = "+11 Melee Attack Power" },
+                { minLevel = 1,  buff = "+12 Melee Attack Power" },
                 { minLevel = 12, buff = "+20 Melee Attack Power" },
                 { minLevel = 22, buff = "+32 Melee Attack Power" },
                 { minLevel = 32, buff = "+49 Melee Attack Power" },
-                { minLevel = 42, buff = "+66 Melee Attack Power" },
+                { minLevel = 42, buff = "+67 Melee Attack Power" },
                 { minLevel = 52, buff = "+90 Melee Attack Power" },
-                { minLevel = 60, buff = "+106 Melee Attack Power" },
             },
             exclusiveWith = "Blessing of Might",
         },
