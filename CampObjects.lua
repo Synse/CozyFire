@@ -5,8 +5,8 @@ local professions = {
     Alchemy = {
         objects = {
             { name = "Mana Well" },
-            { name = "Fermenter" },
-            { name = "Alchemy Laboratory" },
+            { name = "Fermenter", perk = "Required for certain recipes" },
+            { name = "Alchemy Laboratory", perk = "Required for certain recipes" },
         },
         buff = {
             { minLevel = 1,  buff = "+10 Mana every 5 sec" },
@@ -20,6 +20,8 @@ local professions = {
     Blacksmithing = {
         objects = {
             { name = "Sharpening Wheel" },
+            { name = "Anvil", perk = "Required for certain recipes"},
+            { name = "Master Forge", perk = "Required for certain recipes"},
         },
         buff = {
             { minLevel = 1,  buff = "+6 Strength" },
@@ -31,13 +33,16 @@ local professions = {
     },
     Cooking = {
         objects = {
-            { name = "Basic Campfire", perk = "Allows up to 3 camp features" },
-            { name = "Journeyman Campfire", perk = "Allows up to 5 camp features" },
+            { name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features" },
+            { name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features" },
+            { name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features" },
         },
     },
     Enchanting = {
         objects = {
             { name = "Enchanted Lute" },
+            { name = "Arcane Salvager", perk = "More efficient Disenchanting" },
+            { name = "Arcane Forge", perk = "Required for certain recipes" },
         },
         buff = {
             { minLevel = 1,  buff = "+28 Armor" },
@@ -52,7 +57,9 @@ local professions = {
     },
     Engineering = {
         objects = {
-            { name = "Reagent Bot", perk = "Purchase Reagents" },
+            { name = "Reagent Bot", perk = "Purchase reagents" },
+            { name = "Repair Bot", perk = "Purchase reagents and repair gear" },
+            { name = "Anarchist's Workbench", perk = "Required for certain recipes" },
         },
     },
     ["First Aid"] = {
