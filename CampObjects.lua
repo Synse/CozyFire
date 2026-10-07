@@ -108,7 +108,7 @@ local professions = {
             { name = "Tanning Rack", perk = "Required for certain reagents" },
             { name = "Sewing Machine", perk = "Required for certain recipes" },
         },
-        buff = "+5% of a level Rested XP",
+        buff = "Rested experience (up to 5% of a level)",
     },
     Mining = {
         objects = {
