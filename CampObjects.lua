@@ -109,7 +109,17 @@ local professions = {
         { name = "Chair", buff = "+2% Critical Strike", exclusiveWith = "Moonkin Aura" },
     },
     Tailoring = {
-        { name = "Faction Banner", buff = "+14 Spirit", exclusiveWith = "Divine Spirit" },
+        {
+            name = "Faction Banner",
+            buff = "+14 Spirit",
+            buffScaled = {
+                { minLevel = 1,  buff = "+14 Spirit" },
+                { minLevel = 40, buff = "+19 Spirit" },
+                { minLevel = 50, buff = "+27 Spirit" },
+                { minLevel = 60, buff = "+32 Spirit" },
+            },
+            exclusiveWith = "Divine Spirit",
+        },
     },
 }
 
