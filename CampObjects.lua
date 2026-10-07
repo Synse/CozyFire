@@ -25,6 +25,17 @@ local professions = {
             },
             exclusiveWith = "Blessing of Wisdom",
         },
+        {
+            name = "Alchemy Laboratory",
+            buffScaled = {
+                { minLevel = 1,  buff = "+10 Mana every 5 sec" },
+                { minLevel = 24, buff = "+15 Mana every 5 sec" },
+                { minLevel = 34, buff = "+20 Mana every 5 sec" },
+                { minLevel = 44, buff = "+24 Mana every 5 sec" },
+                { minLevel = 54, buff = "+29 Mana every 5 sec" },
+            },
+            exclusiveWith = "Blessing of Wisdom",
+        },
     },
     Blacksmithing = {
         {
