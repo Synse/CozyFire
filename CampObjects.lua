@@ -46,7 +46,20 @@ local professions = {
         { name = "Journeyman Campfire", buff = "Allows up to 5 camp features" }
     },
     Enchanting = {
-        { name = "Enchanted Lute", buff = "+114 Armor, +4 All Stats", exclusiveWith = "Mark of the Wild" },
+        {
+            name = "Enchanted Lute",
+            buff = "+28 Armor",
+            buffScaled = {
+                { minLevel = 1,  buff = "+28 Armor" },
+                { minLevel = 10, buff = "+71 Armor, +2 All Stats" },
+                { minLevel = 20, buff = "+114 Armor, +4 All Stats" },
+                { minLevel = 30, buff = "+163 Armor, +7 All Stats, +6 All Resist" },
+                { minLevel = 40, buff = "+211 Armor, +9 All Stats, +12 All Resist" },
+                { minLevel = 50, buff = "+260 Armor, +12 All Stats, +16 All Resist" },
+                { minLevel = 60, buff = "+308 Armor, +13 All Stats, +22 All Resist" },
+            },
+            exclusiveWith = "Mark of the Wild",
+        },
     },
     Engineering = {
         { name = "Reagent Bot", buff = "Purchase Reagents" },
