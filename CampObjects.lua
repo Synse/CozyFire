@@ -65,6 +65,8 @@ local professions = {
     ["First Aid"] = {
         objects = {
             { name = "First Aid Kit" },
+            { name = "Toxin Study", perk = "Contains healing potions and anti-venom" },
+            { name = "Plague Doctor's Laboratory", perk = "Contains healing potions and poultices" },
         },
         buff = {
             { minLevel = 1,  buff = "+3 Stamina" },
@@ -79,6 +81,8 @@ local professions = {
     Fishing = {
         objects = {
             { name = "Fish Bowl" },
+            { name = "Fishing Rack", perk = "Contains fishing lures" },  -- Catch uncommon fish for 1 hour
+            { name = "Fishing Hut", perk = "Contains fishing lures" },  -- Catch rare fish for 1 hour
         },
         buff = "+8% All Stats",
         buffExclusiveWith = "Blessing of Kings",
@@ -86,6 +90,8 @@ local professions = {
     Herbalism = {
         objects = {
             { name = "Incense Candle" },
+            { name = "Greenhouse", perk = "Grow herbs from planted seeds" },
+            { name = "Seed Hybridizer", perk = "Multiply or combine seeds to rare seeds" },
         },
         buff = {
             { minLevel = 1,  buff = "+2 Intellect" },
