@@ -5,7 +5,6 @@ local professions = {
     Alchemy = {
         {
             name = "Mana Well",
-            buff = "+10 Mana every 5 sec",
             buffScaled = {
                 { minLevel = 1,  buff = "+10 Mana every 5 sec" },
                 { minLevel = 24, buff = "+15 Mana every 5 sec" },
@@ -17,7 +16,6 @@ local professions = {
         },
         {
             name = "Fermenter",
-            buff = "+10 Mana every 5 sec",
             buffScaled = {
                 { minLevel = 1,  buff = "+10 Mana every 5 sec" },
                 { minLevel = 24, buff = "+15 Mana every 5 sec" },
@@ -31,7 +29,6 @@ local professions = {
     Blacksmithing = {
         {
             name = "Sharpening Wheel",
-            buff = "+6 Strength",
             buffScaled = {
                 { minLevel = 1,  buff = "+6 Strength" },
                 { minLevel = 24, buff = "+11 Strength" },
@@ -48,7 +45,6 @@ local professions = {
     Enchanting = {
         {
             name = "Enchanted Lute",
-            buff = "+28 Armor",
             buffScaled = {
                 { minLevel = 1,  buff = "+28 Armor" },
                 { minLevel = 10, buff = "+71 Armor, +2 All Stats" },
@@ -67,7 +63,6 @@ local professions = {
     ["First Aid"] = {
         {
             name = "First Aid Kit",
-            buff = "+3 Stamina",
             buffScaled = {
                 { minLevel = 1,  buff = "+3 Stamina" },
                 { minLevel = 12, buff = "+8 Stamina" },
@@ -85,7 +80,6 @@ local professions = {
     Herbalism = {
         {
             name = "Incense Candle",
-            buff = "+2 Intellect",
             buffScaled = {
                 { minLevel = 1,  buff = "+2 Intellect" },
                 { minLevel = 14, buff = "+6 Intellect" },
@@ -102,7 +96,6 @@ local professions = {
     Mining = {
         {
             name = "Lodestone",
-            buff = "+12 Melee Attack Power",
             buffScaled = {
                 { minLevel = 1,  buff = "+12 Melee Attack Power" },
                 { minLevel = 12, buff = "+20 Melee Attack Power" },
@@ -121,7 +114,6 @@ local professions = {
     Tailoring = {
         {
             name = "Faction Banner",
-            buff = "+14 Spirit",
             buffScaled = {
                 { minLevel = 1,  buff = "+14 Spirit" },
                 { minLevel = 40, buff = "+19 Spirit" },
