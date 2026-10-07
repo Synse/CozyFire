@@ -135,7 +135,7 @@ function addon.GetCampObjectBuff(object)
         if level < scaled.minLevel then
             break
         end
-        buff = scaled.buff .. " (level: " .. level .. ")"
+        buff = scaled.buff
     end
 
     return buff
