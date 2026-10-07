@@ -15,7 +15,7 @@ local professions = {
             { minLevel = 44, buff = "+24 Mana every 5 sec" },
             { minLevel = 54, buff = "+29 Mana every 5 sec" },
         },
-        exclusiveWith = "Blessing of Wisdom",
+        buffExclusiveWith = "Blessing of Wisdom",
     },
     Blacksmithing = {
         objects = {
@@ -27,7 +27,7 @@ local professions = {
             { minLevel = 38, buff = "+20 Strength" },
             { minLevel = 52, buff = "+34 Strength" },
         },
-        exclusiveWith = "Strength of Earth Totem",
+        buffExclusiveWith = "Strength of Earth Totem",
     },
     Cooking = {
         objects = {
@@ -48,7 +48,7 @@ local professions = {
             { minLevel = 50, buff = "+260 Armor, +12 All Stats, +16 All Resist" },
             { minLevel = 60, buff = "+308 Armor, +13 All Stats, +22 All Resist" },
         },
-        exclusiveWith = "Mark of the Wild",
+        buffExclusiveWith = "Mark of the Wild",
     },
     Engineering = {
         objects = {
@@ -67,14 +67,14 @@ local professions = {
             { minLevel = 48, buff = "+45 Stamina" },
             { minLevel = 60, buff = "+56 Stamina" },
         },
-        exclusiveWith = "Power Word: Fortitude",
+        buffExclusiveWith = "Power Word: Fortitude",
     },
     Fishing = {
         objects = {
             { name = "Fish Bowl" },
         },
         buff = "+8% All Stats",
-        exclusiveWith = "Blessing of Kings",
+        buffExclusiveWith = "Blessing of Kings",
     },
     Herbalism = {
         objects = {
@@ -87,7 +87,7 @@ local professions = {
             { minLevel = 42, buff = "+18 Intellect" },
             { minLevel = 56, buff = "+25 Intellect" },
         },
-        exclusiveWith = "Arcane Intellect",
+        buffExclusiveWith = "Arcane Intellect",
     },
     Leatherworking = {
         objects = {
@@ -108,7 +108,7 @@ local professions = {
             { minLevel = 42, buff = "+67 Melee Attack Power" },
             { minLevel = 52, buff = "+90 Melee Attack Power" },
         },
-        exclusiveWith = "Blessing of Might",
+        buffExclusiveWith = "Blessing of Might",
     },
     Skinning = {
         objects = {
@@ -116,7 +116,7 @@ local professions = {
             { name = "Chair" },
         },
         buff = "+2% Critical Strike",
-        exclusiveWith = "Moonkin Aura",
+        buffExclusiveWith = "Moonkin Aura",
     },
     Tailoring = {
         objects = {
@@ -128,12 +128,12 @@ local professions = {
             { minLevel = 50, buff = "+27 Spirit" },
             { minLevel = 60, buff = "+32 Spirit" },
         },
-        exclusiveWith = "Divine Spirit",
+        buffExclusiveWith = "Divine Spirit",
     },
 }
 
 -- Objects are flattened into a display-name-keyed index for O(1) tooltip lookup
--- Each object inherits the profession level buff/exclusiveWith unless it defines its own
+-- Each object inherits the profession level buff/buffExclusiveWith unless it defines its own
 addon.campObjects = {}
 for profession, data in pairs(professions) do
     for _, object in ipairs(data.objects) do
@@ -144,9 +144,9 @@ for profession, data in pairs(professions) do
             object.buff = data.buff
         end
 
-        -- Inherit exclusiveWith from the profession
-        if object.exclusiveWith == nil then
-            object.exclusiveWith = data.exclusiveWith
+        -- Inherit buffExclusiveWith from the profession
+        if object.buffExclusiveWith == nil then
+            object.buffExclusiveWith = data.buffExclusiveWith
         end
 
         addon.campObjects[object.name] = object

@@ -20,8 +20,8 @@ local function AddCampingDetails(tooltip, data)
     if entry.buff then
         tooltip:AddLine(addon.GetCampObjectBuff(entry), 0.25, 1, 0.25, true)
     end
-    if entry.exclusiveWith then
-        tooltip:AddLine("|cffff8080Exclusive with: |r" .. entry.exclusiveWith, 1, 1, 1, true)
+    if entry.buffExclusiveWith then
+        tooltip:AddLine("|cffff8080Exclusive with: |r" .. entry.buffExclusiveWith, 1, 1, 1, true)
     end
     if entry.perk then
         tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)
