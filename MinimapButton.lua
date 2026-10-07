@@ -17,7 +17,7 @@ local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
     end,
     OnTooltipShow = function(tooltip)
         tooltip:AddLine("CozyFire")
-        tooltip:AddLine("|cffffbf00Click|r to |cff6eb2ea/sit|r at a campfire", 1, 1, 1)
+        tooltip:AddLine("|cffffbf00Left-click|r to |cff6eb2ea/sit|r at a campfire", 1, 1, 1)
     end,
 })
 
