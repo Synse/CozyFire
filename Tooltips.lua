@@ -29,7 +29,7 @@ local function AddCampingDetails(tooltip, data)
             if line.isCurrent then
                 tooltip:AddLine(line.text, 0.25, 1, 0.25, true)
             else
-                tooltip:AddLine(line.text, 0.55, 0.55, 0.55, true)
+                tooltip:AddLine(line.text, 0.65, 0.65, 0.65, true)
             end
         end
 
