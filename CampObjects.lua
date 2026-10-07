@@ -173,19 +173,44 @@ for profession, data in pairs(professions) do
     end
 end
 
--- Returns a level-scaled buff when buff is a scaled list, otherwise the flat buff, or nil
-function addon.GetCampObjectBuff(object)
-    if type(object.buff) == "table" then
-        local level = UnitLevel("player")
-        local buff
-        for _, scaled in ipairs(object.buff) do
-            if level < scaled.minLevel then
-                break
-            end
-            buff = scaled.buff
-        end
-        return buff
+-- Returns the buff(s) for a camp object as { { text, isCurrent }, ... } or nil if the object has no buff
+-- For level dependent buffs, isCurrent indicates which line corresponds to the player's current level
+function addon.GetCampObjectBuffLines(object, expand)
+    local buff = object.buff
+    if buff == nil then
+        return nil
     end
 
-    return object.buff
+    -- For non-level-dependent buffs, just return the string
+    if type(buff) ~= "table" then
+        return { { text = buff, isCurrent = true } }
+    end
+
+    -- Get the players current level to determine which buff line applies
+    local level = UnitLevel("player")
+    local currentIndex = 1
+    for i, scaled in ipairs(buff) do
+        if level >= scaled.minLevel then
+            currentIndex = i
+        end
+    end
+
+    -- By default, only the currently applicable buff line is returned
+    if not expand then
+        return { { text = buff[currentIndex].buff, isCurrent = true } }
+    end
+
+    -- If expand is true, all level ranges are returned with one marked as the current (active)
+    local lines = {}
+    for i, scaled in ipairs(buff) do
+        local nextEntry = buff[i + 1]
+        local maxLevel = nextEntry and nextEntry.minLevel - 1 or 60
+        local range = scaled.minLevel
+        if maxLevel ~= scaled.minLevel then
+            range = range .. "-" .. maxLevel
+        end
+        lines[i] = { text = scaled.buff .. " (" .. range .. ")", isCurrent = i == currentIndex }
+    end
+
+    return lines
 end

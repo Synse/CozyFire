@@ -11,27 +11,44 @@ local function AddCampingDetails(tooltip, data)
         return
     end
 
+    -- Do nothing for non-camp objects
     local entry = campObjects[objectName]
     if not entry then
         return
     end
 
-    -- List the perk immediately after the object name
+    -- The perk is displayed in light blue text immediately after the object name
     if entry.perk then
         tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)
     end
 
-    -- Add a blank line for spacing and then list the buff and exclusivity information
-    -- followed by the profession at the end
-    tooltip:AddLine(" ")
+    -- The buff provided is displayed in green text, if Shift is held all level ranges are shown
     if entry.buff then
-        tooltip:AddLine(addon.GetCampObjectBuff(entry), 0.25, 1, 0.25, true)
-    end
-    if entry.buffExclusiveWith then
-        tooltip:AddLine("|cffff8080Exclusive with: |r" .. entry.buffExclusiveWith, 1, 1, 1, true)
+        tooltip:AddLine(" ")
+        for _, line in ipairs(addon.GetCampObjectBuffLines(entry, IsShiftKeyDown())) do
+            if line.isCurrent then
+                tooltip:AddLine(line.text, 0.25, 1, 0.25, true)
+            else
+                tooltip:AddLine(line.text, 0.55, 0.55, 0.55, true)
+            end
+        end
+
+        -- The exclusivity information is displayed in red and white text immediately after the buff
+        if entry.buffExclusiveWith then
+            tooltip:AddLine("|cffff8080Exclusive with: |r" .. entry.buffExclusiveWith, 1, 1, 1, true)
+        end
     end
     tooltip:AddLine(entry.profession, 0.6, 0.6, 0.6, true)
 end
 
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, AddCampingDetails)
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, AddCampingDetails)
+
+-- Rebuild the active tooltip when Shift is pressed or released
+local shiftWatcher = CreateFrame("Frame")
+shiftWatcher:RegisterEvent("MODIFIER_STATE_CHANGED")
+shiftWatcher:SetScript("OnEvent", function(_, _, key)
+    if (key == "LSHIFT" or key == "RSHIFT") and GameTooltip:IsShown() then
+        GameTooltip:RefreshData()
+    end
+end)
