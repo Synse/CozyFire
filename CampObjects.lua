@@ -31,8 +31,8 @@ local professions = {
     },
     Cooking = {
         objects = {
-            { name = "Basic Campfire", buff = "Allows up to 3 camp features" },
-            { name = "Journeyman Campfire", buff = "Allows up to 5 camp features" },
+            { name = "Basic Campfire", perk = "Allows up to 3 camp features" },
+            { name = "Journeyman Campfire", perk = "Allows up to 5 camp features" },
         },
     },
     Enchanting = {
@@ -52,7 +52,7 @@ local professions = {
     },
     Engineering = {
         objects = {
-            { name = "Reagent Bot", buff = "Purchase Reagents" },
+            { name = "Reagent Bot", perk = "Purchase Reagents" },
         },
     },
     ["First Aid"] = {
