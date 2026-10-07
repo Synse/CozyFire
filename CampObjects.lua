@@ -5,8 +5,8 @@ local professions = {
     Alchemy = {
         objects = {
             { name = "Mana Well" },
-            { name = "Fermenter", perk = "Required for certain reagents" },
-            { name = "Alchemy Laboratory", perk = "Required for certain recipes" },
+            { name = "Fermenter", perk = "Required for certain reagents", requiredSkill = 140},
+            { name = "Alchemy Laboratory", perk = "Required for certain recipes", requiredSkill = 300},
         },
         buff = {
             { minLevel = 1,  buff = "+10 Mana every 5 sec" },
@@ -20,8 +20,8 @@ local professions = {
     Blacksmithing = {
         objects = {
             { name = "Sharpening Wheel" },
-            { name = "Anvil", perk = "Required for certain recipes" },
-            { name = "Master Forge", perk = "Required for certain recipes" },
+            { name = "Anvil", perk = "Required for certain recipes", requiredSkill = 140 },
+            { name = "Master Forge", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+6 Strength" },
@@ -34,15 +34,15 @@ local professions = {
     Cooking = {
         objects = {
             { name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features" },
-            { name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features" },
-            { name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features" },
+            { name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 90 },
+            { name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features", requiredSkill = 200 },
         },
     },
     Enchanting = {
         objects = {
             { name = "Enchanted Lute" },
-            { name = "Arcane Salvager", perk = "More efficient Disenchanting" },
-            { name = "Arcane Forge", perk = "Required for certain recipes" },
+            { name = "Arcane Salvager", perk = "More efficient Disenchanting", requiredSkill = 140 },
+            { name = "Arcane Forge", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+28 Armor" },
@@ -58,15 +58,15 @@ local professions = {
     Engineering = {
         objects = {
             { name = "Reagent Bot", perk = "Buy reagents" },
-            { name = "Repair Bot", perk = "Buy reagents and repair gear" },
-            { name = "Anarchist's Workbench", perk = "Required for certain recipes" },
+            { name = "Repair Bot", perk = "Buy reagents and repair gear", requiredSkill = 140 },
+            { name = "Anarchist's Workbench", perk = "Required for certain recipes", requiredSkill = 300 },
         },
     },
     ["First Aid"] = {
         objects = {
             { name = "First Aid Kit" },
-            { name = "Toxin Study", perk = "Contains healing potions and anti-venom" },
-            { name = "Plague Doctor's Laboratory", perk = "Contains healing potions and poultices" },
+            { name = "Toxin Study", perk = "Contains healing potions and anti-venom", requiredSkill = 140 },
+            { name = "Plague Doctor's Laboratory", perk = "Contains healing potions and poultices", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+3 Stamina" },
@@ -81,8 +81,8 @@ local professions = {
     Fishing = {
         objects = {
             { name = "Fish Bowl" },
-            { name = "Fishing Rack", perk = "Allows catching uncommon fish for 1 hour\nContains fishing lures" },
-            { name = "Fishing Hut", perk = "Allows catching rare fish for 1 hour\nContains fishing lures" },
+            { name = "Fishing Rack", perk = "Allows catching uncommon fish for 1 hour\nContains fishing lures", requiredSkill = 140 },
+            { name = "Fishing Hut", perk = "Allows catching rare fish for 1 hour\nContains fishing lures", requiredSkill = 300 },
         },
         buff = "+8% All Stats",
         buffExclusiveWith = "Blessing of Kings",
@@ -90,8 +90,8 @@ local professions = {
     Herbalism = {
         objects = {
             { name = "Incense Candle" },
-            { name = "Greenhouse", perk = "Grow herbs from planted seeds" },
-            { name = "Seed Hybridizer", perk = "Multiply or combine seeds" },
+            { name = "Greenhouse", perk = "Grow herbs from planted seeds", requiredSkill = 140 },
+            { name = "Seed Hybridizer", perk = "Multiply or combine seeds", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+2 Intellect" },
@@ -105,16 +105,16 @@ local professions = {
     Leatherworking = {
         objects = {
             { name = "Camp Tent" },
-            { name = "Tanning Rack", perk = "Required for certain reagents" },
-            { name = "Sewing Machine", perk = "Required for certain recipes" },
+            { name = "Tanning Rack", perk = "Required for certain reagents", requiredSkill = 140 },
+            { name = "Sewing Machine", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = "Rested experience (up to 5% of a level)",
     },
     Mining = {
         objects = {
             { name = "Lodestone" },
-            { name = "Rock Garden", perk = "Spawns a common mining node" },
-            { name = "Molten Foundry", perk = "Required for certain recipes" },
+            { name = "Rock Garden", perk = "Spawns a common mining node", requiredSkill = 140 },
+            { name = "Molten Foundry", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+12 Melee Attack Power" },
@@ -130,8 +130,8 @@ local professions = {
         objects = {
             -- The used item is "Camp Chair" but it appears as just "Chair" when placed
             { name = "Chair" },
-            { name = "Field Guide", perk = "Grants Track Beasts" },
-            { name = "Trapper's Workbench", perk = "Contains 1 trap" },
+            { name = "Field Guide", perk = "Grants Track Beasts", requiredSkill = 140 },
+            { name = "Trapper's Workbench", perk = "Contains 1 trap", requiredSkill = 300 },
         },
         buff = "+2% Critical Strike",
         buffExclusiveWith = "Moonkin Aura",
@@ -139,8 +139,8 @@ local professions = {
     Tailoring = {
         objects = {
             { name = "Faction Banner" },
-            { name = "Spinning Wheel", perk = "Required for certain reagents" },
-            { name = "Loom", perk = "Required for certain recipes" },
+            { name = "Spinning Wheel", perk = "Required for certain reagents", requiredSkill = 140 },
+            { name = "Loom", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+14 Spirit" },
