@@ -16,12 +16,12 @@ local function AddCampingDetails(tooltip, data)
         return
     end
 
-    -- Show the perk (if present) in blue immediately after the object name
+    -- List the perk immediately after the object name
     if entry.perk then
         tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)
     end
 
-    -- Add a blank line for spacing and then the buff/exclusivity information
+    -- Add a blank line for spacing and then list the buff and exclusivity information
     -- followed by the profession at the end
     tooltip:AddLine(" ")
     if entry.buff then
@@ -29,9 +29,6 @@ local function AddCampingDetails(tooltip, data)
     end
     if entry.buffExclusiveWith then
         tooltip:AddLine("|cffff8080Exclusive with: |r" .. entry.buffExclusiveWith, 1, 1, 1, true)
-    end
-    if entry.perk then
-        tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)
     end
     tooltip:AddLine(entry.profession, 0.6, 0.6, 0.6, true)
 end
