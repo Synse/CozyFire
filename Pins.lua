@@ -180,7 +180,7 @@ C_Timer.NewTicker(SWEEP_INTERVAL, function()
         local expired = now >= pin.expires
 
         -- If we are within 20 yards of a pin and do not have the "Campfire Nearby" buff, mark it as expired
-        if not expired and not pin.approximateLocation and not nearCampfire and pin.instanceID == pInstance then
+        if not expired and not nearCampfire and pin.instanceID == pInstance then
             local dist = HBD:GetWorldDistance(pInstance, px, py, pin.x, pin.y)
             if dist and dist <= 20 then
                 DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r Nearby campfire not found, removed from map.")
