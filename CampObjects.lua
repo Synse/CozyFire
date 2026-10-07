@@ -92,6 +92,7 @@ local professions = {
     },
     Leatherworking = {
         { name = "Camp Tent", buff = "Rested XP up to 5% of a level" },
+        { name = "Tanning Rack", buff = "Rested XP up to 5% of a level" }
     },
     Mining = {
         {
