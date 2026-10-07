@@ -6,8 +6,8 @@ local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 local PIN_TTL = 900        -- seconds; campfires despawn 15 minutes after being placed
 local DEDUP_RANGE = 100    -- yards; only one campfire per 100 yds
 local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
-local WORLD_PIN_SIZE = 26  -- world map pin size
-local MINI_PIN_SIZE = 26   -- minimap pin size
+local WORLD_PIN_SIZE = 24  -- world map pin size
+local MINI_PIN_SIZE = 24   -- minimap pin size
 local SWEEP_INTERVAL = 5   -- seconds; how often to cleanup expired pins
 
 local pins = {}
