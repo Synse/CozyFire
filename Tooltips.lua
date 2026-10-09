@@ -17,6 +17,11 @@ local function AddCampingDetails(tooltip, data)
         return
     end
 
+    -- Camp objects only grant their buff when near a campfire
+    if not InCombatLockdown() and addon.IsNearCampfire and not addon.IsNearCampfire() then
+        return
+    end
+
     -- The perk is displayed in light blue text immediately after the object name
     if entry.perk then
         tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)
