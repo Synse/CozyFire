@@ -1,6 +1,10 @@
 local addonName, addon = ...
 local campObjects = addon.campObjects
 
+local SHARED_CAMP_OBJECTS = {
+    ["Anvil"] = true,
+}
+
 local function AddCampingDetails(tooltip, data)
     local firstLine = data and data.lines and data.lines[1]
     local objectName = firstLine and firstLine.leftText
@@ -17,8 +21,9 @@ local function AddCampingDetails(tooltip, data)
         return
     end
 
-    -- Camp objects only grant their buff when near a campfire
-    if not InCombatLockdown() and addon.IsNearCampfire and not addon.IsNearCampfire() then
+    -- Some camp objects (e.g., Anvil) share a name with other objects
+    -- for those objects only show the tooltip if near a campfire
+    if not InCombatLockdown() and addon.IsNearCampfire and not addon.IsNearCampfire() and SHARED_CAMP_OBJECTS[objectName] then
         return
     end
 
