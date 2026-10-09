@@ -34,8 +34,8 @@ local professions = {
     Cooking = {
         objects = {
             { name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features" },
-            { name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 140 },  -- Blueprint can be learned at 90
-            { name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features", requiredSkill = 200 },
+            { name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 140 },  -- Blueprint only requires 90
+            { name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features", requiredSkill = 220 },  -- Blueprint only requires 200
         },
     },
     Enchanting = {
