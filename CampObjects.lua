@@ -189,8 +189,8 @@ function addon.GetCampObjectBuffLines(object, expand)
     -- Get the players current level to determine which buff line applies
     local level = UnitLevel("player")
     local currentIndex = 1
-    for i, scaled in ipairs(buff) do
-        if level >= scaled.minLevel then
+    for i, entry in ipairs(buff) do
+        if level >= entry.minLevel then
             currentIndex = i
         end
     end
@@ -202,14 +202,14 @@ function addon.GetCampObjectBuffLines(object, expand)
 
     -- If expand is true, all level ranges are returned with one marked as the current (active)
     local lines = {}
-    for i, scaled in ipairs(buff) do
+    for i, entry in ipairs(buff) do
         local nextEntry = buff[i + 1]
         local maxLevel = nextEntry and nextEntry.minLevel - 1 or 60
-        local range = scaled.minLevel
-        if maxLevel ~= scaled.minLevel then
+        local range = entry.minLevel
+        if maxLevel ~= entry.minLevel then
             range = range .. "-" .. maxLevel
         end
-        lines[i] = { text = scaled.buff .. " (" .. range .. ")", isCurrent = i == currentIndex }
+        lines[i] = { text = entry.buff .. " (" .. range .. ")", isCurrent = i == currentIndex }
     end
 
     return lines
