@@ -3,6 +3,7 @@ local campObjects = addon.campObjects
 
 local SHARED_CAMP_OBJECTS = {
     ["Anvil"] = true,
+    ["Chair"] = true,
 }
 
 local function AddCampingDetails(tooltip, data)
