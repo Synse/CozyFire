@@ -9,12 +9,51 @@ local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
 local WORLD_PIN_SIZE = 24  -- world map pin size
 local MINI_PIN_SIZE = 24   -- minimap pin size
 local SWEEP_INTERVAL = 5   -- seconds; how often to cleanup expired pins
+local OTHER_LAYER_DESATURATION = 0.9  -- color removed from pins on a different layer
 
 local pins = {}
 addon.pins = pins
 
 local active = {}
 local nextId = 1
+
+-- The zoneUID is a per-map (zone) layer identifier
+local function IsOtherLayer(pin)
+    local current = addon.GetLayer()
+    return pin.layer ~= nil and current ~= nil and pin.layer ~= current
+        and pin.mapID == C_Map.GetBestMapForUnit("player")
+end
+
+-- Determine if a pin for another layer is covered by a pin on this layer
+local function CoveredByCurrentLayer(pin)
+    local current = addon.GetLayer()
+    if not current then return false end
+    for _, other in pairs(active) do
+        if other ~= pin and other.layer == current and other.instanceID == pin.instanceID then
+            local dist = HBD:GetWorldDistance(pin.instanceID, pin.x, pin.y, other.x, other.y)
+            if dist and dist <= DEDUP_RANGE then
+                return true
+            end
+        end
+    end
+    return false
+end
+
+local function ApplyPinAppearance(pin)
+    local other = IsOtherLayer(pin)
+    local hidden = other and CoveredByCurrentLayer(pin)
+
+    -- Pins on other layers are hidden if they are covered by a pin on the current layer
+    local alpha = hidden and 0 or 1
+    pin.worldIcon:SetAlpha(alpha)
+    pin.miniIcon:SetAlpha(alpha)
+    pin.worldIcon:EnableMouse(not hidden)
+
+    -- Pins on other layers are desaturated
+    local amount = other and OTHER_LAYER_DESATURATION or 0
+    pin.worldIcon.texture:SetDesaturation(amount)
+    pin.miniIcon.texture:SetDesaturation(amount)
+end
 
 local function CreateIcon(size)
     local icon = CreateFrame("Frame", nil, UIParent)
@@ -26,10 +65,10 @@ local function CreateIcon(size)
     return icon
 end
 
--- Return an existing pin within DEDUP_RANGE in the same instance, if any
-local function FindNearby(instanceID, x, y)
+-- Return an existing pin at the same spot on the same layer
+local function FindNearby(instanceID, x, y, layer)
     for id, pin in pairs(active) do
-        if pin.instanceID == instanceID then
+        if pin.instanceID == instanceID and pin.layer == layer then
             local dist = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
             if dist and dist <= DEDUP_RANGE then
                 return id, pin
@@ -62,6 +101,10 @@ local function RenderPinTooltip(pin)
         GameTooltip:AddLine("Placed by: |cffffd100" .. pin.placedBy .. "|r", 1, 1, 1)
     end
 
+    if IsOtherLayer(pin) then
+        GameTooltip:AddLine("On a different layer", 1, 0.5, 0.5)
+    end
+
     GameTooltip:Show()
 end
 
@@ -88,7 +131,7 @@ local function HidePinTooltip(self)
 end
 
 -- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy)
+local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -108,6 +151,8 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         miniIcon = miniIcon,
         expires = expires,
         placedBy = placedBy,
+        layer = layer,
+        mapID = mapID,
     }
     active[id] = pin
 
@@ -116,22 +161,34 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
     worldIcon:SetScript("OnEnter", ShowPinTooltip)
     worldIcon:SetScript("OnLeave", HidePinTooltip)
 
+    pins:ApplyLayerVisibility()
+
     return id
+end
+
+-- Pins on other layers are always desaturated and if they overlap with a pin
+-- on the current layer they are hidden completely
+function pins:ApplyLayerVisibility()
+    for _, pin in pairs(active) do
+        ApplyPinAppearance(pin)
+    end
 end
 
 -- Add a campfire pin at world coordinates. `approximateLocation` is true for manual marks and false when the
 -- player gains the "Welcoming Campfire" buff. `approximateTime` is false when the player places the campfire,
--- and true otherwise. `placedBy` is the name of the player who placed the fire, if known.
+-- and true otherwise. `placedBy` is the name of the player who placed the fire, if known. `layer` is the
+-- zoneUID of the layer the fire was seen on, if known.
 -- Returns id, action ("created"/"replaced"/"exists")
-function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl, placedBy)
+function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl, placedBy, layer)
     if not instanceID or not x or not y then return end
 
-    local existingId, existing = FindNearby(instanceID, x, y)
+    local mapID = C_Map.GetBestMapForUnit("player")
+    local existingId, existing = FindNearby(instanceID, x, y, layer)
     if existing then
         -- Placing a campfire replaces any nearby pins
         if not approximateLocation and not approximateTime then
             self:RemovePin(existingId)
-            return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy), "replaced"
+            return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy, layer, mapID), "replaced"
         end
 
         -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
@@ -140,12 +197,12 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
             local carriedApproximateTime = existing.approximateTime
             local carriedPlacedBy = existing.placedBy
             self:RemovePin(existingId)
-            return CreatePin(instanceID, x, y, approximateLocation, carriedApproximateTime, carriedExpires, carriedPlacedBy), "replaced"
+            return CreatePin(instanceID, x, y, approximateLocation, carriedApproximateTime, carriedExpires, carriedPlacedBy, layer, mapID), "replaced"
         end
         return existingId, "exists"
     end
 
-    return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy), "created"
+    return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy, layer, mapID), "created"
 end
 
 function pins:RemovePin(id)
@@ -164,6 +221,9 @@ function pins:RemovePin(id)
     HBDPins:RemoveWorldMapIcon(addonName, pin.worldIcon)
     HBDPins:RemoveMinimapIcon(addonName, pin.miniIcon)
     active[id] = nil
+
+    -- A covered other-layer fire may now be shown
+    pins:ApplyLayerVisibility()
 end
 
 C_Timer.NewTicker(SWEEP_INTERVAL, function()
@@ -175,12 +235,14 @@ C_Timer.NewTicker(SWEEP_INTERVAL, function()
         px, py, pInstance = HBD:GetPlayerWorldPosition()
         nearCampfire = addon.IsNearCampfire()
     end
+    local currentLayer = addon.GetLayer()
 
     for id, pin in pairs(active) do
         local expired = now >= pin.expires
 
-        -- If we are within 20 yards of a pin and do not have the "Campfire Nearby" buff, mark it as expired
-        if not expired and not nearCampfire and pin.instanceID == pInstance then
+        -- Only prune a "missing" fire on our own (or an unknown) layer
+        if not expired and not nearCampfire and pin.instanceID == pInstance
+            and (pin.layer == nil or pin.layer == currentLayer) then
             local dist = HBD:GetWorldDistance(pInstance, px, py, pin.x, pin.y)
             if dist and dist <= 20 then
                 DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r Nearby campfire not found, removed from map.")
@@ -208,6 +270,8 @@ function pins:Save()
             approximateTime = pin.approximateTime,
             expires = pin.expires,
             placedBy = pin.placedBy,
+            layer = pin.layer,
+            mapID = pin.mapID,
         }
     end
     CozyFireDB.pins = saved
@@ -220,7 +284,7 @@ function pins:Restore()
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy)
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy, pin.layer, pin.mapID)
         end
     end
 end

@@ -41,7 +41,7 @@ local function Mark()
         return
     end
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, true, true)
+    local _, action = addon.pins:AddPin(instanceID, x, y, true, true, nil, nil, addon.GetLayer())
     if action == "created" then
         Print("Campfire marked.")
     end
@@ -72,7 +72,7 @@ local function AutoMark()
         return
     end
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, false, true)
+    local _, action = addon.pins:AddPin(instanceID, x, y, false, true, nil, nil, addon.GetLayer())
     if action == "created" then
         Print("Campfire automatically marked.")
     end
@@ -99,7 +99,7 @@ auraFrame:SetScript("OnEvent", function(_, _, _, updateInfo)
 end)
 
 -- Mark the campfire when the player uses a campfire kit
-local function CampfirePlaced()
+local function CampfirePlaced(castGUID)
     if InCombatLockdown() then
         return
     end
@@ -113,7 +113,10 @@ local function CampfirePlaced()
     local firstName, lastName = UnitName("player")
     local placedBy = lastName and lastName ~= "" and (firstName .. " " .. lastName) or firstName
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, false, false, nil, placedBy)
+    -- The cast GUID carries the exact layer the fire was lit on; fall back to the tracked layer
+    local layer = addon.GetLayerFromGUID(castGUID) or addon.GetLayer()
+
+    local _, action = addon.pins:AddPin(instanceID, x, y, false, false, nil, placedBy, layer)
     if action == "created" then
         Print("Campfire marked.")
     end
@@ -122,8 +125,8 @@ end
 -- Create a frame to listen for spell casts
 local castFrame = CreateFrame("Frame")
 castFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
-castFrame:SetScript("OnEvent", function(_, _, _, _, spellID)
+castFrame:SetScript("OnEvent", function(_, _, _, castGUID, spellID)
     if spellID and CAMPFIRE_KIT_SPELLS[spellID] then
-        CampfirePlaced()
+        CampfirePlaced(castGUID)
     end
 end)
