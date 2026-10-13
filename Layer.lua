@@ -29,6 +29,8 @@ end
 addon.GetLayer = GetLayer
 
 local function UpdateLayerFromUnit(unit)
+    if IsInInstance() then return end
+
     -- Skip non-combat pets (e.g., Frog Familiar)
     if not unit or UnitCreatureType(unit) == "Non-combat Pet" then return end
     local guid = UnitGUID(unit)

@@ -9,7 +9,7 @@ local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
 local WORLD_PIN_SIZE = 24  -- world map pin size
 local MINI_PIN_SIZE = 24   -- minimap pin size
 local SWEEP_INTERVAL = 5   -- seconds; how often to cleanup expired pins
-local OTHER_LAYER_DESATURATION = 0.9  -- color removed from pins on a different layer
+local OTHER_LAYER_DESATURATION = 0.75  -- color removed from pins on a different layer
 
 local pins = {}
 addon.pins = pins
