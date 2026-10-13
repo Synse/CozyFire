@@ -113,12 +113,28 @@ local function ShowPinTooltip(self)
     local pin = self.pin
     if not pin then return end
 
+    -- Cancel any existing ticker so re-entering the icon can't orphan one
+    if self.ticker then
+        self.ticker:Cancel()
+        self.ticker = nil
+    end
+
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     RenderPinTooltip(pin)
 
-    self.ticker = C_Timer.NewTicker(1, function()
+    local ticker
+    ticker = C_Timer.NewTicker(1, function()
+        -- Only refresh CozyFire map pins
+        if GameTooltip:GetOwner() ~= self then
+            ticker:Cancel()
+            if self.ticker == ticker then
+                self.ticker = nil
+            end
+            return
+        end
         RenderPinTooltip(pin)
     end)
+    self.ticker = ticker
 end
 
 -- Hide a map pin tooltip
