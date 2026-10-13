@@ -65,10 +65,10 @@ local function CreateIcon(size)
     return icon
 end
 
--- Return an existing pin at the same spot on the same layer
+-- Return an existing pin at the same spot on the same layer, or a shared pin
 local function FindNearby(instanceID, x, y, layer)
     for id, pin in pairs(active) do
-        if pin.instanceID == instanceID and pin.layer == layer then
+        if pin.instanceID == instanceID and (pin.layer == layer or pin.shared) then
             local dist = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
             if dist and dist <= DEDUP_RANGE then
                 return id, pin
@@ -131,7 +131,7 @@ local function HidePinTooltip(self)
 end
 
 -- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID)
+local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, shared)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -153,6 +153,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         placedBy = placedBy,
         layer = layer,
         mapID = mapID,
+        shared = shared,
     }
     active[id] = pin
 
@@ -202,7 +203,26 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
         return existingId, "exists"
     end
 
-    return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy, layer, mapID), "created"
+    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy, layer, mapID)
+    return id, "created", active[id]
+end
+
+-- Add a pin broadcast by another player if we dont already have one nearby
+function pins:AddSharedPin(data)
+    local instanceID, x, y = data.instanceID, data.x, data.y
+    if not instanceID or not x or not y then return end
+
+    for _, pin in pairs(active) do
+        if pin.instanceID == instanceID then
+            local dist = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
+            if dist and dist <= DEDUP_RANGE then
+                return
+            end
+        end
+    end
+
+    CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime,
+        GetServerTime() + data.remaining, data.placedBy, data.layer, data.mapID, true)
 end
 
 function pins:RemovePin(id)
@@ -272,6 +292,7 @@ function pins:Save()
             placedBy = pin.placedBy,
             layer = pin.layer,
             mapID = pin.mapID,
+            shared = pin.shared,
         }
     end
     CozyFireDB.pins = saved
@@ -284,7 +305,7 @@ function pins:Restore()
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy, pin.layer, pin.mapID)
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy, pin.layer, pin.mapID, pin.shared)
         end
     end
 end
