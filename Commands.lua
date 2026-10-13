@@ -64,9 +64,13 @@ SlashCmdList["COZYFIRE"] = function(msg)
     end
 end
 
--- Auto-mark whenever the Welcoming Campfire buff is gained
+-- Auto-mark whenever the Welcoming Campfire buff is gained if the player is near a campfire
 local function AutoMark()
     if InCombatLockdown() then
+        return
+    end
+
+    if not PlayerNearCampfire() then
         return
     end
 
