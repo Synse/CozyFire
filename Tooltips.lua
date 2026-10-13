@@ -5,8 +5,13 @@ local SHARED_CAMP_OBJECTS = {
     ["Anvil"] = true,
     ["Chair"] = true,
 }
+local tooltipHasScalingBuff = false
 
 local function AddCampingDetails(tooltip, data)
+    if tooltip == GameTooltip then
+        tooltipHasScalingBuff = false
+    end
+
     local firstLine = data and data.lines and data.lines[1]
     local objectName = firstLine and firstLine.leftText
 
@@ -34,6 +39,10 @@ local function AddCampingDetails(tooltip, data)
 
     -- The buff provided is displayed in green text, if Shift is held all level ranges are shown
     if entry.buff then
+        if tooltip == GameTooltip then
+            tooltipHasScalingBuff = true
+        end
+
         tooltip:AddLine(" ")
         for _, line in ipairs(addon.GetCampObjectBuffLines(entry, IsShiftKeyDown())) do
             if line.isCurrent then
@@ -65,7 +74,7 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, AddCampingDet
 local shiftWatcher = CreateFrame("Frame")
 shiftWatcher:RegisterEvent("MODIFIER_STATE_CHANGED")
 shiftWatcher:SetScript("OnEvent", function(_, _, key)
-    if (key == "LSHIFT" or key == "RSHIFT") and GameTooltip:IsShown() then
+    if (key == "LSHIFT" or key == "RSHIFT") and tooltipHasScalingBuff and GameTooltip:IsShown() then
         GameTooltip:RefreshData()
     end
 end)
