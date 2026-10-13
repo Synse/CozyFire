@@ -44,6 +44,8 @@ local function Mark()
     local _, action = addon.pins:AddPin(instanceID, x, y, true, true, nil, nil, addon.GetLayer())
     if action == "created" then
         Print("Campfire marked.")
+    elseif action == "exists" then
+        Print("Campfire is already marked.")
     end
 end
 
