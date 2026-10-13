@@ -41,9 +41,10 @@ local function Mark()
         return
     end
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, true, true, nil, nil, addon.GetLayer())
+    local _, action, pin = addon.pins:AddPin(instanceID, x, y, true, true, nil, nil, addon.GetLayer())
     if action == "created" then
         Print("Campfire marked.")
+        addon.BroadcastPin(pin)
     elseif action == "exists" then
         Print("Campfire is already marked.")
     end
@@ -74,9 +75,10 @@ local function AutoMark()
         return
     end
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, false, true, nil, nil, addon.GetLayer())
+    local _, action, pin = addon.pins:AddPin(instanceID, x, y, false, true, nil, nil, addon.GetLayer())
     if action == "created" then
         Print("Campfire automatically marked.")
+        addon.BroadcastPin(pin)
     end
 end
 
@@ -118,9 +120,10 @@ local function CampfirePlaced(castGUID)
     -- The cast GUID carries the exact layer the fire was lit on; fall back to the tracked layer
     local layer = addon.GetLayerFromGUID(castGUID) or addon.GetLayer()
 
-    local _, action = addon.pins:AddPin(instanceID, x, y, false, false, nil, placedBy, layer)
+    local _, action, pin = addon.pins:AddPin(instanceID, x, y, false, false, nil, placedBy, layer)
     if action == "created" then
         Print("Campfire marked.")
+        addon.BroadcastPin(pin)
     end
 end
 
