@@ -18,5 +18,6 @@ CampObjects.lua
 Tooltips.lua
 Layer.lua
 Pins.lua
+Comms.lua
 Commands.lua
 MinimapButton.lua
