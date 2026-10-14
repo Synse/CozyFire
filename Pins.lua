@@ -29,7 +29,8 @@ local function CoveredByCurrentLayer(pin)
     local current = addon.GetLayer()
     if not current then return false end
     for _, other in pairs(active) do
-        if other ~= pin and other.layer == current and other.instanceID == pin.instanceID then
+        if other ~= pin and other.layer == current and other.instanceID == pin.instanceID
+            and other.mapID == pin.mapID then
             local dist = HBD:GetWorldDistance(pin.instanceID, pin.x, pin.y, other.x, other.y)
             if dist and dist <= DEDUP_RANGE then
                 return true
