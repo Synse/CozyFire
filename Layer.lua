@@ -6,7 +6,8 @@ local function GetLayerFromGUID(guid)
     if type(guid) ~= "string" then return nil end
 
     local zoneUID = select(5, strsplit("-", guid))
-    if not zoneUID or zoneUID == "" or zoneUID == "0" then return nil end
+    zoneUID = tonumber(zoneUID)
+    if not zoneUID or zoneUID == 0 then return nil end
 
     return zoneUID
 end
@@ -15,6 +16,8 @@ addon.GetLayerFromGUID = GetLayerFromGUID
 local current
 
 local function SetCurrent(newLayer)
+    newLayer = tonumber(newLayer)
+    if newLayer == 0 then newLayer = nil end
     if newLayer == current then return end
     current = newLayer
 
