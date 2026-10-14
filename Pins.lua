@@ -66,16 +66,28 @@ local function CreateIcon(size)
     return icon
 end
 
--- Return an existing pin at the same spot on the same layer, or a shared pin
-local function FindNearby(instanceID, x, y, layer)
+-- Return a nearby pin on the same map, preferring an exact layer match over an unknown one
+local function FindNearby(instanceID, x, y, layer, mapID)
+    local fallbackId
+
     for id, pin in pairs(active) do
-        if pin.instanceID == instanceID and (pin.layer == layer or pin.shared) then
+        if pin.instanceID == instanceID and pin.mapID == mapID
+            and (pin.layer == layer or pin.layer == nil or layer == nil) then
             local dist = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
+
             if dist and dist <= DEDUP_RANGE then
-                return id, pin
+                -- exact layer match
+                if pin.layer == layer then
+                    return id, pin
+                end
+
+                -- fallback to unknown layer
+                fallbackId = fallbackId or id
             end
         end
     end
+
+    return fallbackId, active[fallbackId]
 end
 
 -- Render the tooltip for a map pin
@@ -201,8 +213,10 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
     if not instanceID or not x or not y then return end
 
     local mapID = C_Map.GetBestMapForUnit("player")
-    local existingId, existing = FindNearby(instanceID, x, y, layer)
+    local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
     if existing then
+        layer = layer or existing.layer
+
         -- Placing a campfire replaces any nearby pins
         if not approximateLocation and not approximateTime then
             self:RemovePin(existingId)
@@ -217,6 +231,13 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
             self:RemovePin(existingId)
             return CreatePin(instanceID, x, y, approximateLocation, carriedApproximateTime, carriedExpires, carriedPlacedBy, layer, mapID), "replaced"
         end
+
+        -- Upgrade the existing pin's unknown layer to a known layer
+        if existing.layer == nil and layer ~= nil then
+            existing.layer = layer
+            self:ApplyLayerVisibility()
+        end
+
         return existingId, "exists"
     end
 
@@ -229,13 +250,15 @@ function pins:AddSharedPin(data)
     local instanceID, x, y = data.instanceID, data.x, data.y
     if not instanceID or not x or not y then return end
 
-    for _, pin in pairs(active) do
-        if pin.instanceID == instanceID then
-            local dist = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
-            if dist and dist <= DEDUP_RANGE then
-                return
-            end
+    local _, existing = FindNearby(instanceID, x, y, data.layer, data.mapID)
+    if existing then
+        -- Upgrade the existing pin's unknown layer to a known layer
+        if existing.layer == nil and data.layer ~= nil then
+            existing.layer = data.layer
+            self:ApplyLayerVisibility()
         end
+
+        return
     end
 
     CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime,
