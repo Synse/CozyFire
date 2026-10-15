@@ -247,24 +247,55 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
     return id, "created", active[id]
 end
 
--- Add a pin broadcast by another player if we dont already have one nearby
+-- Add a shared pin or improve the details of an existing nearby pin
 function pins:AddSharedPin(data)
     local instanceID, x, y = data.instanceID, data.x, data.y
     if not instanceID or not x or not y then return end
 
-    local _, existing = FindNearby(instanceID, x, y, data.layer, data.mapID)
+    local now = GetServerTime()
+    local expires = now + data.remaining
+    local existingId, existing = FindNearby(instanceID, x, y, data.layer, data.mapID)
+    if existing and existing.expires <= now then
+        self:RemovePin(existingId)
+        existing = nil
+    end
+
     if existing then
+        local upgradeLocation = existing.approximateLocation and not data.approximateLocation
+        local upgradeLayer = existing.layer == nil and data.layer ~= nil
+
+        if upgradeLocation then
+            existing.x, existing.y = x, y
+            existing.approximateLocation = false
+            HBDPins:RemoveWorldMapIcon(addonName, existing.worldIcon)
+            HBDPins:AddWorldMapIconWorld(addonName, existing.worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
+            HBDPins:AddMinimapIconWorld(addonName, existing.miniIcon, instanceID, x, y, false)
+        end
+
+        if existing.approximateTime then
+            if not data.approximateTime then
+                existing.expires = expires
+                existing.approximateTime = false
+            else
+                existing.expires = math.min(existing.expires, expires)
+            end
+        end
+
+        existing.placedBy = existing.placedBy or data.placedBy
+
         -- Upgrade the existing pin's unknown layer to a known layer
-        if existing.layer == nil and data.layer ~= nil then
+        if upgradeLayer then
             existing.layer = data.layer
+        end
+
+        if upgradeLocation or upgradeLayer then
             self:ApplyLayerVisibility()
         end
 
         return
     end
 
-    CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime,
-        GetServerTime() + data.remaining, data.placedBy, data.layer, data.mapID, true)
+    CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime, expires, data.placedBy, data.layer, data.mapID, true)
 end
 
 function pins:RemovePin(id)
