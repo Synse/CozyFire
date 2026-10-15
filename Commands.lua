@@ -42,7 +42,7 @@ local function Mark()
     end
 
     local _, action, pin = addon.pins:AddPin(instanceID, x, y, true, true, nil, nil, addon.GetLayer())
-    if action == "created" then
+    if action == "created" or action == "replaced" then
         Print("Campfire marked.")
         addon.BroadcastPin(pin)
     elseif action == "exists" then
@@ -80,7 +80,7 @@ local function AutoMark()
     end
 
     local _, action, pin = addon.pins:AddPin(instanceID, x, y, false, true, nil, nil, addon.GetLayer())
-    if action == "created" then
+    if action == "created" or action == "replaced" then
         Print("Campfire automatically marked.")
         addon.BroadcastPin(pin)
     end
@@ -125,7 +125,7 @@ local function CampfirePlaced(castGUID)
     local layer = addon.GetLayerFromGUID(castGUID) or addon.GetLayer()
 
     local _, action, pin = addon.pins:AddPin(instanceID, x, y, false, false, nil, placedBy, layer)
-    if action == "created" then
+    if action == "created" or action == "replaced" then
         Print("Campfire marked.")
         addon.BroadcastPin(pin)
     end

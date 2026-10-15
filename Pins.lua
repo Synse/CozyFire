@@ -208,7 +208,7 @@ end
 -- player gains the "Welcoming Campfire" buff. `approximateTime` is false when the player places the campfire,
 -- and true otherwise. `placedBy` is the name of the player who placed the fire, if known. `layer` is the
 -- zoneUID of the layer the fire was seen on, if known.
--- Returns id, action ("created"/"replaced"/"exists")
+-- Returns id, action ("created"/"replaced"/"exists"), and the pin when created or replaced
 function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl, placedBy, layer)
     if not instanceID or not x or not y then return end
 
@@ -220,7 +220,8 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
         -- Placing a campfire replaces any nearby pins
         if not approximateLocation and not approximateTime then
             self:RemovePin(existingId)
-            return CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy, layer, mapID), "replaced"
+            local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy, layer, mapID)
+            return id, "replaced", active[id]
         end
 
         -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
@@ -229,7 +230,8 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
             local carriedApproximateTime = existing.approximateTime
             local carriedPlacedBy = existing.placedBy
             self:RemovePin(existingId)
-            return CreatePin(instanceID, x, y, approximateLocation, carriedApproximateTime, carriedExpires, carriedPlacedBy, layer, mapID), "replaced"
+            local id = CreatePin(instanceID, x, y, approximateLocation, carriedApproximateTime, carriedExpires, carriedPlacedBy, layer, mapID)
+            return id, "replaced", active[id]
         end
 
         -- Upgrade the existing pin's unknown layer to a known layer
