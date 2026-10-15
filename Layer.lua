@@ -13,13 +13,13 @@ local function GetLayerFromGUID(guid)
 end
 addon.GetLayerFromGUID = GetLayerFromGUID
 
-local current
+local currentLayer
 
 local function SetCurrent(newLayer)
     newLayer = tonumber(newLayer)
     if newLayer == 0 then newLayer = nil end
-    if newLayer == current then return end
-    current = newLayer
+    if newLayer == currentLayer then return end
+    currentLayer = newLayer
 
     if addon.pins and addon.pins.ApplyLayerVisibility then
         addon.pins:ApplyLayerVisibility()
@@ -27,7 +27,7 @@ local function SetCurrent(newLayer)
 end
 
 local function GetLayer()
-    return current
+    return currentLayer
 end
 addon.GetLayer = GetLayer
 
