@@ -97,6 +97,7 @@ eventFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("GROUP_JOINED")
 eventFrame:RegisterEvent("GROUP_LEFT")
+eventFrame:RegisterEvent("SHARD_TRANSFER")
 eventFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_TARGET_CHANGED" then
         UpdateLayerFromUnit("target")
@@ -107,7 +108,7 @@ eventFrame:SetScript("OnEvent", function(_, event, ...)
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
         local _, castGUID = ...
         UpdateLayerFromCast(castGUID)
-    elseif event == "PLAYER_ENTERING_WORLD" or event == "GROUP_JOINED" or event == "GROUP_LEFT" then
+    elseif event == "PLAYER_ENTERING_WORLD" or event == "GROUP_JOINED" or event == "GROUP_LEFT" or event == "SHARD_TRANSFER" then
         SetCurrent(nil, C_Map.GetBestMapForUnit("player"))
     end
 end)
