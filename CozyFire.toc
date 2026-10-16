@@ -4,6 +4,7 @@
 ## Version: 0.7.6
 ## IconTexture: Interface\AddOns\CozyFire\Media\CozyFire
 ## SavedVariables: CozyFireDB
+## X-Curse-Project-ID: 1711811
 ## X-Wago-ID: mKOaDgNx
 ## X-WoWI-ID: 27228
 
