@@ -16,11 +16,13 @@ local function Print(msg)
     DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r " .. msg)
 end
 
+-- Determine if the player is near a campfire, returns nil if unknown
 local function PlayerNearCampfire()
     if C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID then
         return C_UnitAuras.GetPlayerAuraBySpellID(CAMPFIRE_NEARBY_SPELL) ~= nil
     end
-    return true  -- fail open if the aura API is unavailable
+
+    return nil
 end
 
 local function Mark()
