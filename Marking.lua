@@ -26,7 +26,7 @@ local function PlayerNearCampfire()
     return nil
 end
 
-local function Mark()
+local function MarkCampfire()
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
     if InCombatLockdown() then
         Print("Campfires can't be marked while in combat.")
@@ -60,7 +60,7 @@ SLASH_COZYFIRE2 = "/cozyfire"
 SlashCmdList["COZYFIRE"] = function(msg)
     local cmd = msg:lower():match("^%s*(%S*)")
     if cmd == "mark" then
-        Mark()
+        MarkCampfire()
     else
         Print("Commands: /cf mark")
     end
