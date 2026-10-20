@@ -254,10 +254,25 @@ function pins:AddSharedPin(data)
 
     local now = GetServerTime()
     local expires = data.expires
-    local existingId, existing = FindNearby(instanceID, x, y, data.layer, data.mapID)
+    local layer = data.layer
+    local existingId, existing = FindNearby(instanceID, x, y, layer, data.mapID)
+
+    -- Remove the existing pin if expired
     if existing and existing.expires <= now then
         self:RemovePin(existingId)
         existing = nil
+    end
+
+    -- Ignore reports for older fires in this location
+    if existing and not existing.approximateTime and not data.approximateTime then
+        if expires < existing.expires then return end
+
+        -- Remove the current pin if this report is a new fire
+        if expires > existing.expires then
+            layer = layer or existing.layer
+            self:RemovePin(existingId)
+            existing = nil
+        end
     end
 
     if existing then
@@ -295,7 +310,7 @@ function pins:AddSharedPin(data)
         return
     end
 
-    CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime, expires, data.placedBy, data.layer, data.mapID, true)
+    CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime, expires, data.placedBy, layer, data.mapID, true)
 end
 
 function pins:RemovePin(id)
