@@ -53,7 +53,6 @@ local function Mark()
     end
 end
 
-addon.MarkCampfire = Mark
 addon.PlayerNearCampfire = PlayerNearCampfire
 
 SLASH_COZYFIRE1 = "/cf"
