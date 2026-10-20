@@ -209,7 +209,7 @@ end
 -- and true otherwise. `placedBy` is the name of the player who placed the fire, if known. `layer` is the
 -- zoneUID of the layer the fire was seen on, if known.
 -- Returns id, action ("created"/"replaced"/"exists"), and the pin when created or replaced
-function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime, ttl, placedBy, layer)
+function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime, placedBy, layer)
     if not instanceID or not x or not y then return end
 
     local mapID = C_Map.GetBestMapForUnit("player")
@@ -220,7 +220,7 @@ function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime
         -- Placing a campfire replaces any nearby pins
         if not approximateLocation and not approximateTime then
             self:RemovePin(existingId)
-            local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy, layer, mapID)
+            local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + PIN_TTL, placedBy, layer, mapID)
             return id, "replaced", active[id]
         end
 
@@ -243,7 +243,7 @@ function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime
         return existingId, "exists"
     end
 
-    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + (ttl or PIN_TTL), placedBy, layer, mapID)
+    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + PIN_TTL, placedBy, layer, mapID)
     return id, "created", active[id]
 end
 
