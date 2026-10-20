@@ -37,7 +37,7 @@ jobs:
         env:
           WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
         run: |
-          response=$(curl -sS -X POST "https://api.wowinterface.com/addons/update" \
+          response=$(curl -fsS -X POST "https://api.wowinterface.com/addons/update" \
             -H "x-api-token: $WOWI_API_TOKEN" \
             -F "id=27228" \
             -F "version=${{ github.ref_name }}" \
