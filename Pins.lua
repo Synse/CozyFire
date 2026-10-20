@@ -349,7 +349,7 @@ C_Timer.NewTicker(SWEEP_INTERVAL, function()
         local expired = now >= pin.expires
 
         -- Only prune a "missing" fire on our own (or an unknown) layer
-        if not expired and not nearCampfire and pin.instanceID == pInstance
+        if not expired and nearCampfire == false and pin.instanceID == pInstance
             and (pin.layer == nil or pin.layer == currentLayer) then
             local dist = HBD:GetWorldDistance(pInstance, px, py, pin.x, pin.y)
             if dist and dist <= 20 then
