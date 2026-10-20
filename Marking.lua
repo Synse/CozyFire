@@ -25,6 +25,7 @@ local function PlayerNearCampfire()
 
     return nil
 end
+addon.PlayerNearCampfire = PlayerNearCampfire
 
 local function MarkCampfire()
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
@@ -52,8 +53,6 @@ local function MarkCampfire()
         Print("Campfire is already marked.")
     end
 end
-
-addon.PlayerNearCampfire = PlayerNearCampfire
 
 SLASH_COZYFIRE1 = "/cf"
 SLASH_COZYFIRE2 = "/cozyfire"
