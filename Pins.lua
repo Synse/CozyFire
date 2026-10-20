@@ -247,7 +247,7 @@ function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl
     return id, "created", active[id]
 end
 
--- Add a shared pin or improve the details of an existing nearby pin
+-- Add a shared pin or improve an existing pin
 function pins:AddSharedPin(data)
     local instanceID, x, y = data.instanceID, data.x, data.y
     if not instanceID or not x or not y then return end
