@@ -55,7 +55,7 @@ local function Deserialize(text)
         y = y,
         approximateLocation = aLoc == "1",
         approximateTime = aTime == "1",
-        remaining = remaining,
+        expires = GetServerTime() + remaining,
         mapID = tonumber(rawMap),
         layer = tonumber(rawLayer),
         placedBy = Sanitize(placedBy),

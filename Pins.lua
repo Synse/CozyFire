@@ -253,7 +253,7 @@ function pins:AddSharedPin(data)
     if not instanceID or not x or not y then return end
 
     local now = GetServerTime()
-    local expires = now + data.remaining
+    local expires = data.expires
     local existingId, existing = FindNearby(instanceID, x, y, data.layer, data.mapID)
     if existing and existing.expires <= now then
         self:RemovePin(existingId)
