@@ -209,7 +209,7 @@ end
 -- and true otherwise. `placedBy` is the name of the player who placed the fire, if known. `layer` is the
 -- zoneUID of the layer the fire was seen on, if known.
 -- Returns id, action ("created"/"replaced"/"exists"), and the pin when created or replaced
-function pins:AddPin(instanceID, x, y, approximateLocation, approximateTime, ttl, placedBy, layer)
+function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime, ttl, placedBy, layer)
     if not instanceID or not x or not y then return end
 
     local mapID = C_Map.GetBestMapForUnit("player")
