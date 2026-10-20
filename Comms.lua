@@ -1,8 +1,8 @@
 local addonName, addon = ...
 
 local PREFIX = "CozyFire"
-local MSG_TYPE = "CF2"   -- payload version; bump when the format below changes
-local MAX_TTL = 900      -- limit shared pin lifetimes to 15 minutes
+local MSG_TYPE = "CF2"
+local MAX_TTL = 900
 
 C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
 
@@ -16,6 +16,7 @@ local function Sanitize(name)
     return name:sub(1, 48)
 end
 
+-- Validate that the expires timestamp is within the max pin ttl
 local function IsValidExpiry(expires)
     if type(expires) ~= "number" then return false end
     if expires ~= math.floor(expires) then return false end
@@ -24,7 +25,7 @@ local function IsValidExpiry(expires)
     return expires > now and expires <= now + MAX_TTL
 end
 
--- Serialize a pin for broadcast
+-- Serialize a pin to send via addon messages
 local function Serialize(pin)
     local expires = pin.expires
     if not IsValidExpiry(expires) then return nil end
