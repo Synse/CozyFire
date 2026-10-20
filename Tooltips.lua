@@ -28,7 +28,7 @@ local function AddCampingDetails(tooltip, data)
 
     -- Some camp objects (e.g., Anvil) share a name with other objects
     -- for those objects only show the tooltip if near a campfire
-    if not InCombatLockdown() and addon.IsNearCampfire and not addon.IsNearCampfire() and SHARED_CAMP_OBJECTS[objectName] then
+    if not InCombatLockdown() and addon.PlayerNearCampfire and not addon.PlayerNearCampfire() and SHARED_CAMP_OBJECTS[objectName] then
         return
     end
 

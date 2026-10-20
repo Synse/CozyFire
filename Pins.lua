@@ -342,7 +342,7 @@ C_Timer.NewTicker(SWEEP_INTERVAL, function()
     local px, py, pInstance, nearCampfire
     if not InCombatLockdown() then
         px, py, pInstance = HBD:GetPlayerWorldPosition()
-        nearCampfire = addon.IsNearCampfire()
+        nearCampfire = addon.PlayerNearCampfire()
     end
     local currentLayer = addon.GetLayer()
 
