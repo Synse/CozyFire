@@ -15,6 +15,7 @@ local CAMPFIRE_KIT_SPELLS = {
 local function Print(msg)
     DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r " .. msg)
 end
+addon.Print = Print
 
 -- Determine if the player is near a campfire, returns nil if unknown
 local function PlayerNearCampfire()
