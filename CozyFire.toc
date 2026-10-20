@@ -2,7 +2,7 @@
 ## Title: CozyFire
 ## Notes: Automatically marks campfires on the map and adds tooltips to camp objects with buff and profession information
 ## Author: Synse
-## Version: 0.8.0
+## Version: 0.8.1
 ## IconTexture: Interface\AddOns\CozyFire\Media\CozyFire
 ## SavedVariables: CozyFireDB
 ## Category: Expansion Features
