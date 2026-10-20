@@ -328,6 +328,7 @@ function pins:RemovePin(id)
 
     HBDPins:RemoveWorldMapIcon(addonName, pin.worldIcon)
     HBDPins:RemoveMinimapIcon(addonName, pin.miniIcon)
+    pin.worldIcon.pin = nil
     active[id] = nil
 
     -- A covered other-layer fire may now be shown
