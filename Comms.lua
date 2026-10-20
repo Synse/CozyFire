@@ -1,7 +1,7 @@
 local addonName, addon = ...
 
 local PREFIX = "CozyFire"
-local MSG_TYPE = "CF1"   -- payload version; bump when the format below changes
+local MSG_TYPE = "CF2"   -- payload version; bump when the format below changes
 local MAX_TTL = 900      -- limit shared pin lifetimes to 15 minutes
 
 C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
@@ -16,10 +16,18 @@ local function Sanitize(name)
     return name:sub(1, 48)
 end
 
+local function IsValidExpiry(expires)
+    if type(expires) ~= "number" then return false end
+    if expires ~= math.floor(expires) then return false end
+
+    local now = GetServerTime()
+    return expires > now and expires <= now + MAX_TTL
+end
+
 -- Serialize a pin for broadcast
 local function Serialize(pin)
-    local remaining = math.ceil((pin.expires or 0) - GetServerTime())
-    if remaining <= 0 then return nil end
+    local expires = pin.expires
+    if not IsValidExpiry(expires) then return nil end
 
     return table.concat({
         MSG_TYPE,
@@ -28,7 +36,7 @@ local function Serialize(pin)
         math.floor(pin.y or 0),
         pin.approximateLocation and 1 or 0,
         pin.approximateTime and 1 or 0,
-        remaining,
+        expires,
         pin.mapID or "",
         pin.layer or "",
         pin.placedBy or "",
@@ -37,17 +45,17 @@ end
 
 -- Deserialize an incoming pin and validate it
 local function Deserialize(text)
-    local msgType, rawInstance, rawX, rawY, aLoc, aTime, rawRemaining, rawMap, rawLayer, placedBy = strsplit(":", text or "")
+    local msgType, rawInstance, rawX, rawY, aLoc, aTime, rawExpires, rawMap, rawLayer, placedBy = strsplit(":", text or "")
     if msgType ~= MSG_TYPE then return nil end
 
     local instanceID = tonumber(rawInstance)
     local x = tonumber(rawX)
     local y = tonumber(rawY)
-    local remaining = tonumber(rawRemaining)
+    local expires = tonumber(rawExpires)
 
-    if not instanceID or not x or not y or not remaining then return nil end
+    if not instanceID or not x or not y then return nil end
     if instanceID < 0 or math.abs(x) > 100000 or math.abs(y) > 100000 then return nil end
-    if remaining <= 0 or remaining > MAX_TTL then return nil end
+    if not IsValidExpiry(expires) then return nil end
 
     return {
         instanceID = instanceID,
@@ -55,7 +63,7 @@ local function Deserialize(text)
         y = y,
         approximateLocation = aLoc == "1",
         approximateTime = aTime == "1",
-        expires = GetServerTime() + remaining,
+        expires = expires,
         mapID = tonumber(rawMap),
         layer = tonumber(rawLayer),
         placedBy = Sanitize(placedBy),
