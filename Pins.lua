@@ -181,7 +181,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         placedBy = placedBy,
         layer = layer,
         mapID = mapID,
-        shared = shared,
+        shared = shared == true,
     }
     active[id] = pin
 
