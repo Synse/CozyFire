@@ -213,37 +213,37 @@ function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime
 
     local mapID = C_Map.GetBestMapForUnit("player")
     local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
+    local expires
     if existing then
         layer = layer or existing.layer
 
         -- Placing a campfire replaces any nearby pins
-        if not approximateLocation and not approximateTime then
-            self:RemovePin(existingId)
-            local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + PIN_TTL, placedBy, layer, mapID)
-            return id, "replaced", active[id]
+        local isPlacement = not approximateLocation and not approximateTime
+        local improvesLocation = not approximateLocation and existing.approximateLocation
+
+        if not isPlacement and not improvesLocation then
+            -- Upgrade the existing pin's unknown layer to a known layer
+            if existing.layer == nil and layer ~= nil then
+                existing.layer = layer
+                self:ApplyLayerVisibility()
+            end
+
+            return existingId, "exists"
         end
 
         -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
-        if not approximateLocation and existing.approximateLocation then
-            local carriedExpires = existing.expires
-            local carriedApproximateTime = existing.approximateTime
-            local carriedPlacedBy = existing.placedBy
-            self:RemovePin(existingId)
-            local id = CreatePin(instanceID, x, y, approximateLocation, carriedApproximateTime, carriedExpires, carriedPlacedBy, layer, mapID)
-            return id, "replaced", active[id]
+        if not isPlacement then
+            expires = existing.expires
+            approximateTime = existing.approximateTime
+            placedBy = existing.placedBy
         end
 
-        -- Upgrade the existing pin's unknown layer to a known layer
-        if existing.layer == nil and layer ~= nil then
-            existing.layer = layer
-            self:ApplyLayerVisibility()
-        end
-
-        return existingId, "exists"
+        self:RemovePin(existingId)
     end
 
-    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, GetServerTime() + PIN_TTL, placedBy, layer, mapID)
-    return id, "created", active[id]
+    expires = expires or (GetServerTime() + PIN_TTL)
+    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID)
+    return id, existing and "replaced" or "created", active[id]
 end
 
 -- Add a shared pin or improve an existing pin
