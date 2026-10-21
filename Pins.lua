@@ -212,8 +212,9 @@ local function AddPin(data, source)
     local instanceID, x, y = data.instanceID, data.x, data.y
     if not instanceID or not x or not y then return end
 
+    local isLocal = source == "local"
     local mapID, now
-    if source == "local" then
+    if isLocal then
         mapID = C_Map.GetBestMapForUnit("player")
     else
         now = GetServerTime()
@@ -221,98 +222,97 @@ local function AddPin(data, source)
     end
     local expires = data.expires
     local layer = data.layer
+    local approximateLocation = data.approximateLocation
+    local approximateTime = data.approximateTime
+    local placedBy = data.placedBy
     local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
 
-    if source == "local" then
-        local approximateLocation = data.approximateLocation
-        local approximateTime = data.approximateTime
-        local placedBy = data.placedBy
-        if existing then
+    -- Remove the existing pin if expired
+    if not isLocal and existing and existing.expires <= now then
+        pins:RemovePin(existingId)
+        existing = nil
+    end
+
+    local replaceExisting = false
+    if existing then
+        if isLocal then
             layer = layer or existing.layer
 
             -- Placing a campfire replaces any nearby pins
             local isPlacement = not approximateLocation and not approximateTime
             local improvesLocation = not approximateLocation and existing.approximateLocation
-
-            if not isPlacement and not improvesLocation then
-                -- Upgrade the existing pin's unknown layer to a known layer
-                if existing.layer == nil and layer ~= nil then
-                    existing.layer = layer
-                    pins:ApplyLayerVisibility()
-                end
-
-                return existingId, "exists"
-            end
+            replaceExisting = isPlacement or improvesLocation
 
             -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
-            if not isPlacement then
+            if replaceExisting and not isPlacement then
                 expires = existing.expires
                 approximateTime = existing.approximateTime
                 placedBy = existing.placedBy
             end
+        elseif not existing.approximateTime and not approximateTime then
+            -- Ignore reports for older fires in this location
+            if expires < existing.expires then return end
 
-            pins:RemovePin(existingId)
-        end
-
-        expires = expires or (GetServerTime() + PIN_TTL)
-        local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID)
-        return id, existing and "replaced" or "created", active[id]
-    end
-
-    -- Remove the existing pin if expired
-    if existing and existing.expires <= now then
-        pins:RemovePin(existingId)
-        existing = nil
-    end
-
-    -- Ignore reports for older fires in this location
-    if existing and not existing.approximateTime and not data.approximateTime then
-        if expires < existing.expires then return end
-
-        -- Remove the current pin if this report is a new fire
-        if expires > existing.expires then
-            layer = layer or existing.layer
-            pins:RemovePin(existingId)
-            existing = nil
-        end
-    end
-
-    if existing then
-        local upgradeLocation = existing.approximateLocation and not data.approximateLocation
-        local upgradeLayer = existing.layer == nil and data.layer ~= nil
-
-        if upgradeLocation then
-            existing.x, existing.y = x, y
-            existing.approximateLocation = false
-            HBDPins:RemoveWorldMapIcon(addonName, existing.worldIcon)
-            HBDPins:AddWorldMapIconWorld(addonName, existing.worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
-            HBDPins:AddMinimapIconWorld(addonName, existing.miniIcon, instanceID, x, y, false)
-        end
-
-        if existing.approximateTime then
-            if not data.approximateTime then
-                existing.expires = expires
-                existing.approximateTime = false
-            else
-                existing.expires = math.min(existing.expires, expires)
+            -- Remove the current pin if this report is a new fire
+            if expires > existing.expires then
+                layer = layer or existing.layer
+                replaceExisting = true
             end
         end
+    end
 
-        existing.placedBy = existing.placedBy or data.placedBy
+    if existing and not replaceExisting then
+        local upgradeLocation = not isLocal and existing.approximateLocation and not approximateLocation
+        local upgradeLayer = existing.layer == nil and layer ~= nil
+
+        if not isLocal then
+            if upgradeLocation then
+                existing.x, existing.y = x, y
+                existing.approximateLocation = false
+                HBDPins:RemoveWorldMapIcon(addonName, existing.worldIcon)
+                HBDPins:AddWorldMapIconWorld(addonName, existing.worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
+                HBDPins:AddMinimapIconWorld(addonName, existing.miniIcon, instanceID, x, y, false)
+            end
+
+            if existing.approximateTime then
+                if not approximateTime then
+                    existing.expires = expires
+                    existing.approximateTime = false
+                else
+                    existing.expires = math.min(existing.expires, expires)
+                end
+            end
+
+            existing.placedBy = existing.placedBy or placedBy
+        end
 
         -- Upgrade the existing pin's unknown layer to a known layer
         if upgradeLayer then
-            existing.layer = data.layer
+            existing.layer = layer
         end
 
         if upgradeLocation or upgradeLayer then
             pins:ApplyLayerVisibility()
         end
 
+        if isLocal then
+            return existingId, "exists"
+        end
         return
     end
 
-    CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime, expires, data.placedBy, layer, mapID, true)
+    if replaceExisting then
+        pins:RemovePin(existingId)
+    end
+
+    if isLocal then
+        expires = expires or (GetServerTime() + PIN_TTL)
+    end
+
+    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, not isLocal)
+    if isLocal then
+        return id, replaceExisting and "replaced" or "created", active[id]
+    end
 end
 
 -- Add a pin for a locally marked campfire
