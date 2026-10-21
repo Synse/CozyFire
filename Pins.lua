@@ -208,57 +208,60 @@ end
 -- and true otherwise. `placedBy` is the name of the player who placed the fire, if known. `layer` is the
 -- zoneUID of the layer the fire was seen on, if known.
 -- Returns id, action ("created"/"replaced"/"exists"), and the pin when created or replaced
-function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime, placedBy, layer)
-    if not instanceID or not x or not y then return end
-
-    local mapID = C_Map.GetBestMapForUnit("player")
-    local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
-    local expires
-    if existing then
-        layer = layer or existing.layer
-
-        -- Placing a campfire replaces any nearby pins
-        local isPlacement = not approximateLocation and not approximateTime
-        local improvesLocation = not approximateLocation and existing.approximateLocation
-
-        if not isPlacement and not improvesLocation then
-            -- Upgrade the existing pin's unknown layer to a known layer
-            if existing.layer == nil and layer ~= nil then
-                existing.layer = layer
-                self:ApplyLayerVisibility()
-            end
-
-            return existingId, "exists"
-        end
-
-        -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
-        if not isPlacement then
-            expires = existing.expires
-            approximateTime = existing.approximateTime
-            placedBy = existing.placedBy
-        end
-
-        self:RemovePin(existingId)
-    end
-
-    expires = expires or (GetServerTime() + PIN_TTL)
-    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID)
-    return id, existing and "replaced" or "created", active[id]
-end
-
--- Add a shared pin or improve an existing pin
-function pins:AddSharedPin(data)
+local function AddPin(data, source)
     local instanceID, x, y = data.instanceID, data.x, data.y
     if not instanceID or not x or not y then return end
 
-    local now = GetServerTime()
+    local mapID, now
+    if source == "local" then
+        mapID = C_Map.GetBestMapForUnit("player")
+    else
+        now = GetServerTime()
+        mapID = data.mapID
+    end
     local expires = data.expires
     local layer = data.layer
-    local existingId, existing = FindNearby(instanceID, x, y, layer, data.mapID)
+    local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
+
+    if source == "local" then
+        local approximateLocation = data.approximateLocation
+        local approximateTime = data.approximateTime
+        local placedBy = data.placedBy
+        if existing then
+            layer = layer or existing.layer
+
+            -- Placing a campfire replaces any nearby pins
+            local isPlacement = not approximateLocation and not approximateTime
+            local improvesLocation = not approximateLocation and existing.approximateLocation
+
+            if not isPlacement and not improvesLocation then
+                -- Upgrade the existing pin's unknown layer to a known layer
+                if existing.layer == nil and layer ~= nil then
+                    existing.layer = layer
+                    pins:ApplyLayerVisibility()
+                end
+
+                return existingId, "exists"
+            end
+
+            -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
+            if not isPlacement then
+                expires = existing.expires
+                approximateTime = existing.approximateTime
+                placedBy = existing.placedBy
+            end
+
+            pins:RemovePin(existingId)
+        end
+
+        expires = expires or (GetServerTime() + PIN_TTL)
+        local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID)
+        return id, existing and "replaced" or "created", active[id]
+    end
 
     -- Remove the existing pin if expired
     if existing and existing.expires <= now then
-        self:RemovePin(existingId)
+        pins:RemovePin(existingId)
         existing = nil
     end
 
@@ -269,7 +272,7 @@ function pins:AddSharedPin(data)
         -- Remove the current pin if this report is a new fire
         if expires > existing.expires then
             layer = layer or existing.layer
-            self:RemovePin(existingId)
+            pins:RemovePin(existingId)
             existing = nil
         end
     end
@@ -303,13 +306,31 @@ function pins:AddSharedPin(data)
         end
 
         if upgradeLocation or upgradeLayer then
-            self:ApplyLayerVisibility()
+            pins:ApplyLayerVisibility()
         end
 
         return
     end
 
-    CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime, expires, data.placedBy, layer, data.mapID, true)
+    CreatePin(instanceID, x, y, data.approximateLocation, data.approximateTime, expires, data.placedBy, layer, mapID, true)
+end
+
+-- Add a pin for a locally marked campfire
+function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime, placedBy, layer)
+    return AddPin({
+        instanceID = instanceID,
+        x = x,
+        y = y,
+        approximateLocation = approximateLocation,
+        approximateTime = approximateTime,
+        placedBy = placedBy,
+        layer = layer,
+    }, "local")
+end
+
+-- Add or improve a shared pin
+function pins:AddSharedPin(data)
+    AddPin(data, "shared")
 end
 
 function pins:RemovePin(id)
