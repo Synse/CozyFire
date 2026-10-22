@@ -33,5 +33,7 @@ frame:SetScript("OnEvent", function(self, _, name)
 
     CozyFireDB = CozyFireDB or {}
     CozyFireDB.minimap = CozyFireDB.minimap or {}
+    CozyFireDB.minimap.minimapPos = CozyFireDB.minimap.minimapPos or 245
+
     DBIcon:Register(addonName, dataObject, CozyFireDB.minimap)
 end)
