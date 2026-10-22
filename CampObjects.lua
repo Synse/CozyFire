@@ -5,9 +5,9 @@ local professions = {
     Alchemy = {
         code = "A",
         objects = {
-            { name = "Mana Well" },
-            { name = "Fermenter", perk = "Required for certain reagents", requiredSkill = 140},
-            { name = "Alchemy Laboratory", perk = "Required for certain recipes", requiredSkill = 300},
+            { tier = 1, name = "Mana Well" },
+            { tier = 2, name = "Fermenter", perk = "Required for certain reagents", requiredSkill = 140},
+            { tier = 3, name = "Alchemy Laboratory", perk = "Required for certain recipes", requiredSkill = 300},
         },
         buff = {
             { minLevel = 1,  buff = "+10 Mana every 5 sec" },
@@ -21,9 +21,9 @@ local professions = {
     Blacksmithing = {
         code = "B",
         objects = {
-            { name = "Sharpening Wheel" },
-            { name = "Anvil", perk = "Required for certain recipes", requiredSkill = 140 },
-            { name = "Master Forge", perk = "Required for certain recipes", requiredSkill = 300 },
+            { tier = 1, name = "Sharpening Wheel" },
+            { tier = 2, name = "Anvil", perk = "Required for certain recipes", requiredSkill = 140 },
+            { tier = 3, name = "Master Forge", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+6 Strength" },
@@ -36,18 +36,18 @@ local professions = {
     Cooking = {
         code = "C",
         objects = {
-            { name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features" },
-            { name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 140 },  -- Blueprint only requires 90
-            { name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features", requiredSkill = 220 },  -- Blueprint only requires 200
+            { tier = 1, name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features" },
+            { tier = 2, name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 140 },  -- Blueprint only requires 90
+            { tier = 3, name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features", requiredSkill = 220 },  -- Blueprint only requires 200
             { name = "Cookie's Feast", perk ="Contains Stamina-boosting food", requiredSkill = 140 },
         },
     },
     Enchanting = {
         code = "E",
         objects = {
-            { name = "Enchanted Lute" },
-            { name = "Arcane Salvager", perk = "More efficient Disenchanting", requiredSkill = 140 },
-            { name = "Arcane Forge", perk = "Required for certain recipes", requiredSkill = 300 },
+            { tier = 1, name = "Enchanted Lute" },
+            { tier = 2, name = "Arcane Salvager", perk = "More efficient Disenchanting", requiredSkill = 140 },
+            { tier = 3, name = "Arcane Forge", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+28 Armor" },
@@ -63,17 +63,17 @@ local professions = {
     Engineering = {
         code = "G",
         objects = {
-            { name = "Reagent Bot", perk = "Buy reagents" },
-            { name = "Repair Bot", perk = "Buy reagents and repair gear", requiredSkill = 140 },
-            { name = "Anarchist's Workbench", perk = "Required for certain recipes", requiredSkill = 300 },
+            { tier = 1, name = "Reagent Bot", perk = "Buy reagents" },
+            { tier = 2, name = "Repair Bot", perk = "Buy reagents and repair gear", requiredSkill = 140 },
+            { tier = 3, name = "Anarchist's Workbench", perk = "Required for certain recipes", requiredSkill = 300 },
         },
     },
     ["First Aid"] = {
         code = "D",
         objects = {
-            { name = "First Aid Kit" },
-            { name = "Toxin Study", perk = "Contains healing potions and anti-venom", requiredSkill = 140 },
-            { name = "Plague Doctor's Laboratory", perk = "Contains healing potions and poultices", requiredSkill = 300 },
+            { tier = 1, name = "First Aid Kit" },
+            { tier = 2, name = "Toxin Study", perk = "Contains healing potions and anti-venom", requiredSkill = 140 },
+            { tier = 3, name = "Plague Doctor's Laboratory", perk = "Contains healing potions and poultices", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+3 Stamina" },
@@ -88,9 +88,9 @@ local professions = {
     Fishing = {
         code = "F",
         objects = {
-            { name = "Fish Bowl" },
-            { name = "Fishing Rack", perk = "Allows catching uncommon fish for 1 hour\nContains fishing lures", requiredSkill = 140 },
-            { name = "Fishing Hut", perk = "Allows catching rare fish for 1 hour\nContains fishing lures", requiredSkill = 300 },
+            { tier = 1, name = "Fish Bowl" },
+            { tier = 2, name = "Fishing Rack", perk = "Allows catching uncommon fish for 1 hour\nContains fishing lures", requiredSkill = 140 },
+            { tier = 3, name = "Fishing Hut", perk = "Allows catching rare fish for 1 hour\nContains fishing lures", requiredSkill = 300 },
         },
         buff = "+8% All Stats",
         buffExclusiveWith = "Blessing of Kings",
@@ -98,9 +98,9 @@ local professions = {
     Herbalism = {
         code = "H",
         objects = {
-            { name = "Incense Candle" },
-            { name = "Greenhouse", perk = "Grow herbs from planted seeds", requiredSkill = 140 },
-            { name = "Seed Hybridizer", perk = "Multiply or combine seeds", requiredSkill = 300 },
+            { tier = 1, name = "Incense Candle" },
+            { tier = 2, name = "Greenhouse", perk = "Grow herbs from planted seeds", requiredSkill = 140 },
+            { tier = 3, name = "Seed Hybridizer", perk = "Multiply or combine seeds", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+2 Intellect" },
@@ -114,18 +114,18 @@ local professions = {
     Leatherworking = {
         code = "L",
         objects = {
-            { name = "Camp Tent" },
-            { name = "Tanning Rack", perk = "Required for certain reagents", requiredSkill = 140 },
-            { name = "Sewing Machine", perk = "Required for certain recipes", requiredSkill = 300 },
+            { tier = 1, name = "Camp Tent" },
+            { tier = 2, name = "Tanning Rack", perk = "Required for certain reagents", requiredSkill = 140 },
+            { tier = 3, name = "Sewing Machine", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = "Rested experience (up to 5% of a level)",
     },
     Mining = {
         code = "M",
         objects = {
-            { name = "Lodestone" },
-            { name = "Rock Garden", perk = "Spawns a common mining node", requiredSkill = 140 },
-            { name = "Molten Foundry", perk = "Required for certain recipes", requiredSkill = 300 },
+            { tier = 1, name = "Lodestone" },
+            { tier = 2, name = "Rock Garden", perk = "Spawns a common mining node", requiredSkill = 140 },
+            { tier = 3, name = "Molten Foundry", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+12 Melee Attack Power" },
@@ -141,9 +141,9 @@ local professions = {
         code = "S",
         objects = {
             -- The used item is "Camp Chair" but it appears as just "Chair" when placed
-            { name = "Chair" },
-            { name = "Field Guide", perk = "Grants Track Beasts", requiredSkill = 140 },
-            { name = "Trapper's Workbench", perk = "Contains 1 trap", requiredSkill = 300 },
+            { tier = 1, name = "Chair" },
+            { tier = 2, name = "Field Guide", perk = "Grants Track Beasts", requiredSkill = 140 },
+            { tier = 3, name = "Trapper's Workbench", perk = "Contains 1 trap", requiredSkill = 300 },
         },
         buff = "+2% Critical Strike",
         buffExclusiveWith = "Moonkin Aura",
@@ -151,9 +151,9 @@ local professions = {
     Tailoring = {
         code = "T",
         objects = {
-            { name = "Faction Banner" },
-            { name = "Spinning Wheel", perk = "Required for certain reagents", requiredSkill = 140 },
-            { name = "Loom", perk = "Required for certain recipes", requiredSkill = 300 },
+            { tier = 1, name = "Faction Banner" },
+            { tier = 2, name = "Spinning Wheel", perk = "Required for certain reagents", requiredSkill = 140 },
+            { tier = 3, name = "Loom", perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = {
             { minLevel = 1,  buff = "+14 Spirit" },
