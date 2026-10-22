@@ -3,6 +3,7 @@ local addonName, addon = ...
 -- All camp objects by profession
 local professions = {
     Alchemy = {
+        code = "A",
         objects = {
             { name = "Mana Well" },
             { name = "Fermenter", perk = "Required for certain reagents", requiredSkill = 140},
@@ -18,6 +19,7 @@ local professions = {
         buffExclusiveWith = "Blessing of Wisdom",
     },
     Blacksmithing = {
+        code = "B",
         objects = {
             { name = "Sharpening Wheel" },
             { name = "Anvil", perk = "Required for certain recipes", requiredSkill = 140 },
@@ -32,6 +34,7 @@ local professions = {
         buffExclusiveWith = "Strength of Earth Totem",
     },
     Cooking = {
+        code = "C",
         objects = {
             { name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features" },
             { name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 140 },  -- Blueprint only requires 90
@@ -40,6 +43,7 @@ local professions = {
         },
     },
     Enchanting = {
+        code = "E",
         objects = {
             { name = "Enchanted Lute" },
             { name = "Arcane Salvager", perk = "More efficient Disenchanting", requiredSkill = 140 },
@@ -57,6 +61,7 @@ local professions = {
         buffExclusiveWith = "Mark of the Wild",
     },
     Engineering = {
+        code = "G",
         objects = {
             { name = "Reagent Bot", perk = "Buy reagents" },
             { name = "Repair Bot", perk = "Buy reagents and repair gear", requiredSkill = 140 },
@@ -64,6 +69,7 @@ local professions = {
         },
     },
     ["First Aid"] = {
+        code = "D",
         objects = {
             { name = "First Aid Kit" },
             { name = "Toxin Study", perk = "Contains healing potions and anti-venom", requiredSkill = 140 },
@@ -80,6 +86,7 @@ local professions = {
         buffExclusiveWith = "Power Word: Fortitude",
     },
     Fishing = {
+        code = "F",
         objects = {
             { name = "Fish Bowl" },
             { name = "Fishing Rack", perk = "Allows catching uncommon fish for 1 hour\nContains fishing lures", requiredSkill = 140 },
@@ -89,6 +96,7 @@ local professions = {
         buffExclusiveWith = "Blessing of Kings",
     },
     Herbalism = {
+        code = "H",
         objects = {
             { name = "Incense Candle" },
             { name = "Greenhouse", perk = "Grow herbs from planted seeds", requiredSkill = 140 },
@@ -104,6 +112,7 @@ local professions = {
         buffExclusiveWith = "Arcane Intellect",
     },
     Leatherworking = {
+        code = "L",
         objects = {
             { name = "Camp Tent" },
             { name = "Tanning Rack", perk = "Required for certain reagents", requiredSkill = 140 },
@@ -112,6 +121,7 @@ local professions = {
         buff = "Rested experience (up to 5% of a level)",
     },
     Mining = {
+        code = "M",
         objects = {
             { name = "Lodestone" },
             { name = "Rock Garden", perk = "Spawns a common mining node", requiredSkill = 140 },
@@ -128,6 +138,7 @@ local professions = {
         buffExclusiveWith = "Blessing of Might",
     },
     Skinning = {
+        code = "S",
         objects = {
             -- The used item is "Camp Chair" but it appears as just "Chair" when placed
             { name = "Chair" },
@@ -138,6 +149,7 @@ local professions = {
         buffExclusiveWith = "Moonkin Aura",
     },
     Tailoring = {
+        code = "T",
         objects = {
             { name = "Faction Banner" },
             { name = "Spinning Wheel", perk = "Required for certain reagents", requiredSkill = 140 },
