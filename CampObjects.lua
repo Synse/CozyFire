@@ -168,6 +168,7 @@ local professions = {
 -- Objects are flattened into a display-name-keyed index for O(1) tooltip lookup
 -- Each object inherits the profession level buff/buffExclusiveWith unless it defines its own
 addon.campObjects = {}
+addon.campObjectsByCode = {}
 for profession, data in pairs(professions) do
     for _, object in ipairs(data.objects) do
         object.profession = profession
@@ -183,6 +184,10 @@ for profession, data in pairs(professions) do
         end
 
         addon.campObjects[object.name] = object
+        if object.tier then
+            object.code = data.code .. object.tier
+            addon.campObjectsByCode[object.code] = object
+        end
     end
 end
 
