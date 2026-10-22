@@ -108,7 +108,7 @@ auraFrame:SetScript("OnEvent", function(_, _, _, updateInfo)
 end)
 
 -- Mark the campfire when the player uses a campfire kit
-local function CampfirePlaced(castGUID)
+local function CampfirePlaced(castGUID, tier)
     if InCombatLockdown() then
         return
     end
@@ -127,6 +127,7 @@ local function CampfirePlaced(castGUID)
 
     local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, false, placedBy, layer)
     if action == "created" or action == "replaced" then
+        pin.tier = tier
         Print("Campfire marked.")
         addon.BroadcastPin(pin)
     end
@@ -136,7 +137,8 @@ end
 local castFrame = CreateFrame("Frame")
 castFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 castFrame:SetScript("OnEvent", function(_, _, _, castGUID, spellID)
-    if spellID and CAMPFIRE_KIT_SPELLS[spellID] then
-        CampfirePlaced(castGUID)
+    local tier = spellID and CAMPFIRE_KIT_SPELLS[spellID]
+    if tier then
+        CampfirePlaced(castGUID, tier)
     end
 end)
