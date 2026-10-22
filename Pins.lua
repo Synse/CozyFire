@@ -159,7 +159,7 @@ local function HidePinTooltip(self)
 end
 
 -- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, shared)
+local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, shared, tier)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -182,6 +182,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         layer = layer,
         mapID = mapID,
         shared = shared == true,
+        tier = (tier == 1 or tier == 2 or tier == 3) and tier or nil,
     }
     active[id] = pin
 
@@ -225,6 +226,7 @@ local function AddPin(data, source)
     local approximateLocation = data.approximateLocation
     local approximateTime = data.approximateTime
     local placedBy = data.placedBy
+    local tier = data.tier
     local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
 
     -- Remove the existing pin if expired
@@ -248,6 +250,7 @@ local function AddPin(data, source)
                 expires = existing.expires
                 approximateTime = existing.approximateTime
                 placedBy = existing.placedBy
+                tier = existing.tier
             end
         elseif not existing.approximateTime and not approximateTime then
             -- Ignore reports for older fires in this location
@@ -309,7 +312,7 @@ local function AddPin(data, source)
         expires = expires or (GetServerTime() + PIN_TTL)
     end
 
-    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, not isLocal)
+    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, not isLocal, tier)
     if isLocal then
         return id, replaceExisting and "replaced" or "created", active[id]
     end
@@ -402,6 +405,7 @@ function pins:Save()
             layer = pin.layer,
             mapID = pin.mapID,
             shared = pin.shared,
+            tier = pin.tier,
         }
     end
     CozyFireDB.pins = saved
@@ -414,7 +418,7 @@ function pins:Restore()
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy, pin.layer, pin.mapID, pin.shared)
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy, pin.layer, pin.mapID, pin.shared, pin.tier)
         end
     end
 end
