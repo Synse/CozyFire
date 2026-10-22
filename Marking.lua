@@ -7,9 +7,9 @@ local CAMPFIRE_SPELLS = {
     [1289723] = true,  -- Welcoming Campfire
 }
 local CAMPFIRE_KIT_SPELLS = {
-    [1307227] = true,  -- Basic Campfire Kit
-    [1307252] = true,  -- Journeyman Campfire Kit
-    [1307237] = true,  -- Expert Campfire Kit
+    [1307227] = 1,  -- Basic Campfire Kit
+    [1307252] = 2,  -- Journeyman Campfire Kit
+    [1307237] = 3,  -- Expert Campfire Kit
 }
 
 local function Print(msg)
