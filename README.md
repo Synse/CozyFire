@@ -2,7 +2,7 @@ CozyFire won't increase your Spirit, but it will improve your camping experience
 
 ### Features
 
-*   Automatically marks campfires when you place one, `/sit`, or `/kneel` at a campfire
+*   Automatically marks campfires when you place one, `/sit`, `/sleep`, or `/kneel` at a campfire
 *   🆕**New in 0.8.0:** Campfire locations are shared with other CozyFire users in your guild/party
 *   Tooltips for camping objects show their buff and profession information
 *   🆕**New in 0.6.2:** Hold **Shift** to view level ranges for buffs that scale based on your level
