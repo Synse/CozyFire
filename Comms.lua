@@ -6,16 +6,6 @@ local MAX_TTL = 900
 
 C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
 
--- Remove escape sequences and limit the length to prevent markup injection in tooltips
-local function Sanitize(name)
-    if type(name) ~= "string" or name == "" then return nil end
-
-    name = name:gsub("|", "")
-    if name == "" then return nil end
-
-    return name:sub(1, 48)
-end
-
 -- Validate that the expires timestamp is within the max pin ttl
 local function IsValidExpiry(expires)
     if type(expires) ~= "number" then return false end
@@ -40,13 +30,13 @@ local function Serialize(pin)
         expires,
         pin.mapID or "",
         pin.layer or "",
-        pin.placedBy or "",
+        "",  -- TODO: remove in CF3
     }, ":")
 end
 
 -- Deserialize an incoming pin and validate it
 local function Deserialize(text)
-    local msgType, rawInstance, rawX, rawY, aLoc, aTime, rawExpires, rawMap, rawLayer, placedBy = strsplit(":", text or "")
+    local msgType, rawInstance, rawX, rawY, aLoc, aTime, rawExpires, rawMap, rawLayer = strsplit(":", text or "")
     if msgType ~= MSG_TYPE then return nil end
 
     local instanceID = tonumber(rawInstance)
@@ -67,7 +57,6 @@ local function Deserialize(text)
         expires = expires,
         mapID = tonumber(rawMap),
         layer = tonumber(rawLayer),
-        placedBy = Sanitize(placedBy),
     }
 end
 

@@ -45,7 +45,7 @@ local function MarkCampfire()
         return
     end
 
-    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, true, true, nil, addon.GetLayer())
+    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, true, true, addon.GetLayer())
     if action == "created" or action == "replaced" then
         Print("Campfire marked.")
         addon.BroadcastPin(pin)
@@ -80,7 +80,7 @@ local function AutoMark()
         return
     end
 
-    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, true, nil, addon.GetLayer())
+    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, true, addon.GetLayer())
     if action == "created" or action == "replaced" then
         Print("Campfire automatically marked.")
         addon.BroadcastPin(pin)
@@ -118,14 +118,10 @@ local function CampfirePlaced(castGUID, tier)
         return
     end
 
-    -- Players have a first and last name in WoW Forever
-    local firstName, lastName = UnitName("player")
-    local placedBy = lastName and lastName ~= "" and (firstName .. " " .. lastName) or firstName
-
     -- The cast GUID carries the exact layer the fire was lit on; fall back to the tracked layer
     local layer = addon.GetLayerFromGUID(castGUID) or addon.GetLayer()
 
-    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, false, placedBy, layer)
+    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, false, layer)
     if action == "created" or action == "replaced" then
         pin.tier = tier
         Print("Campfire marked.")
