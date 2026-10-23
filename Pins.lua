@@ -167,6 +167,10 @@ local function RenderPinTooltip(pin)
         for _, code in ipairs(objects) do
             local object = addon.campObjectsByCode[code]
             local text = object.name
+            -- For the Camp Chair the placed object is just "Chair"
+            if text == "Chair" then
+                text = "Camp Chair"
+            end
             -- Prepend the icon if defined
             if object.icon then
                 text = ("|T%s:18:18|t |cffffc44d%s|r"):format(object.icon, text)
