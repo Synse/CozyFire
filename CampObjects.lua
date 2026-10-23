@@ -7,7 +7,7 @@ local professions = {
         objects = {
             { tier = 1, name = "Mana Well", icon = 135738 },
             { tier = 2, name = "Fermenter", icon = 3566827, perk = "Required for certain reagents", requiredSkill = 140},
-            { tier = 3, name = "Alchemy Laboratory", icon = 279990, perk = "Required for certain recipes", requiredSkill = 300},
+            { tier = 3, name = "Alchemy Laboratory", icon = 4777830, perk = "Required for certain recipes", requiredSkill = 300},
         },
         buff = {
             { minLevel = 1,  buff = "+10 Mana every 5 sec" },
