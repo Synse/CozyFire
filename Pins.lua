@@ -174,7 +174,7 @@ local function RenderPinTooltip(pin)
     end
 
     -- Remaining time is approximate unless a CozyFire user placed the campfire
-    local remainingTime = "|cffff7f00" .. SecondsToTime(remaining) .. "|r"
+    local remainingTime = "|cff6eb2ea" .. SecondsToTime(remaining) .. "|r"
     if pin.approximateTime then
         GameTooltip:AddLine("Less than " .. remainingTime .. " remaining", 1, 1, 1)
     else
