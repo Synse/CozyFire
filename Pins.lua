@@ -5,6 +5,7 @@ local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 
 local PIN_TTL = 900        -- seconds; campfires despawn 15 minutes after being placed
 local DEDUP_RANGE = 100    -- yards; only one campfire per 100 yds
+local CAMPFIRE_OBJECT_LIMITS = { 3, 5, 10 }
 local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
 local WORLD_PIN_SIZE = 20  -- world map pin size
 local MINI_PIN_SIZE = 20   -- minimap pin size
@@ -90,10 +91,11 @@ local function FindNearby(instanceID, x, y, layer, mapID)
     return fallbackId, active[fallbackId]
 end
 
--- Called when mousing over a camping object to update nearby pins
--- Campfires will update nearby pins with unknown tier and layer information
+-- Called when mousing over a campfire or camping object to update nearby pins
+-- Campfires will update unknown tier and layer information
+-- Camping objects will update the buffs provided
 function pins:ObserveCampObject(entry)
-    if InCombatLockdown() or entry.profession ~= "Cooking" or not entry.tier then return end
+    if InCombatLockdown() or not entry.tier then return end
 
     local x, y, instanceID = HBD:GetPlayerWorldPosition()
     local mapID = C_Map.GetBestMapForUnit("player")
@@ -117,12 +119,35 @@ function pins:ObserveCampObject(entry)
     end
 
     if nearest then
-        if nearest.tier == nil then
+        -- Update the campfire tier
+        if entry.profession == "Cooking" and nearest.tier == nil then
             nearest.tier = entry.tier
         end
+
+        -- Update the campfire layer
         if nearest.layer == nil and layer ~= nil then
             nearest.layer = layer
             self:ApplyLayerVisibility()
+        end
+
+        if entry.profession == "Cooking" then return end
+
+        -- Get the camp objects for this pin and add/update the list with this object
+        nearest.objects = nearest.objects or {}
+        local objects = nearest.objects
+        for index, code in ipairs(objects) do
+            if addon.campObjectsByCode[code].profession == entry.profession then
+                if code ~= entry.code then
+                    objects[index] = entry.code
+                end
+                return
+            end
+        end
+
+        -- Truncate the list of objects if it exceeds the limit for this campfire tier
+        objects[#objects + 1] = entry.code
+        if #objects > CAMPFIRE_OBJECT_LIMITS[nearest.tier or 1] then
+            table.remove(objects, 1)
         end
     end
 end
@@ -132,6 +157,21 @@ local function RenderPinTooltip(pin)
     local remaining = math.max(0, pin.expires - GetServerTime())
     GameTooltip:ClearLines()
     GameTooltip:AddLine("CozyFire")
+
+    -- Add the camp objects to the tooltip
+    local objects = pin.objects
+    if objects then
+        for _, code in ipairs(objects) do
+            local object = addon.campObjectsByCode[code]
+            local text = object.name
+            -- Prepend the icon if defined
+            if object.icon then
+                text = ("|T%s:18:18|t %s"):format(object.icon, text)
+            end
+            GameTooltip:AddLine(text, 0.25, 1, 0.25, true)
+        end
+        GameTooltip:AddLine(" ")
+    end
 
     -- Remaining time is approximate unless a CozyFire user placed the campfire
     local remainingTime = "|cffff7f00" .. SecondsToTime(remaining) .. "|r"
@@ -196,7 +236,7 @@ local function HidePinTooltip(self)
 end
 
 -- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, shared, tier)
+local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, shared, tier, objects)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -220,7 +260,19 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         mapID = mapID,
         shared = shared == true,
         tier = (tier == 1 or tier == 2 or tier == 3) and tier or nil,
+        objects = type(objects) == "table" and objects or nil,
     }
+    if pin.objects then
+        for index = #pin.objects, 1, -1 do
+            local object = addon.campObjectsByCode[pin.objects[index]]
+            if not object or object.profession == "Cooking" then
+                table.remove(pin.objects, index)
+            end
+        end
+        while #pin.objects > CAMPFIRE_OBJECT_LIMITS[pin.tier or 1] do
+            table.remove(pin.objects, 1)
+        end
+    end
     active[id] = pin
 
     worldIcon.pin = pin
@@ -264,6 +316,7 @@ local function AddPin(data, source)
     local approximateTime = data.approximateTime
     local placedBy = data.placedBy
     local tier = data.tier
+    local objects = data.objects
     local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
 
     -- Remove the existing pin if expired
@@ -288,6 +341,7 @@ local function AddPin(data, source)
                 approximateTime = existing.approximateTime
                 placedBy = existing.placedBy
                 tier = existing.tier
+                objects = existing.objects
             end
         elseif not existing.approximateTime and not approximateTime then
             -- Ignore reports for older fires in this location
@@ -349,7 +403,7 @@ local function AddPin(data, source)
         expires = expires or (GetServerTime() + PIN_TTL)
     end
 
-    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, not isLocal, tier)
+    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, not isLocal, tier, objects)
     if isLocal then
         return id, replaceExisting and "replaced" or "created", active[id]
     end
@@ -443,6 +497,7 @@ function pins:Save()
             mapID = pin.mapID,
             shared = pin.shared,
             tier = pin.tier,
+            objects = pin.objects,
         }
     end
     CozyFireDB.pins = saved
@@ -455,7 +510,7 @@ function pins:Restore()
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy, pin.layer, pin.mapID, pin.shared, pin.tier)
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy, pin.layer, pin.mapID, pin.shared, pin.tier, pin.objects)
         end
     end
 end
