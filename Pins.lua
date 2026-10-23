@@ -105,6 +105,7 @@ function pins:ObserveCampObject(entry)
     local now = GetServerTime()
     local nearest, nearestDistance, nearestIsExactLayer
 
+    -- Find the nearest campfire pin within 20 yards
     for _, pin in pairs(active) do
         if pin.instanceID == instanceID and pin.mapID == mapID and pin.expires > now
             and (pin.layer == nil or pin.layer == layer) then
@@ -144,8 +145,10 @@ function pins:ObserveCampObject(entry)
             end
         end
 
-        -- Truncate the list of objects if it exceeds the limit for this campfire tier
+        -- Add the new camp object
         objects[#objects + 1] = entry.code
+
+        -- Truncate the list of objects if it is longer than the limit for this campfire
         if #objects > CAMPFIRE_OBJECT_LIMITS[nearest.tier or 1] then
             table.remove(objects, 1)
         end
