@@ -32,6 +32,7 @@ local function AddCampingDetails(tooltip, data)
         return
     end
 
+    -- When mousing over a camp object, update any nearby pins
     if tooltip == GameTooltip then
         addon.pins:ObserveCampObject(entry)
     end
