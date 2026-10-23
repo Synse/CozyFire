@@ -166,9 +166,9 @@ local function RenderPinTooltip(pin)
             local text = object.name
             -- Prepend the icon if defined
             if object.icon then
-                text = ("|T%s:18:18|t %s"):format(object.icon, text)
+                text = ("|T%s:18:18|t |cffffc44d%s|r"):format(object.icon, text)
             end
-            GameTooltip:AddLine(text, 0.25, 1, 0.25, true)
+            GameTooltip:AddLine(text, 1, 1, 1, true)
         end
         GameTooltip:AddLine(" ")
     end
