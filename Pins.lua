@@ -186,10 +186,6 @@ local function RenderPinTooltip(pin)
         GameTooltip:AddLine("Location is approximate", 1, 1, 1)
     end
 
-    if pin.placedBy then
-        GameTooltip:AddLine("Placed by: |cffffd100" .. pin.placedBy .. "|r", 1, 1, 1)
-    end
-
     if IsOtherLayer(pin) then
         GameTooltip:AddLine("On a different layer", 1, 0.5, 0.5)
     end
@@ -236,7 +232,7 @@ local function HidePinTooltip(self)
 end
 
 -- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, shared, tier, objects)
+local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, shared, tier, objects)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -255,7 +251,6 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         worldIcon = worldIcon,
         miniIcon = miniIcon,
         expires = expires,
-        placedBy = placedBy,
         layer = layer,
         mapID = mapID,
         shared = shared == true,
@@ -295,8 +290,7 @@ end
 
 -- Add a campfire pin at world coordinates. `approximateLocation` is true for manual marks and false when the
 -- player gains the "Welcoming Campfire" buff. `approximateTime` is false when the player places the campfire,
--- and true otherwise. `placedBy` is the name of the player who placed the fire, if known. `layer` is the
--- zoneUID of the layer the fire was seen on, if known.
+-- and true otherwise. `layer` is the zoneUID of the layer the fire was seen on, if known.
 -- Returns id, action ("created"/"replaced"/"exists"), and the pin when created or replaced
 local function AddPin(data, source)
     local instanceID, x, y = data.instanceID, data.x, data.y
@@ -314,7 +308,6 @@ local function AddPin(data, source)
     local layer = data.layer
     local approximateLocation = data.approximateLocation
     local approximateTime = data.approximateTime
-    local placedBy = data.placedBy
     local tier = data.tier
     local objects = data.objects
     local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
@@ -339,7 +332,6 @@ local function AddPin(data, source)
             if replaceExisting and not isPlacement then
                 expires = existing.expires
                 approximateTime = existing.approximateTime
-                placedBy = existing.placedBy
                 tier = existing.tier
                 objects = existing.objects
             end
@@ -377,7 +369,6 @@ local function AddPin(data, source)
                 end
             end
 
-            existing.placedBy = existing.placedBy or placedBy
         end
 
         -- Upgrade the existing pin's unknown layer to a known layer
@@ -403,21 +394,20 @@ local function AddPin(data, source)
         expires = expires or (GetServerTime() + PIN_TTL)
     end
 
-    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, placedBy, layer, mapID, not isLocal, tier, objects)
+    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, not isLocal, tier, objects)
     if isLocal then
         return id, replaceExisting and "replaced" or "created", active[id]
     end
 end
 
 -- Add a pin for a locally marked campfire
-function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime, placedBy, layer)
+function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime, layer)
     return AddPin({
         instanceID = instanceID,
         x = x,
         y = y,
         approximateLocation = approximateLocation,
         approximateTime = approximateTime,
-        placedBy = placedBy,
         layer = layer,
     }, "local")
 end
@@ -492,7 +482,6 @@ function pins:Save()
             approximateLocation = pin.approximateLocation,
             approximateTime = pin.approximateTime,
             expires = pin.expires,
-            placedBy = pin.placedBy,
             layer = pin.layer,
             mapID = pin.mapID,
             shared = pin.shared,
@@ -510,7 +499,7 @@ function pins:Restore()
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.placedBy, pin.layer, pin.mapID, pin.shared, pin.tier, pin.objects)
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.layer, pin.mapID, pin.shared, pin.tier, pin.objects)
         end
     end
 end
