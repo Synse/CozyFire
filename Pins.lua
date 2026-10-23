@@ -117,7 +117,9 @@ function pins:ObserveCampObject(entry)
     end
 
     if nearest then
-        nearest.tier = entry.tier
+        if nearest.tier == nil then
+            nearest.tier = entry.tier
+        end
         if nearest.layer == nil and layer ~= nil then
             nearest.layer = layer
             self:ApplyLayerVisibility()
