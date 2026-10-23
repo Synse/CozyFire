@@ -32,6 +32,10 @@ local function AddCampingDetails(tooltip, data)
         return
     end
 
+    if tooltip == GameTooltip then
+        addon.pins:ObserveCampObject(entry)
+    end
+
     -- The perk is displayed in light blue text immediately after the object name
     if entry.perk then
         tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)

@@ -90,6 +90,41 @@ local function FindNearby(instanceID, x, y, layer, mapID)
     return fallbackId, active[fallbackId]
 end
 
+-- Called when mousing over a camping object to update nearby pins
+-- Campfires will update nearby pins with unknown tier and layer information
+function pins:ObserveCampObject(entry)
+    if InCombatLockdown() or entry.profession ~= "Cooking" or not entry.tier then return end
+
+    local x, y, instanceID = HBD:GetPlayerWorldPosition()
+    local mapID = C_Map.GetBestMapForUnit("player")
+    if not x or not y or not mapID then return end
+
+    local layer = addon.GetLayer()
+    local now = GetServerTime()
+    local nearest, nearestDistance, nearestIsExactLayer
+
+    for _, pin in pairs(active) do
+        if pin.instanceID == instanceID and pin.mapID == mapID and pin.expires > now
+            and (pin.layer == nil or pin.layer == layer) then
+            local distance = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
+            local isExactLayer = pin.layer == layer
+            if distance and distance <= 20 and (not nearest
+                or isExactLayer and not nearestIsExactLayer
+                or isExactLayer == nearestIsExactLayer and distance < nearestDistance) then
+                nearest, nearestDistance, nearestIsExactLayer = pin, distance, isExactLayer
+            end
+        end
+    end
+
+    if nearest then
+        nearest.tier = entry.tier
+        if nearest.layer == nil and layer ~= nil then
+            nearest.layer = layer
+            self:ApplyLayerVisibility()
+        end
+    end
+end
+
 -- Render the tooltip for a map pin
 local function RenderPinTooltip(pin)
     local remaining = math.max(0, pin.expires - GetServerTime())
