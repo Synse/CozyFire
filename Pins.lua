@@ -155,11 +155,14 @@ end
 -- Render the tooltip for a map pin
 local function RenderPinTooltip(pin)
     local remaining = math.max(0, pin.expires - GetServerTime())
+    local objects = pin.objects
     GameTooltip:ClearLines()
-    GameTooltip:AddLine("|cffff8000CozyFire|r")
+    GameTooltip:AddDoubleLine(
+        "|cffff8000CozyFire|r", ("(%d/%d)"):format(objects and #objects or 0, CAMPFIRE_OBJECT_LIMITS[pin.tier or 1]),
+        1, 1, 1, 0.6, 0.6, 0.6
+    )
 
     -- Add the camp objects to the tooltip
-    local objects = pin.objects
     if objects then
         for _, code in ipairs(objects) do
             local object = addon.campObjectsByCode[code]
