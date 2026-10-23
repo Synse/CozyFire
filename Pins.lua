@@ -156,7 +156,7 @@ end
 local function RenderPinTooltip(pin)
     local remaining = math.max(0, pin.expires - GetServerTime())
     GameTooltip:ClearLines()
-    GameTooltip:AddLine("CozyFire")
+    GameTooltip:AddLine("|cffff8000CozyFire|r")
 
     -- Add the camp objects to the tooltip
     local objects = pin.objects
