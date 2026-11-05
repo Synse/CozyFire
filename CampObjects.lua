@@ -17,6 +17,7 @@ local professions = {
             { minLevel = 54, buff = "+29 Mana every 5 sec" },
         },
         buffExclusiveWith = "Blessing of Wisdom",
+        buffTip = "mp5",
     },
     Blacksmithing = {
         code = "B",
@@ -32,6 +33,7 @@ local professions = {
             { minLevel = 52, buff = "+34 Strength" },
         },
         buffExclusiveWith = "Strength of Earth Totem",
+        buffTip = "strength",
     },
     Cooking = {
         code = "C",
@@ -59,6 +61,7 @@ local professions = {
             { minLevel = 60, buff = "+308 Armor, +13 All Stats, +22 All Resist" },
         },
         buffExclusiveWith = "Mark of the Wild",
+        buffTip = "armor/stats/resist",
     },
     Engineering = {
         code = "G",
@@ -84,6 +87,7 @@ local professions = {
             { minLevel = 60, buff = "+56 Stamina" },
         },
         buffExclusiveWith = "Power Word: Fortitude",
+        buffTip = "stamina",
     },
     Fishing = {
         code = "F",
@@ -94,6 +98,7 @@ local professions = {
         },
         buff = "+8% All Stats",
         buffExclusiveWith = "Blessing of Kings",
+        buffTip = "all stats",
     },
     Herbalism = {
         code = "H",
@@ -110,6 +115,7 @@ local professions = {
             { minLevel = 56, buff = "+25 Intellect" },
         },
         buffExclusiveWith = "Arcane Intellect",
+        buffTip = "intellect",
     },
     Leatherworking = {
         code = "L",
@@ -119,6 +125,7 @@ local professions = {
             { tier = 3, name = "Sewing Machine", icon = 3622223, perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = "Rested experience (up to 5% of a level)",
+        buffTip = "rested xp"
     },
     Mining = {
         code = "M",
@@ -136,6 +143,7 @@ local professions = {
             { minLevel = 52, buff = "+90 Melee Attack Power" },
         },
         buffExclusiveWith = "Blessing of Might",
+        buffTip = "attack power",
     },
     Skinning = {
         code = "S",
@@ -147,6 +155,7 @@ local professions = {
         },
         buff = "+2% Critical Strike",
         buffExclusiveWith = "Moonkin Aura",
+        buffTip = "critical strike",
     },
     Tailoring = {
         code = "T",
@@ -162,6 +171,7 @@ local professions = {
             { minLevel = 60, buff = "+32 Spirit" },
         },
         buffExclusiveWith = "Divine Spirit",
+        buffTip = "spirit",
     },
 }
 
@@ -181,6 +191,11 @@ for profession, data in pairs(professions) do
         -- Inherit buffExclusiveWith from the profession
         if object.buffExclusiveWith == nil then
             object.buffExclusiveWith = data.buffExclusiveWith
+        end
+
+        -- Inherit buffTip from the profession
+        if object.buffTip == nil then
+            object.buffTip = data.buffTip
         end
 
         addon.campObjects[object.name] = object
