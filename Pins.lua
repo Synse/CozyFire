@@ -178,6 +178,9 @@ local function RenderPinTooltip(pin)
             if object.icon then
                 text = ("|T%s:18:18|t |cffffc44d%s|r"):format(object.icon, text)
             end
+            if object.buffTip then
+                text = text .. (" |cff999999(%s)|r"):format(object.buffTip)
+            end
             GameTooltip:AddLine(text, 1, 1, 1, true)
         end
         GameTooltip:AddLine(" ")
