@@ -12,7 +12,7 @@ local function IsValidExpiry(expires)
     if expires ~= math.floor(expires) then return false end
 
     local now = GetServerTime()
-    return expires > now and expires <= now + MAX_TTL
+    return expires > now and expires <= now + MAX_TTL + 10
 end
 
 -- Serialize a pin to send via addon messages
