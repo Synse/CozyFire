@@ -125,6 +125,10 @@ function pins:ObserveCampObject(entry)
             nearest.tier = entry.tier
         end
 
+        if not nearest.violetFlames and addon.PlayerHasVioletFlames() then
+            nearest.violetFlames = true
+        end
+
         -- Update the campfire layer
         if nearest.layer == nil and layer ~= nil then
             nearest.layer = layer
