@@ -11,6 +11,7 @@ local CAMPFIRE_KIT_SPELLS = {
     [1307252] = 2,  -- Journeyman Campfire Kit
     [1307237] = 3,  -- Expert Campfire Kit
 }
+local VIOLET_FLAMES_SPELL = 1328375  -- "Violet Flames" aura
 
 local function Print(msg)
     DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r " .. msg)
@@ -26,6 +27,14 @@ local function PlayerNearCampfire()
     return nil
 end
 addon.PlayerNearCampfire = PlayerNearCampfire
+
+-- Determine if the player has the "Violet Flames" aura from the "Pouch of Violet Dust" toy
+local function PlayerHasVioletFlames()
+    if not InCombatLockdown() and C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID then
+        return C_UnitAuras.GetPlayerAuraBySpellID(VIOLET_FLAMES_SPELL) ~= nil
+    end
+end
+addon.PlayerHasVioletFlames = PlayerHasVioletFlames
 
 local function MarkCampfire()
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
