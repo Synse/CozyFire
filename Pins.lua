@@ -7,6 +7,7 @@ local PIN_TTL = 900        -- seconds; campfires despawn 15 minutes after being 
 local DEDUP_RANGE = 100    -- yards; only one campfire per 100 yds
 local CAMPFIRE_OBJECT_LIMITS = { 3, 5, 10 }
 local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
+local PIN_TEXTURE_VIOLET_FLAMES = "Interface\\AddOns\\CozyFire\\Media\\VioletFlames.tga"
 local WORLD_PIN_SIZE = 20  -- world map pin size
 local MINI_PIN_SIZE = 20   -- minimap pin size
 local SWEEP_INTERVAL = 5   -- seconds; how often to cleanup expired pins
