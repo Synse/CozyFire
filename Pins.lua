@@ -43,6 +43,10 @@ local function CoveredByCurrentLayer(pin)
 end
 
 local function ApplyPinAppearance(pin)
+    local texture = pin.violetFlames and PIN_TEXTURE_VIOLET_FLAMES or PIN_TEXTURE
+    pin.worldIcon.texture:SetTexture(texture)
+    pin.miniIcon.texture:SetTexture(texture)
+
     local other = IsOtherLayer(pin)
     local hidden = other and CoveredByCurrentLayer(pin)
 
@@ -63,7 +67,6 @@ local function CreateIcon(size)
     icon:SetSize(size, size)
     local tex = icon:CreateTexture(nil, "OVERLAY")
     tex:SetAllPoints()
-    tex:SetTexture(PIN_TEXTURE)
     icon.texture = tex
     return icon
 end
@@ -128,6 +131,7 @@ function pins:ObserveCampObject(entry)
 
         if not nearest.violetFlames and addon.PlayerHasVioletFlames() then
             nearest.violetFlames = true
+            ApplyPinAppearance(nearest)
         end
 
         -- Update the campfire layer
@@ -250,7 +254,7 @@ local function HidePinTooltip(self)
 end
 
 -- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, shared, tier, objects)
+local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, shared, tier, objects, violetFlames)
     local worldIcon = CreateIcon(WORLD_PIN_SIZE)
     local miniIcon = CreateIcon(MINI_PIN_SIZE)
 
@@ -274,6 +278,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         shared = shared == true,
         tier = (tier == 1 or tier == 2 or tier == 3) and tier or nil,
         objects = type(objects) == "table" and objects or nil,
+        violetFlames = violetFlames == true or nil,
     }
     if pin.objects then
         for index = #pin.objects, 1, -1 do
@@ -328,6 +333,7 @@ local function AddPin(data, source)
     local approximateTime = data.approximateTime
     local tier = data.tier
     local objects = data.objects
+    local violetFlames = data.violetFlames
     local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
 
     -- Remove the existing pin if expired
@@ -352,6 +358,7 @@ local function AddPin(data, source)
                 approximateTime = existing.approximateTime
                 tier = existing.tier
                 objects = existing.objects
+                violetFlames = existing.violetFlames
             end
         elseif not existing.approximateTime and not approximateTime then
             -- Ignore reports for older fires in this location
@@ -412,7 +419,7 @@ local function AddPin(data, source)
         expires = expires or (GetServerTime() + PIN_TTL)
     end
 
-    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, not isLocal, tier, objects)
+    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, not isLocal, tier, objects, violetFlames)
     if isLocal then
         return id, replaceExisting and "replaced" or "created", active[id]
     end
@@ -505,6 +512,7 @@ function pins:Save()
             shared = pin.shared,
             tier = pin.tier,
             objects = pin.objects,
+            violetFlames = pin.violetFlames,
         }
     end
     CozyFireDB.pins = saved
@@ -517,7 +525,7 @@ function pins:Restore()
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.layer, pin.mapID, pin.shared, pin.tier, pin.objects)
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.layer, pin.mapID, pin.shared, pin.tier, pin.objects, pin.violetFlames)
         end
     end
 end
