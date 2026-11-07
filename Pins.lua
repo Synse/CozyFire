@@ -166,7 +166,7 @@ function pins:ObserveCampObject(entry)
         -- Add the new camp object
         objects[#objects + 1] = entry.code
         --@debug@
-        DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Added camp object %s (%s)"):format(entry.name, entry.code))
+        DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Found %s (%s)"):format(entry.name, entry.code))
         --@end-debug@
 
         -- Truncate the list of objects if it is longer than the limit for this campfire
