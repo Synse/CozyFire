@@ -48,6 +48,15 @@ local function Deserialize(text)
     if instanceID < 0 or math.abs(x) > 100000 or math.abs(y) > 100000 then return nil end
     if not IsValidExpiry(expires) then return nil end
 
+    --@debug@
+    local mapInfo = C_Map.GetMapInfo((tonumber(rawMap)) or 0)
+    if mapInfo then
+        local GetMapTypeText = EnumUtil.GenerateNameTranslation(Enum.UIMapType)
+        DEFAULT_CHAT_FRAME:AddMessage(("%s - %s: %s (%s)"):format(GetRealZoneText(instanceID), mapInfo.name, GetMapTypeText(mapInfo.mapType), rawMap))
+        DEFAULT_CHAT_FRAME:AddMessage(("layer: %s"):format(rawLayer))
+    end
+    --@end-debug@
+
     return {
         instanceID = instanceID,
         x = x,
@@ -107,5 +116,9 @@ frame:SetScript("OnEvent", function(_, _, prefix, text, _, sender)
     local data = Deserialize(text)
     if data then
         addon.pins:AddSharedPin(data)
+    --@debug@
+    else
+        DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r invalid pin")
+    --@end-debug@
     end
 end)
