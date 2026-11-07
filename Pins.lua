@@ -434,6 +434,7 @@ function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime
         approximateLocation = approximateLocation,
         approximateTime = approximateTime,
         layer = layer,
+        violetFlames = addon.PlayerHasVioletFlames(),
     }, "local")
 end
 
