@@ -423,6 +423,11 @@ local function AddPin(data, source)
         -- Upgrade the existing pin's unknown layer to a known layer
         if upgradeLayer then
             existing.layer = layer
+            --@debug@
+            if not isLocal then
+                DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Upgraded existing pin to layer=%s"):format(tostring(layer)))
+            --@end-debug@
+            end
         end
 
         if upgradeLocation or upgradeLayer then
@@ -432,6 +437,11 @@ local function AddPin(data, source)
         if isLocal then
             return existingId, "exists"
         end
+
+        --@debug@
+        DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r Shared pin is already known")
+        --@end-debug@
+
         return
     end
 
