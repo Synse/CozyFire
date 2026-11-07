@@ -358,7 +358,7 @@ local function AddPin(data, source)
                 approximateTime = existing.approximateTime
                 tier = existing.tier
                 objects = existing.objects
-                violetFlames = existing.violetFlames
+                violetFlames = violetFlames or existing.violetFlames
             end
         elseif not existing.approximateTime and not approximateTime then
             -- Ignore reports for older fires in this location
@@ -375,6 +375,11 @@ local function AddPin(data, source)
     if existing and not replaceExisting then
         local upgradeLocation = not isLocal and existing.approximateLocation and not approximateLocation
         local upgradeLayer = existing.layer == nil and layer ~= nil
+
+        if violetFlames == true and not existing.violetFlames then
+            existing.violetFlames = true
+            ApplyPinAppearance(existing)
+        end
 
         if not isLocal then
             if upgradeLocation then
