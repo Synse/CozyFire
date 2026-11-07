@@ -233,6 +233,9 @@ local function ShowPinTooltip(self)
     ticker = C_Timer.NewTicker(1, function()
         -- Only refresh CozyFire map pins
         if GameTooltip:GetOwner() ~= self then
+            --@debug@
+            DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r tooltip no longer owned by this pin")
+            --@end-debug@
             ticker:Cancel()
             if self.ticker == ticker then
                 self.ticker = nil
