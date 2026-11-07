@@ -426,8 +426,8 @@ local function AddPin(data, source)
             --@debug@
             if not isLocal then
                 DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Upgraded existing pin to layer=%s"):format(tostring(layer)))
-            --@end-debug@
             end
+            --@end-debug@
         end
 
         if upgradeLocation or upgradeLayer then
