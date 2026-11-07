@@ -127,17 +127,26 @@ function pins:ObserveCampObject(entry)
         -- Update the campfire tier
         if entry.profession == "Cooking" and nearest.tier == nil then
             nearest.tier = entry.tier
+            --@debug@
+            DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Set campfire tier=%s"):format(tostring(entry.tier)))
+            --@end-debug@
         end
 
         if not nearest.violetFlames and addon.PlayerHasVioletFlames() then
             nearest.violetFlames = true
             ApplyPinAppearance(nearest)
+            --@debug@
+            DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r Set campfire violetFlames=true")
+            --@end-debug@
         end
 
         -- Update the campfire layer
         if nearest.layer == nil and layer ~= nil then
             nearest.layer = layer
             self:ApplyLayerVisibility()
+            --@debug@
+            DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Set campfire layer=%s"):format(tostring(layer)))
+            --@end-debug@
         end
 
         if entry.profession == "Cooking" then return end
