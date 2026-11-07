@@ -100,6 +100,9 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_ADDON")
 frame:SetScript("OnEvent", function(_, _, prefix, text, _, sender)
     if prefix ~= PREFIX or IsSelf(sender) then return end
+    --@debug@
+    DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r from " .. tostring(sender) .. ": " .. tostring(text))
+    --@end-debug@
 
     local data = Deserialize(text)
     if data then
