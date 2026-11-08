@@ -53,7 +53,7 @@ local function Deserialize(text)
     if mapInfo then
         local GetMapTypeText = EnumUtil.GenerateNameTranslation(Enum.UIMapType)
         DEFAULT_CHAT_FRAME:AddMessage(("  %s (%s): %s (%s) - %s (%s)"):format(GetMapTypeText(mapInfo.mapType), mapInfo.mapType, mapInfo.name, rawMap, GetRealZoneText(instanceID), instanceID))
-        DEFAULT_CHAT_FRAME:AddMessage(("  Layer: %s (you are on %s)"):format(rawLayer, addon.GetLayer()))
+        DEFAULT_CHAT_FRAME:AddMessage(("  Layer: %s (you are on %s)"):format(rawLayer, tostring(addon.GetLayer())))
     else
         DEFAULT_CHAT_FRAME:AddMessage(("  Unknown or invalid map: %s"):format(rawMap))
     end
