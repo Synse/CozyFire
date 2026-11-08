@@ -69,8 +69,10 @@ SlashCmdList["COZYFIRE"] = function(msg)
     local cmd = msg:lower():match("^%s*(%S*)")
     if cmd == "mark" then
         MarkCampfire()
+    elseif cmd == "options" or cmd == "config" then
+        addon.OpenOptions()
     else
-        Print("Commands: /cf mark")
+        Print("Commands: /cf mark, /cf options")
     end
 end
 
