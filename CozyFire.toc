@@ -33,4 +33,5 @@ Layer.lua
 Pins.lua
 Comms.lua
 Marking.lua
+Options.lua
 MinimapButton.lua
