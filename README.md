@@ -9,3 +9,5 @@ CozyFire won't increase your Spirit, but it will improve your camping experience
 *   Live countdown on each campfire pin showing the time left before it despawns
 *   One-click minimap button to `/sit` at a nearby campfire
 *   Pins persist between sessions and clear themselves once a fire is gone
+*   🆕**New in 0.8.7:** Forever launch celebration campfires (Violet Flames) have a unique map icon
+*   🆕**New in 0.9.0:** Option to hide the minimap button (`/cf options` or right-click the minimap button)
