@@ -14,11 +14,14 @@ local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
             else
                 addon.Print("No nearby campfire found.")
             end
+        elseif mouseButton == "RightButton" then
+            addon.OpenOptions()
         end
     end,
     OnTooltipShow = function(tooltip)
         tooltip:AddLine("CozyFire")
         tooltip:AddLine("|cffffbf00Left-click|r to |cff6eb2ea/sit|r at a campfire", 1, 1, 1)
+        tooltip:AddLine("|cffffbf00Right-click|r for options", 1, 1, 1)
     end,
 })
 
