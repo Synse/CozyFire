@@ -186,6 +186,10 @@ local function RenderPinTooltip(pin)
         1, 1, 1, 0.6, 0.6, 0.6
     )
 
+    if pin.violetFlames then
+        GameTooltip:AddLine("|cffb469ffViolet Flames|r |cff999999(2 hour buffs)|r")
+    end
+
     -- Add the camp objects to the tooltip
     if objects then
         for _, code in ipairs(objects) do
