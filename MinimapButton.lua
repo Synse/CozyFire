@@ -1,4 +1,6 @@
-local addonName, addon = ...
+local addonName = ...
+---@class CozyFire
+local addon = select(2, ...)
 
 local ICON_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
 

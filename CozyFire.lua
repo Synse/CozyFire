@@ -1,4 +1,5 @@
-local addonName, addon = ...
+---@class CozyFire
+local addon = select(2, ...)
 
 local CAMPFIRE_NEARBY_SPELL = 1283391  -- "Campfire Nearby" aura, 100-yard radius
 local VIOLET_FLAMES_SPELL = 1328375  -- "Violet Flames" aura

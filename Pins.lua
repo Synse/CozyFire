@@ -1,4 +1,6 @@
-local addonName, addon = ...
+local addonName = ...
+---@class CozyFire
+local addon = select(2, ...)
 
 local HBD = LibStub("HereBeDragons-2.0")
 local HBDPins = LibStub("HereBeDragons-Pins-2.0")

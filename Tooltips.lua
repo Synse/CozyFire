@@ -1,4 +1,5 @@
-local addonName, addon = ...
+---@class CozyFire
+local addon = select(2, ...)
 local campObjects = addon.campObjects
 
 local SHARED_CAMP_OBJECTS = {

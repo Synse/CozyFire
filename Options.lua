@@ -1,4 +1,6 @@
-local addonName, addon = ...
+local addonName = ...
+---@class CozyFire
+local addon = select(2, ...)
 
 local DBIcon = LibStub("LibDBIcon-1.0")
 
