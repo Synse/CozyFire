@@ -228,10 +228,6 @@ local function RenderPinTooltip(pin)
         GameTooltip:AddLine("On a different layer", 1, 0.5, 0.5)
     end
 
-    --@debug@
-    GameTooltip:AddLine(("Debug: zoneUID=%s tier=%s violetFlames=%s"):format(tostring(pin.layer), tostring(pin.tier), tostring(pin.violetFlames)), 0.6, 0.6, 0.6)
-    --@end-debug@
-
     GameTooltip:Show()
 end
 
