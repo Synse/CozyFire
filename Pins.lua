@@ -522,7 +522,7 @@ C_Timer.NewTicker(SWEEP_INTERVAL, function()
             and (pin.layer == nil or pin.layer == currentLayer) then
             local dist = HBD:GetWorldDistance(pInstance, px, py, pin.x, pin.y)
             if dist and dist <= 20 then
-                DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r Nearby campfire not found, removed from map.")
+                addon.Print("Nearby campfire not found, removed from map.")
                 expired = true
             end
         end

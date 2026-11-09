@@ -13,10 +13,7 @@ local CAMPFIRE_KIT_SPELLS = {
 }
 local VIOLET_FLAMES_SPELL = 1328375  -- "Violet Flames" aura
 
-local function Print(msg)
-    DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r " .. msg)
-end
-addon.Print = Print
+local Print = addon.Print
 
 -- Determine if the player is near a campfire, returns nil if unknown
 local function PlayerNearCampfire()
