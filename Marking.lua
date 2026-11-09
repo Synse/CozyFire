@@ -13,8 +13,6 @@ local CAMPFIRE_KIT_SPELLS = {
 }
 local VIOLET_FLAMES_SPELL = 1328375  -- "Violet Flames" aura
 
-local Print = addon.Print
-
 -- Determine if the player is near a campfire, returns nil if unknown
 local function PlayerNearCampfire()
     if C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID then
@@ -36,27 +34,27 @@ addon.PlayerHasVioletFlames = PlayerHasVioletFlames
 local function MarkCampfire()
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
     if InCombatLockdown() then
-        Print("Campfires can't be marked while in combat.")
+        addon.Print("Campfires can't be marked while in combat.")
         return
     end
 
     if not PlayerNearCampfire() then
-        Print("No nearby campfire found.")
+        addon.Print("No nearby campfire found.")
         return
     end
 
     local x, y, instanceID = HBD:GetPlayerWorldPosition()
     if not x or not y then
-        Print("Couldn't determine your position.")
+        addon.Print("Couldn't determine your position.")
         return
     end
 
     local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, true, true, addon.GetLayer())
     if action == "created" or action == "replaced" then
-        Print("Campfire marked.")
+        addon.Print("Campfire marked.")
         addon.BroadcastPin(pin)
     elseif action == "exists" then
-        Print("Campfire is already marked.")
+        addon.Print("Campfire is already marked.")
     end
 end
 
@@ -69,7 +67,7 @@ SlashCmdList["COZYFIRE"] = function(msg)
     elseif cmd == "options" or cmd == "config" then
         addon.OpenOptions()
     else
-        Print("Commands: /cf mark, /cf options")
+        addon.Print("Commands: /cf mark, /cf options")
     end
 end
 
@@ -90,7 +88,7 @@ local function AutoMark()
 
     local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, true, addon.GetLayer())
     if action == "created" or action == "replaced" then
-        Print("Campfire automatically marked.")
+        addon.Print("Campfire automatically marked.")
         addon.BroadcastPin(pin)
     end
 end
@@ -132,7 +130,7 @@ local function CampfirePlaced(castGUID, tier)
     local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, false, layer)
     if action == "created" or action == "replaced" then
         pin.tier = tier
-        Print("Campfire marked.")
+        addon.Print("Campfire marked.")
         addon.BroadcastPin(pin)
     end
 end
