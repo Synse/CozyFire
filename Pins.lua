@@ -129,7 +129,7 @@ function pins:ObserveCampObject(entry)
         -- Update the campfire tier
         if entry.profession == "Cooking" and nearest.tier == nil then
             nearest.tier = entry.tier
-            addon.PrintDebug("Set campfire tier=%s", tostring(entry.tier))
+            addon.PrintDebug("Set campfire tier=%s", entry.tier)
         end
 
         if not nearest.violetFlames and addon.PlayerHasVioletFlames() then
@@ -142,7 +142,7 @@ function pins:ObserveCampObject(entry)
         if nearest.layer == nil and layer ~= nil then
             nearest.layer = layer
             self:ApplyLayerVisibility()
-            addon.PrintDebug("Set campfire layer=%s", tostring(layer))
+            addon.PrintDebug("Set campfire layer=%s", layer)
         end
 
         if entry.profession == "Cooking" then return end
@@ -416,7 +416,7 @@ local function AddPin(data, source)
         if upgradeLayer then
             existing.layer = layer
             if not isLocal then
-                addon.PrintDebug("Upgraded existing pin to layer=%s", tostring(layer))
+                addon.PrintDebug("Upgraded existing pin to layer=%s", layer)
             end
         end
 

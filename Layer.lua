@@ -33,7 +33,7 @@ local function SetCurrent(newLayer, newMapID, newSource)
     currentMapID = newMapID
     currentSource = newSource
 
-    --addon.PrintDebug("zoneUID=%s map=%s source=%s", tostring(newLayer), tostring(C_Map.GetBestMapForUnit("player")), tostring(newSource))
+    --addon.PrintDebug("zoneUID=%s map=%s source=%s", newLayer, C_Map.GetBestMapForUnit("player"), newSource)
 
     if addon.pins and addon.pins.ApplyLayerVisibility then
         addon.pins:ApplyLayerVisibility()
