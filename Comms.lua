@@ -52,7 +52,7 @@ local function Deserialize(text)
     local mapInfo = C_Map.GetMapInfo((tonumber(rawMap)) or 0)
     if mapInfo then
         local GetMapTypeText = EnumUtil.GenerateNameTranslation(Enum.UIMapType)
-        DEFAULT_CHAT_FRAME:AddMessage(("  %s (%s): %s (%s) - %s (%s)"):format(GetMapTypeText(mapInfo.mapType), mapInfo.mapType, mapInfo.name, rawMap, GetRealZoneText(instanceID), instanceID))
+        DEFAULT_CHAT_FRAME:AddMessage(("  [%s] %s - %s"):format(GetMapTypeText(mapInfo.mapType), mapInfo.name, GetRealZoneText(instanceID)))
     else
         DEFAULT_CHAT_FRAME:AddMessage(("  Unknown or invalid map: %s"):format(rawMap))
     end
