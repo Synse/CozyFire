@@ -3,7 +3,6 @@ local addon = select(2, ...)
 
 local PREFIX = "CozyFire"
 local MSG_TYPE = "CF2"
-local MAX_TTL = 900
 
 C_ChatInfo.RegisterAddonMessagePrefix(PREFIX)
 
@@ -13,7 +12,7 @@ local function IsValidExpiry(expires)
     if expires ~= math.floor(expires) then return false end
 
     local now = GetServerTime()
-    return expires > now and expires <= now + MAX_TTL + 10
+    return expires > now and expires <= now + addon.PIN_TTL + 10
 end
 
 -- Serialize a pin to send via addon messages

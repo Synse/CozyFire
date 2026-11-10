@@ -5,7 +5,6 @@ local addon = select(2, ...)
 local HBD = LibStub("HereBeDragons-2.0")
 local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 
-local PIN_TTL = 900        -- seconds; campfires despawn 15 minutes after being placed
 local DEDUP_RANGE = 100    -- yards; only one campfire per 100 yds
 local CAMPFIRE_OBJECT_LIMITS = { 3, 5, 10 }
 local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
@@ -438,7 +437,7 @@ local function AddPin(data, source)
     end
 
     if isLocal then
-        expires = expires or (GetServerTime() + PIN_TTL)
+        expires = expires or (GetServerTime() + addon.PIN_TTL)
     end
 
     local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, not isLocal, tier, objects, violetFlames)
