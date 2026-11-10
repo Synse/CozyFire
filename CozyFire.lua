@@ -10,6 +10,15 @@ function addon.Print(msg)
     DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r " .. msg)
 end
 
+---Prints a formatted chat message with the CozyFireDebug prefix (no-op in release builds)
+---@param fmt string
+---@param ... any
+function addon.PrintDebug(fmt, ...)
+    --@debug@
+    DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r " .. fmt:format(...))
+    --@end-debug@
+end
+
 ---Checks for the "Violet Flames" aura from the "Pouch of Violet Dust" toy
 ---@return boolean? # nil in combat
 function addon.PlayerHasVioletFlames()
