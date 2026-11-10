@@ -129,26 +129,20 @@ function pins:ObserveCampObject(entry)
         -- Update the campfire tier
         if entry.profession == "Cooking" and nearest.tier == nil then
             nearest.tier = entry.tier
-            --@debug@
-            DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Set campfire tier=%s"):format(tostring(entry.tier)))
-            --@end-debug@
+            addon.PrintDebug("Set campfire tier=%s", tostring(entry.tier))
         end
 
         if not nearest.violetFlames and addon.PlayerHasVioletFlames() then
             nearest.violetFlames = true
             ApplyPinAppearance(nearest)
-            --@debug@
-            DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r Set campfire violetFlames=true")
-            --@end-debug@
+            addon.PrintDebug("Set campfire violetFlames=true")
         end
 
         -- Update the campfire layer
         if nearest.layer == nil and layer ~= nil then
             nearest.layer = layer
             self:ApplyLayerVisibility()
-            --@debug@
-            DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Set campfire layer=%s"):format(tostring(layer)))
-            --@end-debug@
+            addon.PrintDebug("Set campfire layer=%s", tostring(layer))
         end
 
         if entry.profession == "Cooking" then return end
@@ -167,9 +161,7 @@ function pins:ObserveCampObject(entry)
 
         -- Add the new camp object
         objects[#objects + 1] = entry.code
-        --@debug@
-        DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Found %s (%s)"):format(entry.name, entry.code))
-        --@end-debug@
+        addon.PrintDebug("Found %s (%s)", entry.name, entry.code)
 
         -- Truncate the list of objects if it is longer than the limit for this campfire
         if #objects > CAMPFIRE_OBJECT_LIMITS[nearest.tier or 1] then
@@ -251,9 +243,7 @@ local function ShowPinTooltip(self)
     ticker = C_Timer.NewTicker(1, function()
         -- Only refresh CozyFire map pins
         if GameTooltip:GetOwner() ~= self then
-            --@debug@
-            DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r tooltip no longer owned by this pin")
-            --@end-debug@
+            addon.PrintDebug("tooltip no longer owned by this pin")
             ticker:Cancel()
             if self.ticker == ticker then
                 self.ticker = nil
@@ -425,11 +415,9 @@ local function AddPin(data, source)
         -- Upgrade the existing pin's unknown layer to a known layer
         if upgradeLayer then
             existing.layer = layer
-            --@debug@
             if not isLocal then
-                DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r Upgraded existing pin to layer=%s"):format(tostring(layer)))
+                addon.PrintDebug("Upgraded existing pin to layer=%s", tostring(layer))
             end
-            --@end-debug@
         end
 
         if upgradeLocation or upgradeLayer then
@@ -440,9 +428,7 @@ local function AddPin(data, source)
             return existingId, "exists"
         end
 
-        --@debug@
-        DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r Shared pin is already known")
-        --@end-debug@
+        addon.PrintDebug("Shared pin is already known")
 
         return
     end

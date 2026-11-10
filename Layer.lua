@@ -33,9 +33,7 @@ local function SetCurrent(newLayer, newMapID, newSource)
     currentMapID = newMapID
     currentSource = newSource
 
-    --@debug@
-    --DEFAULT_CHAT_FRAME:AddMessage(("|cffffc44dCozyFireDebug:|r zoneUID=%s map=%s source=%s"):format(tostring(newLayer), tostring(C_Map.GetBestMapForUnit("player")), tostring(newSource)))
-    --@end-debug@
+    --addon.PrintDebug("zoneUID=%s map=%s source=%s", tostring(newLayer), tostring(C_Map.GetBestMapForUnit("player")), tostring(newSource))
 
     if addon.pins and addon.pins.ApplyLayerVisibility then
         addon.pins:ApplyLayerVisibility()
