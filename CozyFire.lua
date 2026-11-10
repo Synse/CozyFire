@@ -10,12 +10,12 @@ function addon.Print(msg)
     DEFAULT_CHAT_FRAME:AddMessage("|cffff8000CozyFire:|r " .. msg)
 end
 
----Prints a formatted chat message with the CozyFireDebug prefix (no-op in release builds)
+---Prints a %s formatted debug message
 ---@param fmt string
 ---@param ... any
 function addon.PrintDebug(fmt, ...)
     --@debug@
-    DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r " .. fmt:format(...))
+    DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r " .. fmt:format(tostringall(...)))
     --@end-debug@
 end
 
