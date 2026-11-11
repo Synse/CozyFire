@@ -429,7 +429,7 @@ local function AddPin(data, source)
             return existingId, "exists"
         end
 
-        addon.PrintDebug("Shared pin is already known")
+        addon.PrintDebug("Shared pin |cff6eb2eaalready known")
 
         return
     end
