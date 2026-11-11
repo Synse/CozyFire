@@ -30,7 +30,7 @@ local function Serialize(pin)
         expires,
         pin.mapID or "",
         pin.layer or "",
-        "",  -- TODO: remove in CF3
+        "",  -- TODO: remove in CF3, was pin.placedBy
     }, ":")
 end
 
