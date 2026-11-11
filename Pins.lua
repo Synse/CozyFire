@@ -544,14 +544,18 @@ function pins:Save()
     CozyFireDB.pins = saved
 end
 
--- Restores pins from saved variables
-function pins:Restore()
+---Restores pins from saved variables
+---@param isInitialLogin boolean # zoneUIDs are per-session
+function pins:Restore(isInitialLogin)
     local saved = CozyFireDB and CozyFireDB.pins
     if not saved then return end
+
+    addon.PrintDebug("Restoring pins, isInitialLogin: %s", tostring(isInitialLogin))
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, pin.layer, pin.mapID, pin.shared, pin.tier, pin.objects, pin.violetFlames)
+            local layer = not isInitialLogin and pin.layer or nil
+            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, layer, pin.mapID, pin.shared, pin.tier, pin.objects, pin.violetFlames)
         end
     end
 end
@@ -559,11 +563,12 @@ end
 -- Save pins to saved variables on logout and restore them on login
 -- This also covers reloading the UI
 local eventFrame = CreateFrame("Frame")
-eventFrame:RegisterEvent("PLAYER_LOGIN")
+eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("PLAYER_LOGOUT")
-eventFrame:SetScript("OnEvent", function(_, event)
-    if event == "PLAYER_LOGIN" then
-        pins:Restore()
+eventFrame:SetScript("OnEvent", function(self, event, isInitialLogin)
+    if event == "PLAYER_ENTERING_WORLD" then
+        self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+        pins:Restore(isInitialLogin)
     else
         pins:Save()
     end
