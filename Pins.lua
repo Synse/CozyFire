@@ -418,9 +418,7 @@ local function AddPin(data, source)
         -- Upgrade the existing pin's unknown layer to a known layer
         if upgradeLayer then
             existing.layer = layer
-            if not isLocal then
-                addon.PrintDebug("Upgraded existing pin to layer=%s", layer)
-            end
+            addon.PrintDebug("Upgraded pin to known layer: %s", layer)
         end
 
         if upgradeLocation or upgradeLayer then
