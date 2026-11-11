@@ -29,14 +29,14 @@ local function Serialize(pin)
         pin.approximateTime and 1 or 0,
         expires,
         pin.mapID or "",
-        pin.layer or "",
+        "",  -- TODO: remove in CF3, was pin.layer
         "",  -- TODO: remove in CF3, was pin.placedBy
     }, ":")
 end
 
 -- Deserialize an incoming pin and validate it
 local function Deserialize(text)
-    local msgType, rawInstance, rawX, rawY, aLoc, aTime, rawExpires, rawMap, rawLayer = strsplit(":", text or "")
+    local msgType, rawInstance, rawX, rawY, aLoc, aTime, rawExpires, rawMap = strsplit(":", text or "")
     if msgType ~= MSG_TYPE then return nil end
 
     local instanceID = tonumber(rawInstance)
@@ -66,7 +66,6 @@ local function Deserialize(text)
         approximateTime = aTime == "1",
         expires = expires,
         mapID = tonumber(rawMap),
-        layer = tonumber(rawLayer),
     }
 end
 

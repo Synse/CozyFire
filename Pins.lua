@@ -219,6 +219,8 @@ local function RenderPinTooltip(pin)
 
     if IsOtherLayer(pin) then
         GameTooltip:AddLine("On a different layer", 1, 0.5, 0.5)
+    elseif pin.layer == nil then
+        GameTooltip:AddLine("May be on a different layer", 0.6, 0.6, 0.6)
     end
 
     --@debug@
