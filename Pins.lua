@@ -222,7 +222,7 @@ local function RenderPinTooltip(pin)
     end
 
     --@debug@
-    GameTooltip:AddLine(("layer=%s"):format(pin.layer), 0.6, 0.6, 0.6)
+    GameTooltip:AddLine(("layer=%s"):format(tostring(pin.layer)), 0.6, 0.6, 0.6)
     --@end-debug@
 
     GameTooltip:Show()
