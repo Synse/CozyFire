@@ -36,6 +36,20 @@ local function RegisterSettings()
                 CozyFireDB.worldMapPinSize = value
                 addon.pins:ApplyAppearance()
             end),
+        showMinimapPins = Settings.RegisterProxySetting(category, "CozyFire_ShowMinimapPins",
+            Settings.VarType.Boolean, "Show campfires on minimap", true,
+            function() return not CozyFireDB.hideMinimapPins end,
+            function(value)
+                CozyFireDB.hideMinimapPins = not value
+                addon.pins:ApplyAppearance()
+            end),
+        minimapPinSize = Settings.RegisterProxySetting(category, "CozyFire_MinimapPinSize",
+            Settings.VarType.Number, "Minimap icon size", addon.MINIMAP_PIN_SIZE,
+            function() return CozyFireDB.minimapPinSize or addon.MINIMAP_PIN_SIZE end,
+            function(value)
+                CozyFireDB.minimapPinSize = value
+                addon.pins:ApplyAppearance()
+            end),
     }
 end
 
@@ -48,6 +62,9 @@ local function BuildLayout(settings)
     layout:AddInitializer(CreateSettingsCheckboxSliderInitializer(
         settings.showWorldMap, "Show campfires on world map", "Show campfire pins on the world map.",
         settings.worldMapPinSize, sizeOptions, "World map icon size", "Size of campfire pins on the world map."))
+    layout:AddInitializer(CreateSettingsCheckboxSliderInitializer(
+        settings.showMinimapPins, "Show campfires on minimap", "Show campfire pins on the minimap.",
+        settings.minimapPinSize, sizeOptions, "Minimap icon size", "Size of campfire pins on the minimap."))
 end
 
 local frame = CreateFrame("Frame")
