@@ -322,8 +322,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
     return id
 end
 
--- Pins on other layers are always desaturated and if they overlap with a pin
--- on the current layer they are hidden completely
+---Reapplies texture, layer visibility, and world map settings to every pin
 function pins:ApplyAppearance()
     for _, pin in pairs(active) do
         ApplyPinAppearance(pin)
