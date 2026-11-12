@@ -9,7 +9,6 @@ local DEDUP_RANGE = 100    -- yards; only one campfire per 100 yds
 local CAMPFIRE_OBJECT_LIMITS = { 3, 5, 10 }
 local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
 local PIN_TEXTURE_VIOLET_FLAMES = "Interface\\AddOns\\CozyFire\\Media\\VioletFlames.tga"
-local MINI_PIN_SIZE = 20   -- minimap pin size
 local SWEEP_INTERVAL = 5   -- seconds; how often to cleanup expired pins
 local OTHER_LAYER_DESATURATION = 0.75  -- color removed from pins on a different layer
 
@@ -275,7 +274,7 @@ end
 -- Build the pin frames and register it. Returns the new id
 local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, shared, tier, objects, violetFlames)
     local worldIcon = CreateIcon(addon.WORLDMAP_PIN_SIZE)
-    local miniIcon = CreateIcon(MINI_PIN_SIZE)
+    local miniIcon = CreateIcon(addon.MINIMAP_PIN_SIZE)
 
     -- PIN_FRAME_LEVEL_TOPMOST draws the world map pin above the player arrow
     HBDPins:AddWorldMapIconWorld(addonName, worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
