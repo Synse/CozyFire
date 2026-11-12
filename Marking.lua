@@ -13,7 +13,7 @@ local CAMPFIRE_KIT_SPELLS = {
 }
 
 ---Marks and shares a nearby campfire on the map
-function MarkCampfire()
+local function MarkCampfire()
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
     if InCombatLockdown() then
         addon.Print("Campfires can't be marked while in combat.")
