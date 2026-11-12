@@ -12,6 +12,9 @@ local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
     OnClick = function(_, mouseButton)
         if mouseButton == "LeftButton" then
             if not InCombatLockdown() and addon.PlayerNearCampfire and addon.PlayerNearCampfire() then
+                if IsShiftKeyDown() then
+                    addon.MarkCampfire()
+                end
                 C_ChatInfo.PerformEmote("SIT", nil, true)
             else
                 addon.Print("No nearby campfire found.")
