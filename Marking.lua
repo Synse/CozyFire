@@ -12,6 +12,7 @@ local CAMPFIRE_KIT_SPELLS = {
     [1307237] = 3,  -- Expert Campfire Kit
 }
 
+---Marks and shares a nearby campfire on the map
 function MarkCampfire()
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
     if InCombatLockdown() then
