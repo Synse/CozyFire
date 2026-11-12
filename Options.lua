@@ -30,8 +30,8 @@ local function RegisterSettings()
                 addon.pins:ApplyAppearance()
             end),
         worldMapPinSize = Settings.RegisterProxySetting(category, "CozyFire_WorldMapPinSize",
-            Settings.VarType.Number, "World map icon size", addon.WORLDMAP_PIN_SIZE,
-            function() return CozyFireDB.worldMapPinSize or addon.WORLDMAP_PIN_SIZE end,
+            Settings.VarType.Number, "World map icon size", addon.PIN_SIZE_WORLDMAP,
+            function() return CozyFireDB.worldMapPinSize or addon.PIN_SIZE_WORLDMAP end,
             function(value)
                 CozyFireDB.worldMapPinSize = value
                 addon.pins:ApplyAppearance()
@@ -44,8 +44,8 @@ local function RegisterSettings()
                 addon.pins:ApplyAppearance()
             end),
         minimapPinSize = Settings.RegisterProxySetting(category, "CozyFire_MinimapPinSize",
-            Settings.VarType.Number, "Minimap icon size", addon.MINIMAP_PIN_SIZE,
-            function() return CozyFireDB.minimapPinSize or addon.MINIMAP_PIN_SIZE end,
+            Settings.VarType.Number, "Minimap icon size", addon.PIN_SIZE_MINIMAP,
+            function() return CozyFireDB.minimapPinSize or addon.PIN_SIZE_MINIMAP end,
             function(value)
                 CozyFireDB.minimapPinSize = value
                 addon.pins:ApplyAppearance()

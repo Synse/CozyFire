@@ -57,9 +57,9 @@ local function ApplyPinAppearance(pin)
     pin.miniIcon:SetAlpha(miniHidden and 0 or 1)
     pin.worldIcon:EnableMouse(not worldHidden)
 
-    local worldSize = CozyFireDB.worldMapPinSize or addon.WORLDMAP_PIN_SIZE
+    local worldSize = CozyFireDB.worldMapPinSize or addon.PIN_SIZE_WORLDMAP
     pin.worldIcon:SetSize(worldSize, worldSize)
-    local miniSize = CozyFireDB.minimapPinSize or addon.MINIMAP_PIN_SIZE
+    local miniSize = CozyFireDB.minimapPinSize or addon.PIN_SIZE_MINIMAP
     pin.miniIcon:SetSize(miniSize, miniSize)
 
     -- Pins on other layers are desaturated
@@ -276,8 +276,8 @@ end
 
 -- Build the pin frames and register it. Returns the new id
 local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, shared, tier, objects, violetFlames)
-    local worldIcon = CreateIcon(addon.WORLDMAP_PIN_SIZE)
-    local miniIcon = CreateIcon(addon.MINIMAP_PIN_SIZE)
+    local worldIcon = CreateIcon(addon.PIN_SIZE_WORLDMAP)
+    local miniIcon = CreateIcon(addon.PIN_SIZE_MINIMAP)
 
     -- PIN_FRAME_LEVEL_TOPMOST draws the world map pin above the player arrow
     HBDPins:AddWorldMapIconWorld(addonName, worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
