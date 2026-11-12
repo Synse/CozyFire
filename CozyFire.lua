@@ -5,6 +5,7 @@ local CAMPFIRE_NEARBY_SPELL = 1283391  -- "Campfire Nearby" aura, 100-yard radiu
 local VIOLET_FLAMES_SPELL = 1328375  -- "Violet Flames" aura
 
 addon.PIN_TTL = 900  -- seconds; campfires despawn 15 minutes after being placed
+addon.WORLDMAP_PIN_SIZE = 20  -- default world map pin size
 
 ---Prints a chat message with the CozyFire prefix
 ---@param msg string
