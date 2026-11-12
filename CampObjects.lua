@@ -40,7 +40,7 @@ local professions = {
         code = "C",
         objects = {
             { tier = 1, name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features" },
-            { tier = 2, name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 140 },  -- Blueprint only requires 90
+            { tier = 2, name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 90 },
             { tier = 3, name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features", requiredSkill = 220 },  -- Blueprint only requires 200
             { name = "Cookie's Feast", perk ="Contains Stamina-boosting food", requiredSkill = 140 },
         },
