@@ -143,7 +143,7 @@ function pins:ObserveCampObject(entry)
         -- Update the campfire layer
         if nearest.layer == nil and layer ~= nil then
             nearest.layer = layer
-            self:ApplyLayerVisibility()
+            self:ApplyAppearance()
             addon.PrintDebug("Set campfire layer=%s", layer)
         end
 
@@ -317,14 +317,14 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
     worldIcon:SetScript("OnEnter", ShowPinTooltip)
     worldIcon:SetScript("OnLeave", HidePinTooltip)
 
-    pins:ApplyLayerVisibility()
+    pins:ApplyAppearance()
 
     return id
 end
 
 -- Pins on other layers are always desaturated and if they overlap with a pin
 -- on the current layer they are hidden completely
-function pins:ApplyLayerVisibility()
+function pins:ApplyAppearance()
     for _, pin in pairs(active) do
         ApplyPinAppearance(pin)
     end
@@ -427,7 +427,7 @@ local function AddPin(data, source)
         end
 
         if upgradeLocation or upgradeLayer then
-            pins:ApplyLayerVisibility()
+            pins:ApplyAppearance()
         end
 
         if isLocal then
@@ -490,7 +490,7 @@ function pins:RemovePin(id)
     active[id] = nil
 
     -- A covered other-layer fire may now be shown
-    pins:ApplyLayerVisibility()
+    pins:ApplyAppearance()
 end
 
 C_Timer.NewTicker(SWEEP_INTERVAL, function()

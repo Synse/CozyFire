@@ -35,8 +35,8 @@ local function SetCurrent(newLayer, newMapID, newSource)
 
     --addon.PrintDebug("zoneUID=%s map=%s source=%s", newLayer, C_Map.GetBestMapForUnit("player"), newSource)
 
-    if addon.pins and addon.pins.ApplyLayerVisibility then
-        addon.pins:ApplyLayerVisibility()
+    if addon.pins and addon.pins.ApplyAppearance then
+        addon.pins:ApplyAppearance()
     end
 end
 

@@ -27,14 +27,14 @@ local function RegisterSettings()
             function() return not CozyFireDB.hideWorldMapPins end,
             function(value)
                 CozyFireDB.hideWorldMapPins = not value
-                addon.pins:ApplyLayerVisibility()
+                addon.pins:ApplyAppearance()
             end),
         worldMapPinSize = Settings.RegisterProxySetting(category, "CozyFire_WorldMapPinSize",
             Settings.VarType.Number, "World map icon size", addon.WORLDMAP_PIN_SIZE,
             function() return CozyFireDB.worldMapPinSize or addon.WORLDMAP_PIN_SIZE end,
             function(value)
                 CozyFireDB.worldMapPinSize = value
-                addon.pins:ApplyLayerVisibility()
+                addon.pins:ApplyAppearance()
             end),
     }
 end
