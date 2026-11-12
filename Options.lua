@@ -22,12 +22,32 @@ local function RegisterSettings()
                 CozyFireDB.minimap.hide = not value
                 if value then DBIcon:Show(addonName) else DBIcon:Hide(addonName) end
             end),
+        showWorldMap = Settings.RegisterProxySetting(category, "CozyFire_ShowWorldMapPins",
+            Settings.VarType.Boolean, "Show campfires on world map", true,
+            function() return not CozyFireDB.hideWorldMapPins end,
+            function(value)
+                CozyFireDB.hideWorldMapPins = not value
+                addon.pins:ApplyLayerVisibility()
+            end),
+        worldMapPinSize = Settings.RegisterProxySetting(category, "CozyFire_WorldMapPinSize",
+            Settings.VarType.Number, "World map icon size", addon.WORLDMAP_PIN_SIZE,
+            function() return CozyFireDB.worldMapPinSize or addon.WORLDMAP_PIN_SIZE end,
+            function(value)
+                CozyFireDB.worldMapPinSize = value
+                addon.pins:ApplyLayerVisibility()
+            end),
     }
 end
 
 -- Layout: the controls shown on the options page
 local function BuildLayout(settings)
     Settings.CreateCheckbox(category, settings.showMinimap, "Show the CozyFire button on the minimap.")
+
+    local sizeOptions = Settings.CreateSliderOptions(16, 30, 2)
+    sizeOptions:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right)
+    layout:AddInitializer(CreateSettingsCheckboxSliderInitializer(
+        settings.showWorldMap, "Show campfires on world map", "Show campfire pins on the world map.",
+        settings.worldMapPinSize, sizeOptions, "World map icon size", "Size of campfire pins on the world map."))
 end
 
 local frame = CreateFrame("Frame")
