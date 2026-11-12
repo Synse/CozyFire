@@ -5,7 +5,7 @@ local addon = select(2, ...)
 local DBIcon = LibStub("LibDBIcon-1.0")
 
 -- Create the CozyFire category
-local category = Settings.RegisterVerticalLayoutCategory(addonName)
+local category, layout = Settings.RegisterVerticalLayoutCategory(addonName)
 Settings.RegisterAddOnCategory(category)
 
 function addon.OpenOptions()
