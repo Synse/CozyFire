@@ -122,7 +122,7 @@ local professions = {
         code = "L",
         objects = {
             { tier = 1, name = "Camp Tent", icon = 134250 },
-            { tier = 2, name = "Tanning Rack", icon = 4559256, perk = "Required for certain reagents", requiredSkill = 140 },
+            { tier = 2, name = "Tanning Rack", icon = 4559256, perk = "Required for certain reagents", requiredSkill = 125 },
             { tier = 3, name = "Sewing Machine", icon = 3622223, perk = "Required for certain recipes", requiredSkill = 300 },
         },
         buff = "Rested experience (up to 5% of a level)",
