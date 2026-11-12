@@ -12,7 +12,7 @@ local CAMPFIRE_KIT_SPELLS = {
     [1307237] = 3,  -- Expert Campfire Kit
 }
 
-local function MarkCampfire()
+function MarkCampfire()
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
     if InCombatLockdown() then
         addon.Print("Campfires can't be marked while in combat.")
@@ -38,13 +38,14 @@ local function MarkCampfire()
         addon.Print("Campfire is already marked.")
     end
 end
+addon.MarkCampfire = MarkCampfire
 
 SLASH_COZYFIRE1 = "/cf"
 SLASH_COZYFIRE2 = "/cozyfire"
 SlashCmdList["COZYFIRE"] = function(msg)
     local cmd = msg:lower():match("^%s*(%S*)")
     if cmd == "mark" then
-        MarkCampfire()
+        addon.MarkCampfire()
     elseif cmd == "options" or cmd == "config" then
         addon.OpenOptions()
     else
