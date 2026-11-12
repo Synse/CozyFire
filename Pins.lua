@@ -131,7 +131,7 @@ function pins:ObserveCampObject(entry)
 
     if nearest then
         -- Update the campfire tier
-        if entry.profession == "Cooking" and nearest.tier == nil then
+        if entry.profession == "Cooking" and entry.tier > nearest.tier then
             nearest.tier = entry.tier
             addon.PrintDebug("Set campfire tier=%s", entry.tier)
         end
@@ -168,7 +168,7 @@ function pins:ObserveCampObject(entry)
         addon.PrintDebug("Found %s (%s)", entry.name, entry.code)
 
         -- Truncate the list of objects if it is longer than the limit for this campfire
-        if #objects > CAMPFIRE_OBJECT_LIMITS[nearest.tier or 1] then
+        if #objects > CAMPFIRE_OBJECT_LIMITS[nearest.tier] then
             table.remove(objects, 1)
         end
     end
@@ -180,7 +180,7 @@ local function RenderPinTooltip(pin)
     local objects = pin.objects
     GameTooltip:ClearLines()
     GameTooltip:AddDoubleLine(
-        "|cffff8000CozyFire|r", ("(%d/%d)"):format(objects and #objects or 0, CAMPFIRE_OBJECT_LIMITS[pin.tier or 1]),
+        "|cffff8000CozyFire|r", ("(%d/%d)"):format(objects and #objects or 0, CAMPFIRE_OBJECT_LIMITS[pin.tier]),
         1, 1, 1, 0.6, 0.6, 0.6
     )
 
@@ -297,7 +297,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
         layer = layer,
         mapID = mapID,
         shared = shared == true,
-        tier = (tier == 1 or tier == 2 or tier == 3) and tier or nil,
+        tier = (tier == 2 or tier == 3) and tier or 1,
         objects = type(objects) == "table" and objects or nil,
         violetFlames = violetFlames == true or nil,
     }
@@ -308,7 +308,7 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
                 table.remove(pin.objects, index)
             end
         end
-        while #pin.objects > CAMPFIRE_OBJECT_LIMITS[pin.tier or 1] do
+        while #pin.objects > CAMPFIRE_OBJECT_LIMITS[pin.tier] do
             table.remove(pin.objects, 1)
         end
     end
