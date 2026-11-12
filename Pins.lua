@@ -49,15 +49,18 @@ local function ApplyPinAppearance(pin)
     local other = IsOtherLayer(pin)
     local hidden = other and CoveredByCurrentLayer(pin)
     local worldHidden = hidden or CozyFireDB.hideWorldMapPins
+    local miniHidden = hidden or CozyFireDB.hideMinimapPins
 
     -- Pins on other layers are hidden if they are covered by a pin on the current layer
-    -- HBD shows world map icons when the map acquires them, so hide with alpha instead
+    -- HBD shows icons when the maps update them, so hide with alpha instead
     pin.worldIcon:SetAlpha(worldHidden and 0 or 1)
-    pin.miniIcon:SetAlpha(hidden and 0 or 1)
+    pin.miniIcon:SetAlpha(miniHidden and 0 or 1)
     pin.worldIcon:EnableMouse(not worldHidden)
 
-    local size = CozyFireDB.worldMapPinSize or addon.WORLDMAP_PIN_SIZE
-    pin.worldIcon:SetSize(size, size)
+    local worldSize = CozyFireDB.worldMapPinSize or addon.WORLDMAP_PIN_SIZE
+    pin.worldIcon:SetSize(worldSize, worldSize)
+    local miniSize = CozyFireDB.minimapPinSize or addon.MINIMAP_PIN_SIZE
+    pin.miniIcon:SetSize(miniSize, miniSize)
 
     -- Pins on other layers are desaturated
     local amount = other and OTHER_LAYER_DESATURATION or 0
