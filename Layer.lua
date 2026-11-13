@@ -23,10 +23,6 @@ local currentMapID
 local currentSource
 
 local function SetCurrent(newLayer, newMapID, newSource)
-    newLayer = tonumber(newLayer)
-    if newLayer == 0 then newLayer = nil end
-    newMapID = newMapID or C_Map.GetBestMapForUnit("player")
-    newSource = newLayer and (newSource or "manual") or nil
     if newLayer == currentLayer and newMapID == currentMapID and newSource == currentSource then return end
 
     currentLayer = newLayer
