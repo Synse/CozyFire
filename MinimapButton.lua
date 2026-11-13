@@ -11,7 +11,7 @@ local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
     icon = ICON_TEXTURE,
     OnClick = function(_, mouseButton)
         if mouseButton == "LeftButton" then
-            if not InCombatLockdown() and addon.PlayerNearCampfire and addon.PlayerNearCampfire() then
+            if not InCombatLockdown() and addon.PlayerNearCampfire() then
                 if IsShiftKeyDown() then
                     addon.MarkCampfire()
                 end
