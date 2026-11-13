@@ -19,7 +19,7 @@ end
 ---@param ... any
 function addon.PrintDebug(fmt, ...)
     --@debug@
-    DEFAULT_CHAT_FRAME:AddMessage("|cffffc44dCozyFireDebug:|r " .. fmt:format(tostringall(...)))
+    DEFAULT_CHAT_FRAME:AddMessage("|cffcc8844CozyFireDebug:|r " .. fmt:format(tostringall(...)))
     --@end-debug@
 end
 
