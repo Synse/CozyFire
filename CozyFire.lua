@@ -26,17 +26,13 @@ end
 ---Checks for the "Violet Flames" aura from the "Pouch of Violet Dust" toy
 ---@return boolean? # nil in combat
 function addon.PlayerHasVioletFlames()
-    if not InCombatLockdown() and C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID then
+    if not InCombatLockdown() then
         return C_UnitAuras.GetPlayerAuraBySpellID(VIOLET_FLAMES_SPELL) ~= nil
     end
 end
 
 ---Checks for the "Campfire Nearby" aura (100-yard radius)
----@return boolean? # nil if unknown
+---@return boolean
 function addon.PlayerNearCampfire()
-    if C_UnitAuras and C_UnitAuras.GetPlayerAuraBySpellID then
-        return C_UnitAuras.GetPlayerAuraBySpellID(CAMPFIRE_NEARBY_SPELL) ~= nil
-    end
-
-    return nil
+    return C_UnitAuras.GetPlayerAuraBySpellID(CAMPFIRE_NEARBY_SPELL) ~= nil
 end
