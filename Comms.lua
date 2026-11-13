@@ -84,11 +84,13 @@ function addon.BroadcastPin(pin)
 
     if IsInGuild() then
         C_ChatInfo.SendAddonMessage(PREFIX, msg, "GUILD")
+        addon.PrintDebug("Pin sent to GUILD")
     end
 
     local group = GroupChannel()
     if group then
         C_ChatInfo.SendAddonMessage(PREFIX, msg, group)
+        addon.PrintDebug("Pin sent to %s", group)
     end
 end
 
