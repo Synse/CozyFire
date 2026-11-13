@@ -340,13 +340,8 @@ local function AddPin(data, source)
     if not instanceID or not x or not y then return end
 
     local isLocal = source == "local"
-    local mapID, now
-    if isLocal then
-        mapID = C_Map.GetBestMapForUnit("player")
-    else
-        now = GetServerTime()
-        mapID = data.mapID
-    end
+    local now = GetServerTime()
+    local mapID = isLocal and C_Map.GetBestMapForUnit("player") or data.mapID
     local expires = data.expires
     local layer = data.layer
     local approximateLocation = data.approximateLocation
@@ -357,7 +352,7 @@ local function AddPin(data, source)
     local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
 
     -- Remove the existing pin if expired
-    if not isLocal and existing and existing.expires <= now then
+    if existing and existing.expires <= now then
         pins:RemovePin(existingId)
         existing = nil
     end
@@ -445,7 +440,7 @@ local function AddPin(data, source)
     end
 
     if isLocal then
-        expires = expires or (GetServerTime() + addon.PIN_TTL)
+        expires = expires or (now + addon.PIN_TTL)
     end
 
     local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, not isLocal, tier, objects, violetFlames)
