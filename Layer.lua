@@ -7,7 +7,7 @@ local HBD = LibStub("HereBeDragons-2.0")
 -- Creature GUIDs are formatted as Creature-0-[serverID]-[instanceID]-[zoneUID]-[npcID]-[spawnUID]
 -- Player-cast GUIDs are formatted as Cast-[type]-[serverID]-[instanceID]-[zoneUID]-[spellID]-[castUID]
 local function GetLayerFromGUID(guid)
-    if issecretvalue and issecretvalue(guid) then return nil end
+    if issecretvalue(guid) then return nil end
     if type(guid) ~= "string" then return nil end
 
     local zoneUID = select(5, strsplit("-", guid))
@@ -69,12 +69,12 @@ local function UpdateLayerFromUnit(unit)
     -- Skip non-combat pets (e.g., Frog Familiar)
     if not unit then return end
     local creatureType = UnitCreatureType(unit)
-    if issecretvalue and issecretvalue(creatureType) then return end
+    if issecretvalue(creatureType) then return end
     if creatureType == "Non-combat Pet" then return end
     local guid = UnitGUID(unit)
 
     -- Skip non-creature GUIDs
-    if issecretvalue and issecretvalue(guid) then return end
+    if issecretvalue(guid) then return end
     if type(guid) ~= "string" or strsub(guid, 1, 8) ~= "Creature" then return end
 
     local zoneUID = GetLayerFromGUID(guid)
