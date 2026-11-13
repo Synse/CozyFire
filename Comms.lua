@@ -111,7 +111,7 @@ local frame = CreateFrame("Frame")
 frame:RegisterEvent("CHAT_MSG_ADDON")
 frame:SetScript("OnEvent", function(_, _, prefix, text, channel, sender)
     if prefix ~= PREFIX or IsSelf(sender) then return end
-    addon.PrintDebug("Pin from %s (%s): %s", sender, channel, text)
+    addon.PrintDebug("Pin from %s (%s): |cff999999%s|r", sender, channel, text)
 
     local data = Deserialize(text)
     if data then
