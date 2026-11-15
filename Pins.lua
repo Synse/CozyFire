@@ -77,23 +77,27 @@ local function CreateIcon(size)
     return icon
 end
 
--- Return a nearby pin on the same map, preferring an exact layer match over an unknown one
+-- Return a nearby pin, preferring an exact layer match over an unknown one
 local function FindNearby(instanceID, x, y, layer, mapID)
     local fallbackId
 
     for id, pin in pairs(active) do
-        if pin.instanceID == instanceID and pin.mapID == mapID
-            and (pin.layer == layer or pin.layer == nil or layer == nil) then
+        if pin.instanceID == instanceID then
             local dist = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
 
             if dist and dist <= DEDUP_RANGE then
+                -- zoneUIDs are per map, so layers on different maps can't be compared
+                local sameMap = pin.mapID == mapID
+
                 -- exact layer match
-                if pin.layer == layer then
+                if sameMap and pin.layer == layer then
                     return id, pin
                 end
 
                 -- fallback to unknown layer
-                fallbackId = fallbackId or id
+                if not sameMap or pin.layer == nil or layer == nil then
+                    fallbackId = fallbackId or id
+                end
             end
         end
     end
@@ -357,10 +361,14 @@ local function AddPin(data, source)
         existing = nil
     end
 
+    -- zoneUIDs are per map, so only carry layers between pins on the same map
+    local sameMap = existing and existing.mapID == mapID
+    local existingLayer = sameMap and existing.layer or nil
+
     local replaceExisting = false
     if existing then
         if isLocal then
-            layer = layer or existing.layer
+            layer = layer or existingLayer
 
             -- Placing a campfire replaces any nearby pins
             local isPlacement = not approximateLocation and not approximateTime
@@ -381,7 +389,7 @@ local function AddPin(data, source)
 
             -- Remove the current pin if this report is a new fire
             if expires > existing.expires then
-                layer = layer or existing.layer
+                layer = layer or existingLayer
                 replaceExisting = true
             end
         end
@@ -389,7 +397,7 @@ local function AddPin(data, source)
 
     if existing and not replaceExisting then
         local upgradeLocation = not isLocal and existing.approximateLocation and not approximateLocation
-        local upgradeLayer = existing.layer == nil and layer ~= nil
+        local upgradeLayer = sameMap and existing.layer == nil and layer ~= nil
 
         if violetFlames == true and not existing.violetFlames then
             existing.violetFlames = true
