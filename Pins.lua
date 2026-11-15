@@ -121,10 +121,12 @@ function pins:ObserveCampObject(entry)
 
     -- Find the nearest campfire pin within 20 yards
     for _, pin in pairs(active) do
-        if pin.instanceID == instanceID and pin.mapID == mapID and pin.expires > now
-            and (pin.layer == nil or pin.layer == layer) then
+        -- zoneUIDs are per map, so layers on different maps can't be compared
+        local sameMap = pin.mapID == mapID
+        if pin.instanceID == instanceID and pin.expires > now
+            and (not sameMap or pin.layer == nil or pin.layer == layer) then
             local distance = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
-            local isExactLayer = pin.layer == layer
+            local isExactLayer = sameMap and pin.layer == layer
             if distance and distance <= 20 and (not nearest
                 or isExactLayer and not nearestIsExactLayer
                 or isExactLayer == nearestIsExactLayer and distance < nearestDistance) then
@@ -147,7 +149,7 @@ function pins:ObserveCampObject(entry)
         end
 
         -- Update the campfire layer
-        if nearest.layer == nil and layer ~= nil then
+        if nearest.layer == nil and layer ~= nil and nearest.mapID == mapID then
             nearest.layer = layer
             self:ApplyAppearance()
             addon.PrintDebug("Set campfire layer=%s", layer)
