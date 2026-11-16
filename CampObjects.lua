@@ -207,8 +207,10 @@ for profession, data in pairs(professions) do
     end
 end
 
--- Returns the buff(s) for a camp object as { { text, isCurrent }, ... } or nil if the object has no buff
--- For level dependent buffs, isCurrent indicates which line corresponds to the player's current level
+---Returns a camp object's buffs
+---@param object table
+---@param expand boolean? # include every level range
+---@return { text: string, isCurrent: boolean }[]? # nil if the object has no buff
 function addon.GetCampObjectBuffLines(object, expand)
     local buff = object.buff
     if buff == nil then
