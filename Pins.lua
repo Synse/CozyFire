@@ -364,8 +364,7 @@ local function AddPin(data, source)
     end
 
     -- zoneUIDs are per map, so only carry layers between pins on the same map
-    local sameMap = existing and existing.mapID == mapID
-    local existingLayer = sameMap and existing.layer or nil
+    local existingLayer = existing and existing.mapID == mapID and existing.layer or nil
 
     local replaceExisting = false
     if existing then
@@ -399,7 +398,7 @@ local function AddPin(data, source)
 
     if existing and not replaceExisting then
         local upgradeLocation = not isLocal and existing.approximateLocation and not approximateLocation
-        local upgradeLayer = sameMap and existing.layer == nil and layer ~= nil
+        local upgradeLayer = existing.mapID == mapID and existing.layer == nil and layer ~= nil
 
         if violetFlames == true and not existing.violetFlames then
             existing.violetFlames = true
