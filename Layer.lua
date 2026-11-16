@@ -46,7 +46,8 @@ local function SyncPlayerMap()
 end
 HBD.RegisterCallback(addon, "PlayerZoneChanged", SyncPlayerMap)
 
--- Returns the current layer
+---Returns the current layer (zoneUID) for the player's map
+---@return number? # nil if unknown or in an instance
 function addon.GetLayer()
     if IsInInstance() or not currentMapID or currentMapID ~= C_Map.GetBestMapForUnit("player") then
         return nil
