@@ -176,10 +176,12 @@ local professions = {
     },
 }
 
--- Objects are flattened into a display-name-keyed index for O(1) tooltip lookup
--- Each object inherits the profession level buff/buffExclusiveWith unless it defines its own
+---Camp objects keyed by display name, for tooltip lookup
 addon.campObjects = {}
+---Camp objects keyed by code (e.g. "A2" for the Alchemy Fermenter), used to store a pin's objects
 addon.campObjectsByCode = {}
+
+-- Objects inherit buff, buffExclusiveWith, and buffTip from their profession unless they define their own
 for profession, data in pairs(professions) do
     for _, object in ipairs(data.objects) do
         object.profession = profession
