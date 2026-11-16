@@ -1,7 +1,7 @@
 ---@class CozyFire
 local addon = select(2, ...)
 
--- All camp objects by profession
+---All camp objects by profession
 local professions = {
     Alchemy = {
         code = "A",
