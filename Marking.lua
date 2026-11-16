@@ -1,7 +1,6 @@
 ---@class CozyFire
 local addon = select(2, ...)
 
-local HBD = LibStub("HereBeDragons-2.0")
 local CAMPFIRE_SPELLS = {
     [1229739] = true,  -- Welcoming Campfire
     [1289723] = true,  -- Welcoming Campfire
@@ -25,18 +24,14 @@ local function MarkCampfire()
         return
     end
 
-    local x, y, instanceID = HBD:GetPlayerWorldPosition()
-    if not x or not y then
-        addon.Print("Couldn't determine your position.")
-        return
-    end
-
-    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, true, true, addon.GetLayer())
+    local action, pin = addon.pins:AddLocalPin(true, true, addon.GetLayer())
     if action == "created" or action == "replaced" then
         addon.Print("Campfire marked.")
         addon.BroadcastPin(pin)
     elseif action == "exists" then
         addon.Print("Campfire is already marked.")
+    else
+        addon.Print("Couldn't determine your position.")
     end
 end
 addon.MarkCampfire = MarkCampfire
@@ -64,12 +59,7 @@ local function AutoMark()
         return
     end
 
-    local x, y, instanceID = HBD:GetPlayerWorldPosition()
-    if not x or not y then
-        return
-    end
-
-    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, true, addon.GetLayer())
+    local action, pin = addon.pins:AddLocalPin(false, true, addon.GetLayer())
     if action == "created" or action == "replaced" then
         addon.Print("Campfire automatically marked.")
         addon.BroadcastPin(pin)
@@ -102,17 +92,11 @@ local function CampfirePlaced(castGUID, tier)
         return
     end
 
-    local x, y, instanceID = HBD:GetPlayerWorldPosition()
-    if not x or not y then
-        return
-    end
-
     -- The cast GUID carries the exact layer the fire was lit on; fall back to the tracked layer
     local layer = addon.GetLayerFromGUID(castGUID) or addon.GetLayer()
 
-    local _, action, pin = addon.pins:AddLocalPin(instanceID, x, y, false, false, layer)
+    local action, pin = addon.pins:AddLocalPin(false, false, layer, tier)
     if action == "created" or action == "replaced" then
-        pin.tier = tier
         addon.Print("Campfire marked.")
         addon.BroadcastPin(pin)
     end

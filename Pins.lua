@@ -340,7 +340,7 @@ end
 -- Add a campfire pin at world coordinates. `approximateLocation` is true for manual marks and false when the
 -- player gains the "Welcoming Campfire" buff. `approximateTime` is false when the player places the campfire,
 -- and true otherwise. `layer` is the zoneUID of the layer the fire was seen on, if known.
--- Returns id, action ("created"/"replaced"/"exists"), and the pin when created or replaced
+-- Returns action ("created"/"replaced"/"exists") for local pins, plus the pin when created or replaced
 local function AddPin(data, source)
     local instanceID, x, y = data.instanceID, data.x, data.y
     if not instanceID or not x or not y then return end
@@ -436,7 +436,7 @@ local function AddPin(data, source)
         end
 
         if isLocal then
-            return existingId, "exists"
+            return "exists"
         end
 
         addon.PrintDebug("Pin received is |cff6eb2eaalready known|r")
@@ -454,12 +454,13 @@ local function AddPin(data, source)
 
     local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, not isLocal, tier, objects, violetFlames)
     if isLocal then
-        return id, replaceExisting and "replaced" or "created", active[id]
+        return replaceExisting and "replaced" or "created", active[id]
     end
 end
 
--- Add a pin for a locally marked campfire
-function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime, layer)
+-- Add a pin at the player's position for a locally marked campfire
+function pins:AddLocalPin(approximateLocation, approximateTime, layer, tier)
+    local x, y, instanceID = HBD:GetPlayerWorldPosition()
     return AddPin({
         instanceID = instanceID,
         x = x,
@@ -467,6 +468,7 @@ function pins:AddLocalPin(instanceID, x, y, approximateLocation, approximateTime
         approximateLocation = approximateLocation,
         approximateTime = approximateTime,
         layer = layer,
+        tier = tier,
         violetFlames = addon.PlayerHasVioletFlames(),
     }, "local")
 end
