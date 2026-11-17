@@ -513,9 +513,9 @@ C_Timer.NewTicker(SWEEP_INTERVAL, function()
     for id, pin in pairs(active) do
         local expired = now >= pin.expires
 
-        -- Only prune a "missing" fire on our own (or an unknown) layer
+        -- Only campfires on our current layer that we are in close proximity to are considered for removal
         if not expired and nearCampfire == false and pin.instanceID == pInstance
-            and (pin.layer == nil or pin.layer == currentLayer) then
+            and currentLayer and pin.layer == currentLayer then
             local dist = HBD:GetWorldDistance(pInstance, px, py, pin.x, pin.y)
             if dist and dist <= 20 then
                 addon.Print("Nearby campfire not found, removed from map.")
