@@ -349,7 +349,7 @@ local function AddPin(data, source)
 
     local isLocal = source == "local"
     local now = GetServerTime()
-    local mapID = isLocal and C_Map.GetBestMapForUnit("player") or data.mapID
+    local mapID = data.mapID
     local expires = data.expires
     local layer = data.layer
     local approximateLocation = data.approximateLocation
@@ -450,10 +450,6 @@ local function AddPin(data, source)
         pins:RemovePin(existingId)
     end
 
-    if isLocal then
-        expires = expires or (now + addon.PIN_TTL)
-    end
-
     local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, not isLocal, tier, objects, violetFlames)
     if isLocal then
         return replaceExisting and "replaced" or "created", active[id]
@@ -467,6 +463,8 @@ function pins:AddLocalPin(approximateLocation, approximateTime, layer, tier)
         instanceID = instanceID,
         x = x,
         y = y,
+        mapID = C_Map.GetBestMapForUnit("player"),
+        expires = GetServerTime() + addon.PIN_TTL,
         approximateLocation = approximateLocation,
         approximateTime = approximateTime,
         layer = layer,
