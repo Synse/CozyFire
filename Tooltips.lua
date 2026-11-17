@@ -8,6 +8,45 @@ local SHARED_CAMP_OBJECTS = {
 }
 local tooltipHasScalingBuff = false
 
+---Returns a camp object's buff lines, marking the one for the player's current level
+---@param buff string|table # the object's buff text, or its level ranges
+---@param expand boolean? # include every level range
+---@return { text: string, isCurrent: boolean }[]
+local function GetBuffLines(buff, expand)
+    -- For non-level-dependent buffs, just return the string
+    if type(buff) ~= "table" then
+        return { { text = buff, isCurrent = true } }
+    end
+
+    -- Get the players current level to determine which buff line applies
+    local level = UnitLevel("player")
+    local currentIndex = 1
+    for i, entry in ipairs(buff) do
+        if level >= entry.minLevel then
+            currentIndex = i
+        end
+    end
+
+    -- By default, only the currently applicable buff line is returned
+    if not expand then
+        return { { text = buff[currentIndex].buff, isCurrent = true } }
+    end
+
+    -- If expand is true, all level ranges are returned with one marked as the current (active)
+    local lines = {}
+    for i, entry in ipairs(buff) do
+        local nextEntry = buff[i + 1]
+        local maxLevel = nextEntry and nextEntry.minLevel - 1 or 60
+        local range = entry.minLevel
+        if maxLevel ~= entry.minLevel then
+            range = range .. "-" .. maxLevel
+        end
+        lines[i] = { text = entry.buff .. " (" .. range .. ")", isCurrent = i == currentIndex }
+    end
+
+    return lines
+end
+
 local function AddCampingDetails(tooltip, data)
     if tooltip == GameTooltip then
         tooltipHasScalingBuff = false
@@ -50,7 +89,7 @@ local function AddCampingDetails(tooltip, data)
         end
 
         tooltip:AddLine(" ")
-        for _, line in ipairs(addon.GetCampObjectBuffLines(entry, IsShiftKeyDown())) do
+        for _, line in ipairs(GetBuffLines(entry.buff, IsShiftKeyDown())) do
             if line.isCurrent then
                 tooltip:AddLine(line.text, 0.25, 1, 0.25, true)
             else
