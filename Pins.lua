@@ -473,7 +473,8 @@ function pins:AddLocalPin(approximateLocation, approximateTime, layer, tier)
     }, "local")
 end
 
--- Add or improve a shared pin
+---Adds (or updates) a pin received via addon comms
+---@param data table # deserialized pin from comms
 function pins:AddSharedPin(data)
     AddPin(data, "shared")
 end
