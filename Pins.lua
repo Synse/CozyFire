@@ -18,7 +18,9 @@ addon.pins = pins
 local active = {}
 local nextId = 1
 
--- The zoneUID is a per-map (zone) layer identifier
+---Checks whether a pin is on a different layer
+---@param pin table
+---@return boolean # false when either layer is unknown
 local function IsOtherLayer(pin)
     local current = addon.GetLayer()
     return pin.layer ~= nil and current ~= nil and pin.layer ~= current
@@ -86,7 +88,7 @@ local function FindNearby(instanceID, x, y, layer, mapID)
             local dist = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
 
             if dist and dist <= DEDUP_RANGE then
-                -- zoneUIDs are per map, so layers on different maps can't be compared
+                -- zoneUIDs differ per map, so a mismatch across maps doesn't mean another layer
                 local sameMap = pin.mapID == mapID
 
                 -- exact layer match
@@ -121,7 +123,7 @@ function pins:ObserveCampObject(entry)
 
     -- Find the nearest campfire pin within 20 yards
     for _, pin in pairs(active) do
-        -- zoneUIDs are per map, so layers on different maps can't be compared
+        -- zoneUIDs differ per map, so a mismatch across maps doesn't mean another layer
         local sameMap = pin.mapID == mapID
         if pin.instanceID == instanceID and pin.expires > now
             and (not sameMap or pin.layer == nil or pin.layer == layer) then
@@ -363,7 +365,7 @@ local function AddPin(data, source)
         existing = nil
     end
 
-    -- zoneUIDs are per map, so only carry layers between pins on the same map
+    -- zoneUIDs differ per map, so only carry layers between pins on the same map
     local existingLayer = existing and existing.mapID == mapID and existing.layer or nil
 
     local replaceExisting = false
