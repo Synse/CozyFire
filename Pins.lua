@@ -482,13 +482,9 @@ function pins:RemovePin(id)
     local pin = active[id]
     if not pin then return end
 
-    -- Stop the live countdown and hide the tooltip if it is showing for this pin
-    if pin.worldIcon.ticker then
-        pin.worldIcon.ticker:Cancel()
-        pin.worldIcon.ticker = nil
-    end
+    -- Hide the tooltip for this pin
     if GameTooltip:GetOwner() == pin.worldIcon then
-        GameTooltip:Hide()
+        HidePinTooltip(pin.worldIcon)
     end
 
     HBDPins:RemoveWorldMapIcon(addonName, pin.worldIcon)
