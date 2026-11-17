@@ -84,7 +84,7 @@ local function AddCampingDetails(tooltip, data)
 
     -- The buff provided is displayed in green text, if Shift is held all level ranges are shown
     if entry.buff then
-        if tooltip == GameTooltip then
+        if tooltip == GameTooltip and type(entry.buff) == "table" then
             tooltipHasScalingBuff = true
         end
 
