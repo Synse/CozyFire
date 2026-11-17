@@ -478,6 +478,8 @@ function pins:AddSharedPin(data)
     AddPin(data, "shared")
 end
 
+---Removes a pin from the map
+---@param id number
 function pins:RemovePin(id)
     local pin = active[id]
     if not pin then return end
