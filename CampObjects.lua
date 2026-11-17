@@ -182,23 +182,15 @@ addon.campObjects = {}
 addon.campObjectsByCode = {}
 
 -- Objects inherit buff, buffExclusiveWith, and buffTip from their profession unless they define their own
+local INHERITED_FIELDS = { "buff", "buffExclusiveWith", "buffTip" }
 for profession, data in pairs(professions) do
     for _, object in ipairs(data.objects) do
         object.profession = profession
 
-        -- Inherit buff from the profession
-        if object.buff == nil then
-            object.buff = data.buff
-        end
-
-        -- Inherit buffExclusiveWith from the profession
-        if object.buffExclusiveWith == nil then
-            object.buffExclusiveWith = data.buffExclusiveWith
-        end
-
-        -- Inherit buffTip from the profession
-        if object.buffTip == nil then
-            object.buffTip = data.buffTip
+        for _, field in ipairs(INHERITED_FIELDS) do
+            if object[field] == nil then
+                object[field] = data[field]
+            end
         end
 
         addon.campObjects[object.name] = object
