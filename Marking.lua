@@ -12,26 +12,26 @@ local CAMPFIRE_KIT_SPELLS = {
 }
 
 ---Marks and shares a nearby campfire on the map
-local function MarkCampfire()
+---@param auto boolean? # true when triggered by the Welcoming Campfire buff; exact location and only reports success
+local function MarkCampfire(auto)
+    local message
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
     if InCombatLockdown() then
-        addon.Print("Campfires can't be marked while in combat.")
-        return
-    end
-
-    if not addon.PlayerNearCampfire() then
-        addon.Print("No nearby campfire found.")
-        return
-    end
-
-    local action, pin = addon.pins:AddLocalPin(true, true, addon.GetLayer())
-    if action == "created" or action == "replaced" then
-        addon.Print("Campfire marked.")
-        addon.BroadcastPin(pin)
-    elseif action == "exists" then
-        addon.Print("Campfire is already marked.")
+        message = "Campfires can't be marked while in combat."
+    elseif not addon.PlayerNearCampfire() then
+        message = "No nearby campfire found."
     else
-        addon.Print("Couldn't determine your position.")
+        local action, pin = addon.pins:AddLocalPin(not auto, true, addon.GetLayer())
+        if action == "created" or action == "replaced" then
+            addon.Print("Campfire marked.")
+            addon.BroadcastPin(pin)
+            return
+        end
+        message = action == "exists" and "Campfire is already marked." or "Couldn't determine your position."
+    end
+
+    if not auto then
+        addon.Print(message)
     end
 end
 addon.MarkCampfire = MarkCampfire
@@ -41,28 +41,11 @@ SLASH_COZYFIRE2 = "/cozyfire"
 SlashCmdList["COZYFIRE"] = function(msg)
     local cmd = msg:lower():match("^%s*(%S*)")
     if cmd == "mark" then
-        addon.MarkCampfire()
+        MarkCampfire()
     elseif cmd == "options" or cmd == "config" then
         addon.OpenOptions()
     else
         addon.Print("Commands: /cf mark, /cf options")
-    end
-end
-
--- Auto-mark whenever the Welcoming Campfire buff is gained if the player is near a campfire
-local function AutoMark()
-    if InCombatLockdown() then
-        return
-    end
-
-    if not addon.PlayerNearCampfire() then
-        return
-    end
-
-    local action, pin = addon.pins:AddLocalPin(false, true, addon.GetLayer())
-    if action == "created" or action == "replaced" then
-        addon.Print("Campfire automatically marked.")
-        addon.BroadcastPin(pin)
     end
 end
 
@@ -80,7 +63,7 @@ auraFrame:SetScript("OnEvent", function(_, _, _, updateInfo)
     for _, aura in ipairs(updateInfo.addedAuras) do
         local spellId = aura and aura.spellId
         if spellId and not issecretvalue(spellId) and CAMPFIRE_SPELLS[spellId] then
-            AutoMark()
+            MarkCampfire(true)
             return
         end
     end
