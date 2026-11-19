@@ -310,9 +310,8 @@ local function CreatePin(pin)
     HBDPins:AddWorldMapIconWorld(addonName, pin.worldIcon, pin.instanceID, pin.x, pin.y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
     HBDPins:AddMinimapIconWorld(addonName, pin.miniIcon, pin.instanceID, pin.x, pin.y, false)
 
-    local id = nextId
+    active[nextId] = pin
     nextId = nextId + 1
-    active[id] = pin
 
     pin.worldIcon.pin = pin
     pin.worldIcon:EnableMouse(true)
