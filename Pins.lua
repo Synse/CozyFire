@@ -337,84 +337,74 @@ end
 -- and true otherwise. `layer` is the zoneUID of the layer the fire was seen on, if known.
 -- Returns action ("created"/"replaced"/"exists") for local pins, plus the pin when created or replaced
 local function AddPin(data, source)
-    local instanceID, x, y = data.instanceID, data.x, data.y
-    if not instanceID or not x or not y then return end
+    if not data.instanceID or not data.x or not data.y then return end
 
     local isLocal = source == "local"
-    local now = GetServerTime()
-    local mapID = data.mapID
-    local expires = data.expires
-    local layer = data.layer
-    local approximateLocation = data.approximateLocation
-    local approximateTime = data.approximateTime
-    local tier = data.tier
-    local objects = data.objects
-    local violetFlames = data.violetFlames
-    local existingId, existing = FindNearby(instanceID, x, y, layer, mapID)
+    local existingId, existing = FindNearby(data.instanceID, data.x, data.y, data.layer, data.mapID)
 
     -- Remove the existing pin if expired
-    if existing and existing.expires <= now then
+    if existing and existing.expires <= GetServerTime() then
         pins:RemovePin(existingId)
         existing = nil
     end
 
     -- zoneUIDs differ per map, so only carry layers between pins on the same map
-    local existingLayer = existing and existing.mapID == mapID and existing.layer or nil
+    local existingLayer = existing and existing.mapID == data.mapID and existing.layer or nil
 
     local replaceExisting = false
     if existing then
         if isLocal then
-            layer = layer or existingLayer
+            data.layer = data.layer or existingLayer
 
             -- Placing a campfire replaces any nearby pins
-            local isPlacement = not approximateLocation and not approximateTime
-            local improvesLocation = not approximateLocation and existing.approximateLocation
+            local isPlacement = not data.approximateLocation and not data.approximateTime
+            local improvesLocation = not data.approximateLocation and existing.approximateLocation
             replaceExisting = isPlacement or improvesLocation
 
             -- Sitting at a campfire replaces nearby approximate pins, but retains their original expiration time
             if replaceExisting and not isPlacement then
-                expires = existing.expires
-                approximateTime = existing.approximateTime
-                tier = existing.tier
-                objects = existing.objects
-                violetFlames = violetFlames or existing.violetFlames
+                data.expires = existing.expires
+                data.approximateTime = existing.approximateTime
+                data.tier = existing.tier
+                data.objects = existing.objects
+                data.violetFlames = data.violetFlames or existing.violetFlames
             end
-        elseif not existing.approximateTime and not approximateTime then
+        elseif not existing.approximateTime and not data.approximateTime then
             -- Ignore reports for older fires in this location
-            if expires < existing.expires then return end
+            if data.expires < existing.expires then return end
 
             -- Remove the current pin if this report is a new fire
-            if expires > existing.expires then
-                layer = layer or existingLayer
+            if data.expires > existing.expires then
+                data.layer = data.layer or existingLayer
                 replaceExisting = true
             end
         end
     end
 
     if existing and not replaceExisting then
-        local upgradeLocation = not isLocal and existing.approximateLocation and not approximateLocation
-        local upgradeLayer = existing.mapID == mapID and existing.layer == nil and layer ~= nil
+        local upgradeLocation = not isLocal and existing.approximateLocation and not data.approximateLocation
+        local upgradeLayer = existing.mapID == data.mapID and existing.layer == nil and data.layer ~= nil
 
-        if violetFlames == true and not existing.violetFlames then
+        if data.violetFlames == true and not existing.violetFlames then
             existing.violetFlames = true
             ApplyPinAppearance(existing)
         end
 
         if not isLocal then
             if upgradeLocation then
-                existing.x, existing.y = x, y
+                existing.x, existing.y = data.x, data.y
                 existing.approximateLocation = false
                 HBDPins:RemoveWorldMapIcon(addonName, existing.worldIcon)
-                HBDPins:AddWorldMapIconWorld(addonName, existing.worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
-                HBDPins:AddMinimapIconWorld(addonName, existing.miniIcon, instanceID, x, y, false)
+                HBDPins:AddWorldMapIconWorld(addonName, existing.worldIcon, data.instanceID, data.x, data.y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
+                HBDPins:AddMinimapIconWorld(addonName, existing.miniIcon, data.instanceID, data.x, data.y, false)
             end
 
             if existing.approximateTime then
-                if not approximateTime then
-                    existing.expires = expires
+                if not data.approximateTime then
+                    existing.expires = data.expires
                     existing.approximateTime = false
                 else
-                    existing.expires = math.min(existing.expires, expires)
+                    existing.expires = math.min(existing.expires, data.expires)
                 end
             end
 
@@ -422,8 +412,8 @@ local function AddPin(data, source)
 
         -- Upgrade the existing pin's unknown layer to a known layer
         if upgradeLayer then
-            existing.layer = layer
-            addon.PrintDebug("Upgraded pin to known layer: %s", layer)
+            existing.layer = data.layer
+            addon.PrintDebug("Upgraded pin to known layer: %s", data.layer)
         end
 
         if upgradeLocation or upgradeLayer then
@@ -443,22 +433,10 @@ local function AddPin(data, source)
         pins:RemovePin(existingId)
     end
 
-    local id = CreatePin({
-        instanceID = instanceID,
-        x = x,
-        y = y,
-        approximateLocation = approximateLocation,
-        approximateTime = approximateTime,
-        expires = expires,
-        layer = layer,
-        mapID = mapID,
-        shared = not isLocal,
-        tier = tier,
-        objects = objects,
-        violetFlames = violetFlames,
-    })
+    data.shared = not isLocal
+    CreatePin(data)
     if isLocal then
-        return replaceExisting and "replaced" or "created", active[id]
+        return replaceExisting and "replaced" or "created", data
     end
 end
 
