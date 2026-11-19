@@ -282,33 +282,16 @@ local function HidePinTooltip(self)
     GameTooltip:Hide()
 end
 
--- Build the pin frames and register it. Returns the new id
-local function CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, shared, tier, objects, violetFlames)
-    local worldIcon = CreateIcon(addon.PIN_SIZE_WORLDMAP)
-    local miniIcon = CreateIcon(addon.PIN_SIZE_MINIMAP)
+---Create a pin representing a campfire on the map
+---@param pin table
+---@return number id
+local function CreatePin(pin)
+    pin.shared = pin.shared == true
+    pin.tier = (pin.tier == 2 or pin.tier == 3) and pin.tier or 1
+    pin.violetFlames = pin.violetFlames == true or nil
 
-    -- PIN_FRAME_LEVEL_TOPMOST draws the world map pin above the player arrow
-    HBDPins:AddWorldMapIconWorld(addonName, worldIcon, instanceID, x, y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
-    HBDPins:AddMinimapIconWorld(addonName, miniIcon, instanceID, x, y, false)
-
-    local id = nextId
-    nextId = nextId + 1
-    local pin = {
-        instanceID = instanceID,
-        x = x,
-        y = y,
-        approximateLocation = approximateLocation,
-        approximateTime = approximateTime,
-        worldIcon = worldIcon,
-        miniIcon = miniIcon,
-        expires = expires,
-        layer = layer,
-        mapID = mapID,
-        shared = shared == true,
-        tier = (tier == 2 or tier == 3) and tier or 1,
-        objects = type(objects) == "table" and objects or nil,
-        violetFlames = violetFlames == true or nil,
-    }
+    -- Objects are the camp fixtures that provide buffs
+    pin.objects = type(pin.objects) == "table" and pin.objects or nil
     if pin.objects then
         for index = #pin.objects, 1, -1 do
             local object = addon.campObjectsByCode[pin.objects[index]]
@@ -320,12 +303,22 @@ local function CreatePin(instanceID, x, y, approximateLocation, approximateTime,
             table.remove(pin.objects, 1)
         end
     end
+
+    pin.worldIcon = CreateIcon(addon.PIN_SIZE_WORLDMAP)
+    pin.miniIcon = CreateIcon(addon.PIN_SIZE_MINIMAP)
+
+    -- PIN_FRAME_LEVEL_TOPMOST draws the world map pin above the player arrow
+    HBDPins:AddWorldMapIconWorld(addonName, pin.worldIcon, pin.instanceID, pin.x, pin.y, HBD_PINS_WORLDMAP_SHOW_PARENT, "PIN_FRAME_LEVEL_TOPMOST")
+    HBDPins:AddMinimapIconWorld(addonName, pin.miniIcon, pin.instanceID, pin.x, pin.y, false)
+
+    local id = nextId
+    nextId = nextId + 1
     active[id] = pin
 
-    worldIcon.pin = pin
-    worldIcon:EnableMouse(true)
-    worldIcon:SetScript("OnEnter", ShowPinTooltip)
-    worldIcon:SetScript("OnLeave", HidePinTooltip)
+    pin.worldIcon.pin = pin
+    pin.worldIcon:EnableMouse(true)
+    pin.worldIcon:SetScript("OnEnter", ShowPinTooltip)
+    pin.worldIcon:SetScript("OnLeave", HidePinTooltip)
 
     pins:ApplyAppearance()
 
@@ -450,7 +443,20 @@ local function AddPin(data, source)
         pins:RemovePin(existingId)
     end
 
-    local id = CreatePin(instanceID, x, y, approximateLocation, approximateTime, expires, layer, mapID, not isLocal, tier, objects, violetFlames)
+    local id = CreatePin({
+        instanceID = instanceID,
+        x = x,
+        y = y,
+        approximateLocation = approximateLocation,
+        approximateTime = approximateTime,
+        expires = expires,
+        layer = layer,
+        mapID = mapID,
+        shared = not isLocal,
+        tier = tier,
+        objects = objects,
+        violetFlames = violetFlames,
+    })
     if isLocal then
         return replaceExisting and "replaced" or "created", active[id]
     end
@@ -563,8 +569,10 @@ function pins:Restore(isInitialLogin)
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
-            local layer = not isInitialLogin and pin.layer or nil
-            CreatePin(pin.instanceID, pin.x, pin.y, pin.approximateLocation, pin.approximateTime, pin.expires, layer, pin.mapID, pin.shared, pin.tier, pin.objects, pin.violetFlames)
+            if isInitialLogin then
+                pin.layer = nil
+            end
+            CreatePin(pin)
         end
     end
 end
