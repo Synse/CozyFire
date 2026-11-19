@@ -284,7 +284,6 @@ end
 
 ---Create a pin representing a campfire on the map
 ---@param pin table
----@return number id
 local function CreatePin(pin)
     pin.shared = pin.shared == true
     pin.tier = (pin.tier == 2 or pin.tier == 3) and pin.tier or 1
@@ -321,8 +320,6 @@ local function CreatePin(pin)
     pin.worldIcon:SetScript("OnLeave", HidePinTooltip)
 
     pins:ApplyAppearance()
-
-    return id
 end
 
 ---Reapplies texture, layer visibility, and world map settings to every pin
