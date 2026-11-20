@@ -182,6 +182,13 @@ function pins:ObserveCampObject(entry)
     end
 end
 
+---Returns a formatted string for the pins object count, e.g. "(2/3)"
+---@param pin table # the campfire pin
+---@return string
+function pins.FormatObjectCount(pin)
+    return ("(%d/%d)"):format(pin.objects and #pin.objects or 0, CAMPFIRE_OBJECT_LIMITS[pin.tier])
+end
+
 -- Render the tooltip for a map pin
 local function RenderPinTooltip(pin)
     local remaining = math.max(0, pin.expires - GetServerTime())
