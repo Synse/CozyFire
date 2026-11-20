@@ -73,13 +73,29 @@ local function AddCampingDetails(tooltip, data)
     end
 
     -- When mousing over a camp object, update any nearby pins
+    local pin
     if tooltip == GameTooltip then
-        addon.pins:ObserveCampObject(entry)
+        pin = addon.pins:ObserveCampObject(entry)
     end
 
     -- The perk is displayed in light blue text immediately after the object name
     if entry.perk then
         tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)
+    end
+
+    -- Add the object count and buffs to the campfire tooltip
+    if pin and entry.profession == "Cooking" then
+        GameTooltipTextRight1:SetText(addon.pins.FormatObjectCount(pin))
+        GameTooltipTextRight1:SetTextColor(0.6, 0.6, 0.6)
+        GameTooltipTextRight1:Show()
+
+        local icons = {}
+        for _, code in ipairs(pin.objects or {}) do
+            icons[#icons + 1] = ("|T%s:18:18|t"):format(addon.campObjectsByCode[code].icon)
+        end
+        if #icons > 0 then
+            tooltip:AddLine(table.concat(icons, " "))
+        end
     end
 
     -- The buff provided is displayed in green text, if Shift is held all level ranges are shown
