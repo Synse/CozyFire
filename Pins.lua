@@ -6,6 +6,7 @@ local HBD = LibStub("HereBeDragons-2.0")
 local HBDPins = LibStub("HereBeDragons-Pins-2.0")
 
 local DEDUP_RANGE = 100    -- yards; only one campfire per 100 yds
+local CAMPFIRE_HOVER_RANGE = 200  -- yards; how far away a hovered campfire tooltip will show buffs
 local CAMPFIRE_OBJECT_LIMITS = { 3, 5, 10 }
 local PIN_TEXTURE = "Interface\\AddOns\\CozyFire\\Media\\CozyFire.tga"
 local PIN_TEXTURE_VIOLET_FLAMES = "Interface\\AddOns\\CozyFire\\Media\\VioletFlames.tga"
@@ -119,25 +120,23 @@ function pins:ObserveCampObject(entry)
 
     local layer = addon.GetLayer()
     local now = GetServerTime()
-    local nearest, nearestDistance, nearestIsExactLayer
+    local nearest, nearestDistance
 
-    -- Find the nearest campfire pin within 20 yards
+    -- Find the nearest campfire pin that isn't known to be on another layer
     for _, pin in pairs(active) do
         -- zoneUIDs differ per map, so a mismatch across maps doesn't mean another layer
         local sameMap = pin.mapID == mapID
         if pin.instanceID == instanceID and pin.expires > now
-            and (not sameMap or pin.layer == nil or pin.layer == layer) then
+            and (not sameMap or pin.layer == nil or layer == nil or pin.layer == layer) then
             local distance = HBD:GetWorldDistance(instanceID, x, y, pin.x, pin.y)
-            local isExactLayer = sameMap and pin.layer == layer
-            if distance and distance <= 20 and (not nearest
-                or isExactLayer and not nearestIsExactLayer
-                or isExactLayer == nearestIsExactLayer and distance < nearestDistance) then
-                nearest, nearestDistance, nearestIsExactLayer = pin, distance, isExactLayer
+            if distance and distance <= CAMPFIRE_HOVER_RANGE and (not nearest or distance < nearestDistance) then
+                nearest, nearestDistance = pin, distance
             end
         end
     end
 
-    if nearest then
+    -- Only pins within 20 yards are updated
+    if nearest and nearestDistance <= 20 then
         -- Update the campfire tier
         if entry.profession == "Cooking" and entry.tier > nearest.tier then
             nearest.tier = entry.tier
@@ -157,7 +156,7 @@ function pins:ObserveCampObject(entry)
             addon.PrintDebug("Set campfire layer=%s", layer)
         end
 
-        if entry.profession == "Cooking" then return end
+        if entry.profession == "Cooking" then return nearest end
 
         -- Get the camp objects for this pin and add/update the list with this object
         nearest.objects = nearest.objects or {}
@@ -167,7 +166,7 @@ function pins:ObserveCampObject(entry)
                 if code ~= entry.code then
                     objects[index] = entry.code
                 end
-                return
+                return nearest
             end
         end
 
@@ -180,6 +179,8 @@ function pins:ObserveCampObject(entry)
             table.remove(objects, 1)
         end
     end
+
+    return nearest
 end
 
 ---Returns a formatted string for the pins object count, e.g. "(2/3)"
