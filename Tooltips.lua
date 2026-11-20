@@ -6,7 +6,7 @@ local SHARED_CAMP_OBJECTS = {
     ["Anvil"] = true,
     ["Chair"] = true,
 }
-local tooltipHasScalingBuff = false
+local tooltipHasShiftDetails = false
 
 ---Returns a camp object's buff lines, marking the one for the player's current level
 ---@param buff string|table # the object's buff text, or its level ranges
@@ -49,7 +49,7 @@ end
 
 local function AddCampingDetails(tooltip, data)
     if tooltip == GameTooltip then
-        tooltipHasScalingBuff = false
+        tooltipHasShiftDetails = false
     end
 
     local firstLine = data and data.lines and data.lines[1]
@@ -83,25 +83,31 @@ local function AddCampingDetails(tooltip, data)
         tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)
     end
 
-    -- Add the object count and buffs to the campfire tooltip
+    -- Add the object count and buffs to the campfire tooltip, with the full buff text when Shift is held
     if pin and entry.profession == "Cooking" then
+        tooltipHasShiftDetails = true
         GameTooltipTextRight1:SetText(addon.pins.FormatObjectCount(pin))
         GameTooltipTextRight1:SetTextColor(0.6, 0.6, 0.6)
         GameTooltipTextRight1:Show()
 
-        local icons = {}
+        local expand = IsShiftKeyDown()
         for _, code in ipairs(pin.objects or {}) do
-            icons[#icons + 1] = ("|T%s:18:18|t"):format(addon.campObjectsByCode[code].icon)
-        end
-        if #icons > 0 then
-            tooltip:AddLine(table.concat(icons, " "))
+            local object = addon.campObjectsByCode[code]
+            local icon = ("|T%s:18:18|t "):format(object.icon)
+            if expand and object.buff then
+                tooltip:AddLine(icon .. GetBuffLines(object.buff)[1].text, 0.25, 1, 0.25, true)
+            else
+                -- The placed Camp Chair is named just "Chair"
+                local name = object.name == "Chair" and "Camp Chair" or object.name
+                tooltip:AddLine(icon .. name, 1, 0.77, 0.3, true)
+            end
         end
     end
 
     -- The buff provided is displayed in green text, if Shift is held all level ranges are shown
     if entry.buff then
         if tooltip == GameTooltip and type(entry.buff) == "table" then
-            tooltipHasScalingBuff = true
+            tooltipHasShiftDetails = true
         end
 
         tooltip:AddLine(" ")
@@ -135,7 +141,7 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, AddCampingDet
 local shiftWatcher = CreateFrame("Frame")
 shiftWatcher:RegisterEvent("MODIFIER_STATE_CHANGED")
 shiftWatcher:SetScript("OnEvent", function(_, _, key)
-    if (key == "LSHIFT" or key == "RSHIFT") and tooltipHasScalingBuff and GameTooltip:IsShown() then
+    if (key == "LSHIFT" or key == "RSHIFT") and tooltipHasShiftDetails and GameTooltip:IsShown() then
         GameTooltip:RefreshData()
     end
 end)
