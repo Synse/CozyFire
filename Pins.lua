@@ -108,9 +108,9 @@ local function FindNearby(instanceID, x, y, layer, mapID)
     return fallbackId, active[fallbackId]
 end
 
--- Called when mousing over a campfire or camping object to update nearby pins
--- Campfires will update unknown tier and layer information
--- Camping objects will update the buffs provided
+---Updates the nearest campfire pin with information from a camp object
+---@param entry table # camp object from addon.campObjects
+---@return table? # the nearest pin, if any
 function pins:ObserveCampObject(entry)
     if InCombatLockdown() or not entry.tier then return end
 
