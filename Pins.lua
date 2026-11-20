@@ -194,10 +194,7 @@ local function RenderPinTooltip(pin)
     local remaining = math.max(0, pin.expires - GetServerTime())
     local objects = pin.objects
     GameTooltip:ClearLines()
-    GameTooltip:AddDoubleLine(
-        "|cffff8000CozyFire|r", ("(%d/%d)"):format(objects and #objects or 0, CAMPFIRE_OBJECT_LIMITS[pin.tier]),
-        1, 1, 1, 0.6, 0.6, 0.6
-    )
+    GameTooltip:AddDoubleLine("|cffff8000CozyFire|r", pins.FormatObjectCount(pin), 1, 1, 1, 0.6, 0.6, 0.6)
 
     if pin.violetFlames then
         GameTooltip:AddLine("|cffb469ffViolet Flames|r |cff999999(2 hour buffs)|r")
