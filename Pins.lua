@@ -241,10 +241,6 @@ local function RenderPinTooltip(pin)
         GameTooltip:AddLine("May be on a different layer", 0.6, 0.6, 0.6)
     end
 
-    --@debug@
-    GameTooltip:AddLine(("layer=%s"):format(tostring(pin.layer)), 0.6, 0.6, 0.6)
-    --@end-debug@
-
     GameTooltip:Show()
 end
 
