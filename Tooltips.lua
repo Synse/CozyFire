@@ -83,23 +83,19 @@ local function AddCampingDetails(tooltip, data)
         tooltip:AddLine(entry.perk, 0.4, 0.65, 0.95, true)
     end
 
-    -- Add the object count and buffs to the campfire tooltip, with the full buff text when Shift is held
+    -- Add the object count and buffs to the campfire tooltip
     if pin and entry.profession == "Cooking" then
-        tooltipHasShiftDetails = true
         GameTooltipTextRight1:SetText(addon.pins.FormatObjectCount(pin))
         GameTooltipTextRight1:SetTextColor(0.6, 0.6, 0.6)
         GameTooltipTextRight1:Show()
 
-        local expand = IsShiftKeyDown()
         for _, code in ipairs(pin.objects or {}) do
             local object = addon.campObjectsByCode[code]
             local icon = ("|T%s:18:18|t "):format(object.icon)
-            if expand and object.buff then
+            if object.buff then
                 tooltip:AddLine(icon .. GetBuffLines(object.buff)[1].text, 0.25, 1, 0.25, true)
             else
-                -- The placed Camp Chair is named just "Chair"
-                local name = object.name == "Chair" and "Camp Chair" or object.name
-                tooltip:AddLine(icon .. name, 1, 0.77, 0.3, true)
+                tooltip:AddLine(icon .. object.name, 1, 0.77, 0.3, true)
             end
         end
     end
