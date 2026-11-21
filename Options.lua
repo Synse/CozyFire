@@ -22,6 +22,10 @@ local function RegisterSettings()
                 CozyFireDB.minimap.hide = not value
                 if value then DBIcon:Show(addonName) else DBIcon:Hide(addonName) end
             end),
+        minimapEmote = Settings.RegisterProxySetting(category, "CozyFire_MinimapEmote",
+            Settings.VarType.String, "Minimap button emote", "SIT",
+            function() return CozyFireDB.minimapEmote end,
+            function(value) CozyFireDB.minimapEmote = value end),
         showWorldMap = Settings.RegisterProxySetting(category, "CozyFire_ShowWorldMapPins",
             Settings.VarType.Boolean, "Show campfires on world map", true,
             function() return not CozyFireDB.hideWorldMapPins end,
@@ -56,6 +60,13 @@ end
 -- Layout: the controls shown on the options page
 local function BuildLayout(settings)
     Settings.CreateCheckbox(category, settings.showMinimap, "Show the CozyFire button on the minimap.")
+    Settings.CreateDropdown(category, settings.minimapEmote, function()
+        local container = Settings.CreateControlTextContainer()
+        for _, emote in ipairs(addon.CAMPING_EMOTES) do
+            container:Add(emote.name, emote.command)
+        end
+        return container:GetData()
+    end, "The emote performed when clicking the CozyFire minimap button.")
 
     local sizeOptions = Settings.CreateSliderOptions(16, 30, 2)
     sizeOptions:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right)
