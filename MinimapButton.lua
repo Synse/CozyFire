@@ -33,7 +33,9 @@ local dataObject = LibStub("LibDataBroker-1.1"):NewDataObject(addonName, {
                 addon.Print("No nearby campfire found.")
             end
         elseif mouseButton == "RightButton" then
-            addon.OpenOptions()
+            if not InCombatLockdown() then
+                addon.OpenOptions()
+            end
         end
     end,
     OnTooltipShow = function(tooltip)
