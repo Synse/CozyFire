@@ -18,6 +18,8 @@ local function MarkCampfire(auto)
     -- Aura data is a restricted/secret value in combat (Patch 12.0+), so we can't read the buff
     if InCombatLockdown() then
         message = "Campfires can't be marked while in combat."
+    elseif UnitOnTaxi("player") then
+        message = "Campfires can't be marked while on a flight path."
     elseif not addon.PlayerNearCampfire() then
         message = "No nearby campfire found."
     else
