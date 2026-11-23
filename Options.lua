@@ -4,82 +4,107 @@ local addon = select(2, ...)
 
 local DBIcon = LibStub("LibDBIcon-1.0")
 
--- Create the CozyFire category
-local category, layout = Settings.RegisterVerticalLayoutCategory(addonName)
+-- A canvas keeps our controls out of the shared Settings list frames and search, which taint
+-- Blizzard settings when they run addon code (Stanzilla/WoWUIBugs#873, Synse/CozyFire#1)
+local panel = CreateFrame("Frame")
+local category = Settings.RegisterCanvasLayoutCategory(panel, addonName)
 Settings.RegisterAddOnCategory(category)
 
 function addon.OpenOptions()
     Settings.OpenToCategory(category:GetID())
 end
 
--- Settings: what each option reads and writes
-local function RegisterSettings()
-    return {
-        showMinimap = Settings.RegisterProxySetting(category, "CozyFire_ShowMinimapButton",
-            Settings.VarType.Boolean, "Show minimap button", true,
-            function() return not CozyFireDB.minimap.hide end,
-            function(value)
-                CozyFireDB.minimap.hide = not value
-                if value then DBIcon:Show(addonName) else DBIcon:Hide(addonName) end
-            end),
-        minimapEmote = Settings.RegisterProxySetting(category, "CozyFire_MinimapEmote",
-            Settings.VarType.String, "Minimap button emote", "SIT",
-            function() return CozyFireDB.minimapEmote end,
-            function(value) CozyFireDB.minimapEmote = value end),
-        showWorldMap = Settings.RegisterProxySetting(category, "CozyFire_ShowWorldMapPins",
-            Settings.VarType.Boolean, "Show campfires on world map", true,
-            function() return not CozyFireDB.hideWorldMapPins end,
-            function(value)
-                CozyFireDB.hideWorldMapPins = not value
-                addon.pins:ApplyAppearance()
-            end),
-        worldMapPinSize = Settings.RegisterProxySetting(category, "CozyFire_WorldMapPinSize",
-            Settings.VarType.Number, "World map icon size", addon.PIN_SIZE_WORLDMAP,
-            function() return CozyFireDB.worldMapPinSize or addon.PIN_SIZE_WORLDMAP end,
-            function(value)
-                CozyFireDB.worldMapPinSize = value
-                addon.pins:ApplyAppearance()
-            end),
-        showMinimapPins = Settings.RegisterProxySetting(category, "CozyFire_ShowMinimapPins",
-            Settings.VarType.Boolean, "Show campfires on minimap", true,
-            function() return not CozyFireDB.hideMinimapPins end,
-            function(value)
-                CozyFireDB.hideMinimapPins = not value
-                addon.pins:ApplyAppearance()
-            end),
-        minimapPinSize = Settings.RegisterProxySetting(category, "CozyFire_MinimapPinSize",
-            Settings.VarType.Number, "Minimap icon size", addon.PIN_SIZE_MINIMAP,
-            function() return CozyFireDB.minimapPinSize or addon.PIN_SIZE_MINIMAP end,
-            function(value)
-                CozyFireDB.minimapPinSize = value
-                addon.pins:ApplyAppearance()
-            end),
-    }
+local title = panel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+title:SetPoint("TOPLEFT", 16, -16)
+title:SetText(addonName)
+
+local refreshers = {}
+local function Refresh()
+    for _, refresh in ipairs(refreshers) do
+        refresh()
+    end
+end
+panel:SetScript("OnShow", Refresh)
+
+-- Adds a row label and returns the vertical offset for the row's control
+local nextY = -56
+local function AddRow(label)
+    local text = panel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+    text:SetPoint("TOPLEFT", 32, nextY - 6)
+    text:SetText(label)
+    local y = nextY
+    nextY = nextY - 36
+    return y
 end
 
--- Layout: the controls shown on the options page
-local function BuildLayout(settings)
-    Settings.CreateCheckbox(category, settings.showMinimap, "Show the CozyFire button on the minimap.")
-    Settings.CreateDropdown(category, settings.minimapEmote, function()
-        local container = Settings.CreateControlTextContainer()
-        for _, emote in ipairs(addon.CAMPING_EMOTES) do
-            container:Add(emote.name, emote.command)
-        end
-        return container:GetData()
-    end, "The emote performed when clicking the CozyFire minimap button.")
-
-    local sizeOptions = Settings.CreateSliderOptions(16, 30, 2)
-    sizeOptions:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right)
-    layout:AddInitializer(CreateSettingsCheckboxSliderInitializer(
-        settings.showWorldMap, "Show campfires on world map", "Show campfire pins on the world map.",
-        settings.worldMapPinSize, sizeOptions, "World map icon size", "Size of campfire pins on the world map."))
-    layout:AddInitializer(CreateSettingsCheckboxSliderInitializer(
-        settings.showMinimapPins, "Show campfires on minimap", "Show campfire pins on the minimap.",
-        settings.minimapPinSize, sizeOptions, "Minimap icon size", "Size of campfire pins on the minimap."))
+local function AddCheckbox(label, get, set)
+    local checkbox = CreateFrame("CheckButton", nil, panel, "UICheckButtonTemplate")
+    checkbox:SetPoint("TOPLEFT", 260, AddRow(label))
+    checkbox:SetScript("OnClick", function(self)
+        set(self:GetChecked())
+        Refresh()
+    end)
+    refreshers[#refreshers + 1] = function() checkbox:SetChecked(get()) end
+    return checkbox
 end
 
-local frame = CreateFrame("Frame")
-frame:RegisterEvent("PLAYER_LOGIN")
-frame:SetScript("OnEvent", function()
-    BuildLayout(RegisterSettings())
-end)
+-- Pin size slider beside its checkbox, only enabled while checked
+local function AddSizeSlider(get, set, checkbox)
+    local slider = CreateFrame("Frame", nil, panel, "MinimalSliderWithSteppersTemplate")
+    slider:SetPoint("LEFT", checkbox, "RIGHT", 8, 0)
+    slider:SetWidth(250)
+    slider:RegisterCallback(MinimalSliderWithSteppersMixin.Event.OnValueChanged, function(_, value) set(value) end, panel)
+    refreshers[#refreshers + 1] = function()
+        slider:Init(get(), 16, 30, 7, { [MinimalSliderWithSteppersMixin.Label.Right] = tostring })
+        slider:SetEnabled(checkbox:GetChecked())
+    end
+end
+
+AddCheckbox("Show minimap button",
+    function() return not CozyFireDB.minimap.hide end,
+    function(value)
+        CozyFireDB.minimap.hide = not value
+        if value then DBIcon:Show(addonName) else DBIcon:Hide(addonName) end
+    end)
+
+local emoteDropdown = CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")
+emoteDropdown:SetPoint("TOPLEFT", 264, AddRow("Minimap button emote"))
+emoteDropdown:SetWidth(200)
+local function SetupEmoteMenu(_, rootDescription)
+    for _, emote in ipairs(addon.CAMPING_EMOTES) do
+        rootDescription:CreateRadio(emote.command,
+            function() return CozyFireDB.minimapEmote == emote.name end,
+            function() CozyFireDB.minimapEmote = emote.name end)
+    end
+end
+
+-- SetupMenu reads CozyFireDB immediately, which isn't loaded yet in the main chunk
+refreshers[#refreshers + 1] = function() emoteDropdown:SetupMenu(SetupEmoteMenu) end
+
+local showWorldMap = AddCheckbox("Show campfires on world map",
+    function() return not CozyFireDB.hideWorldMapPins end,
+    function(value)
+        CozyFireDB.hideWorldMapPins = not value
+        addon.pins:ApplyAppearance()
+    end)
+AddSizeSlider(
+    function() return CozyFireDB.worldMapPinSize or addon.PIN_SIZE_WORLDMAP end,
+    function(value)
+        CozyFireDB.worldMapPinSize = value
+        addon.pins:ApplyAppearance()
+    end,
+    showWorldMap)
+
+local showMinimapPins = AddCheckbox("Show campfires on minimap",
+    function() return not CozyFireDB.hideMinimapPins end,
+    function(value)
+        CozyFireDB.hideMinimapPins = not value
+        addon.pins:ApplyAppearance()
+    end)
+AddSizeSlider(
+    function() return CozyFireDB.minimapPinSize or addon.PIN_SIZE_MINIMAP end,
+    function(value)
+        CozyFireDB.minimapPinSize = value
+        addon.pins:ApplyAppearance()
+    end,
+    showMinimapPins)
