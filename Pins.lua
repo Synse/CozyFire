@@ -534,7 +534,7 @@ function pins:Restore(isInitialLogin)
     local saved = CozyFireDB and CozyFireDB.pins
     if not saved then return end
 
-    addon.PrintDebug("Restoring %s pin(s), isInitialLogin: %s", #saved, tostring(isInitialLogin))
+    addon.PrintDebug("Considering %s pins for restoration, isInitialLogin: %s", #saved, tostring(isInitialLogin))
     local now = GetServerTime()
     for _, pin in ipairs(saved) do
         if pin.expires > now then
@@ -542,6 +542,11 @@ function pins:Restore(isInitialLogin)
                 pin.layer = nil
             end
             CreatePin(pin)
+
+            --@debug@
+            local mapInfo = C_Map.GetMapInfo(pin.mapID or 0)
+            addon.PrintDebug("Restored pin in |cff6eb2ea%s|r", mapInfo and mapInfo.name)
+            --@end-debug@
         end
     end
 end
