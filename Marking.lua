@@ -5,6 +5,7 @@ local CAMPFIRE_SPELLS = {
     [1229739] = true,  -- Welcoming Campfire
     [1289723] = true,  -- Welcoming Campfire
 }
+local VIOLET_DUST_SPELL = 1328348  -- Throw Violet Dust (Pouch of Violet Dust)
 local CAMPFIRE_KIT_SPELLS = {
     [1307227] = 1,  -- Basic Campfire Kit
     [1307252] = 2,  -- Journeyman Campfire Kit
@@ -71,8 +72,8 @@ auraFrame:SetScript("OnEvent", function(_, _, _, updateInfo)
     end
 end)
 
--- Mark the campfire when the player uses a campfire kit
-local function CampfirePlaced(castGUID, tier)
+-- Mark the campfire when the player uses a campfire kit, or Pouch of Violet Dust
+local function CampfireCast(castGUID, tier, violetDust)
     if InCombatLockdown() then
         return
     end
@@ -80,7 +81,7 @@ local function CampfirePlaced(castGUID, tier)
     -- The cast GUID carries the exact layer the fire was lit on; fall back to the tracked layer
     local layer = addon.GetLayerFromGUID(castGUID) or addon.GetLayer()
 
-    local action, pin = addon.pins:AddLocalPin(false, false, layer, tier)
+    local action, pin = addon.pins:AddLocalPin(false, violetDust, layer, tier, violetDust)
     if action == "created" or action == "replaced" then
         addon.Print("Campfire marked.")
         addon.BroadcastPin(pin)
@@ -93,6 +94,8 @@ castFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 castFrame:SetScript("OnEvent", function(_, _, _, castGUID, spellID)
     local tier = spellID and CAMPFIRE_KIT_SPELLS[spellID]
     if tier then
-        CampfirePlaced(castGUID, tier)
+        CampfireCast(castGUID, tier, false)
+    elseif spellID == VIOLET_DUST_SPELL then
+        CampfireCast(castGUID, nil, true)
     end
 end)

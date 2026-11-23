@@ -432,7 +432,7 @@ local function AddPin(data, source)
 end
 
 -- Add a pin at the player's position for a locally marked campfire
-function pins:AddLocalPin(approximateLocation, approximateTime, layer, tier)
+function pins:AddLocalPin(approximateLocation, approximateTime, layer, tier, violetFlames)
     local x, y, instanceID = HBD:GetPlayerWorldPosition()
     return AddPin({
         instanceID = instanceID,
@@ -444,7 +444,7 @@ function pins:AddLocalPin(approximateLocation, approximateTime, layer, tier)
         approximateTime = approximateTime,
         layer = layer,
         tier = tier,
-        violetFlames = addon.PlayerHasVioletFlames(),
+        violetFlames = violetFlames or addon.PlayerHasVioletFlames(),
     }, "local")
 end
 
