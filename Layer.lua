@@ -87,6 +87,8 @@ end
 -- zoneUIDs from creatures are provisional because you can target or mouseover an NPC in another zone (mapID)
 -- but zoneUIDs from player spellcasts are definitive
 local eventFrame = CreateFrame("Frame")
+-- Disabled: zoneUIDs are no longer consistent, so the current layer stays unknown
+--[[
 eventFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 eventFrame:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 eventFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
@@ -95,6 +97,7 @@ eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 eventFrame:RegisterEvent("GROUP_JOINED")
 eventFrame:RegisterEvent("GROUP_LEFT")
 eventFrame:RegisterEvent("SHARD_TRANSFER")
+]]
 eventFrame:SetScript("OnEvent", function(_, event, ...)
     if event == "PLAYER_TARGET_CHANGED" then
         UpdateLayerFromUnit("target")
