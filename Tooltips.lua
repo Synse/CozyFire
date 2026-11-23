@@ -98,6 +98,8 @@ local function AddCampingDetails(tooltip, data)
                 tooltip:AddLine(icon .. object.name, 1, 0.77, 0.3, true)
             end
         end
+
+        tooltip:AddLine(addon.pins.FormatRemainingTime(pin), 1, 1, 1)
     end
 
     -- The buff provided is displayed in green text, if Shift is held all level ranges are shown
