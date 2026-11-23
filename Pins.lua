@@ -477,9 +477,9 @@ end
 C_Timer.NewTicker(SWEEP_INTERVAL, function()
     local now = GetServerTime()
 
-    -- When not in combat, check for nearby campfire pins
+    -- When not in combat, and not on a flight path, check for nearby campfire pins to cleanup
     local px, py, pInstance, nearCampfire
-    if not InCombatLockdown() then
+    if not InCombatLockdown() and not UnitOnTaxi("player") then
         px, py, pInstance = HBD:GetPlayerWorldPosition()
         nearCampfire = addon.PlayerNearCampfire()
     end
