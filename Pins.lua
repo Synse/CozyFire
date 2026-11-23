@@ -190,9 +190,17 @@ function pins.FormatObjectCount(pin)
     return ("(%d/%d)"):format(pin.objects and #pin.objects or 0, CAMPFIRE_OBJECT_LIMITS[pin.tier])
 end
 
+---Returns a formatted string for the pin's remaining time, e.g. "Less than 12 Min remaining"
+---Remaining time is approximate unless a CozyFire user placed the campfire
+---@param pin table # the campfire pin
+---@return string
+function pins.FormatRemainingTime(pin)
+    local remainingTime = "|cff6eb2ea" .. SecondsToTime(math.max(0, pin.expires - GetServerTime())) .. "|r remaining"
+    return pin.approximateTime and "Less than " .. remainingTime or remainingTime
+end
+
 -- Render the tooltip for a map pin
 local function RenderPinTooltip(pin)
-    local remaining = math.max(0, pin.expires - GetServerTime())
     local objects = pin.objects
     GameTooltip:ClearLines()
     GameTooltip:AddDoubleLine("|cffff8000CozyFire|r", pins.FormatObjectCount(pin), 1, 1, 1, 0.6, 0.6, 0.6)
@@ -222,13 +230,7 @@ local function RenderPinTooltip(pin)
         GameTooltip:AddLine(" ")
     end
 
-    -- Remaining time is approximate unless a CozyFire user placed the campfire
-    local remainingTime = "|cff6eb2ea" .. SecondsToTime(remaining) .. "|r"
-    if pin.approximateTime then
-        GameTooltip:AddLine("Less than " .. remainingTime .. " remaining", 1, 1, 1)
-    else
-        GameTooltip:AddLine(remainingTime .. " remaining", 1, 1, 1)
-    end
+    GameTooltip:AddLine(pins.FormatRemainingTime(pin), 1, 1, 1)
 
     -- Manually placed pins have an approximate location
     if pin.approximateLocation then
