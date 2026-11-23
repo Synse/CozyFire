@@ -73,15 +73,12 @@ auraFrame:SetScript("OnEvent", function(_, _, _, updateInfo)
 end)
 
 -- Mark the campfire when the player uses a campfire kit, or Pouch of Violet Dust
-local function CampfireCast(castGUID, tier, violetDust)
+local function CampfireCast(tier, violetDust)
     if InCombatLockdown() then
         return
     end
 
-    -- The cast GUID carries the exact layer the fire was lit on; fall back to the tracked layer
-    local layer = addon.GetLayerFromGUID(castGUID) or addon.GetLayer()
-
-    local action, pin = addon.pins:AddLocalPin(false, violetDust, layer, tier, violetDust)
+    local action, pin = addon.pins:AddLocalPin(false, violetDust, nil, tier, violetDust)
     if action == "created" or action == "replaced" then
         addon.Print("Campfire marked.")
         addon.BroadcastPin(pin)
@@ -91,11 +88,11 @@ end
 -- Create a frame to listen for spell casts
 local castFrame = CreateFrame("Frame")
 castFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
-castFrame:SetScript("OnEvent", function(_, _, _, castGUID, spellID)
+castFrame:SetScript("OnEvent", function(_, _, _, _, spellID)
     local tier = spellID and CAMPFIRE_KIT_SPELLS[spellID]
     if tier then
-        CampfireCast(castGUID, tier, false)
+        CampfireCast(tier, false)
     elseif spellID == VIOLET_DUST_SPELL then
-        CampfireCast(castGUID, nil, true)
+        CampfireCast(nil, true)
     end
 end)
