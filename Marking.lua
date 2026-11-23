@@ -24,7 +24,7 @@ local function MarkCampfire(auto)
     elseif not addon.PlayerNearCampfire() then
         message = "No nearby campfire found."
     else
-        local action, pin = addon.pins:AddLocalPin(not auto, true, addon.GetLayer())
+        local action, pin = addon.pins:AddLocalPin(not auto, true, nil)
         if action == "created" or action == "replaced" then
             addon.Print("Campfire marked.")
             addon.BroadcastPin(pin)
