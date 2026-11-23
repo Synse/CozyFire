@@ -99,6 +99,8 @@ local function AddCampingDetails(tooltip, data)
             end
         end
 
+        -- Remaining time
+        tooltip:AddLine(" ")
         tooltip:AddLine(addon.pins.FormatRemainingTime(pin), 1, 1, 1)
     end
 
