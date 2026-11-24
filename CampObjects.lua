@@ -182,8 +182,8 @@ addon.campObjects = {}
 ---Camp objects keyed by code (e.g. "A2" for the Alchemy Fermenter), used to store a pin's objects
 addon.campObjectsByCode = {}
 
--- Objects inherit buff, buffExclusiveWith, and buffTip from their profession unless they define their own
-local INHERITED_FIELDS = { "buff", "buffExclusiveWith", "buffTip" }
+-- Objects inherit buff fields from their profession unless they define their own
+local INHERITED_FIELDS = { "buff", "buffDetail", "buffExclusiveWith", "buffTip" }
 for profession, data in pairs(professions) do
     for _, object in ipairs(data.objects) do
         object.profession = profession

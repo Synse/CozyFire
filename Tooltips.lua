@@ -115,6 +115,9 @@ local function AddCampingDetails(tooltip, data)
                 tooltip:AddLine(line.text, 0.65, 0.65, 0.65, true)
             end
         end
+        if entry.buffDetail and IsShiftKeyDown() then
+            tooltip:AddLine(entry.buffDetail, 0.65, 0.65, 0.65, true)
+        end
 
         -- The exclusivity information is displayed in red and white text immediately after the buff
         if entry.buffExclusiveWith then
