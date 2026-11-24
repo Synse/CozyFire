@@ -76,6 +76,7 @@ local function AddCampingDetails(tooltip, data)
     local pin
     if tooltip == GameTooltip then
         pin = addon.pins:ObserveCampObject(entry)
+        tooltipHasShiftDetails = true
     end
 
     -- The perk is displayed in light blue text immediately after the object name
@@ -106,10 +107,6 @@ local function AddCampingDetails(tooltip, data)
 
     -- The buff provided is displayed in green text, if Shift is held all level ranges are shown
     if entry.buff then
-        if tooltip == GameTooltip and type(entry.buff) == "table" then
-            tooltipHasShiftDetails = true
-        end
-
         tooltip:AddLine(" ")
         for _, line in ipairs(GetBuffLines(entry.buff, IsShiftKeyDown())) do
             if line.isCurrent then
@@ -125,13 +122,14 @@ local function AddCampingDetails(tooltip, data)
         end
     end
 
-    -- Show the profession, and required skill (if defined)
-    tooltip:AddLine(" ")
-    local profession = entry.profession
-    if entry.requiredSkill then
-        profession = profession .. " (" .. entry.requiredSkill .. ")"
+    -- When holding shift, show the profession, and required skill (if defined)
+    if IsShiftKeyDown() then
+        local profession = entry.profession
+        if entry.requiredSkill then
+            profession = profession .. " (" .. entry.requiredSkill .. ")"
+        end
+        tooltip:AddLine(profession, 0.5, 0.5, 0.5, true)
     end
-    tooltip:AddLine(profession, 0.5, 0.5, 0.5, true)
 end
 
 TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Object, AddCampingDetails)
