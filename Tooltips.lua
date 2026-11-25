@@ -92,7 +92,7 @@ local function AddCampingDetails(tooltip, data)
 
         for _, code in ipairs(pin.objects or {}) do
             local object = addon.campObjectsByCode[code]
-            local icon = ("|T%s:18:18|t "):format(object.icon)
+            local icon = object.icon and ("|T%s:18:18|t "):format(object.icon) or ""
             if object.buff then
                 tooltip:AddLine(icon .. GetBuffLines(object.buff)[1].text, 0.25, 1, 0.25, true)
             else
