@@ -43,7 +43,7 @@ local professions = {
             { tier = 2, name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 90 },
             { tier = 3, name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features", requiredSkill = 220 },  -- Blueprint only requires 200
             { name = "Cookie's Feast", perk ="Contains Stamina-boosting food", requiredSkill = 140 },
-            { name = "Iron Oven", perk = "Required for advanced cooking recipes", requiredSkill = 300 },
+            { code = "CO", name = "Iron Oven", perk = "Required for advanced cooking recipes", requiredSkill = 300 },
         },
     },
     Enchanting = {
@@ -196,8 +196,10 @@ for profession, data in pairs(professions) do
         end
 
         addon.campObjects[object.name] = object
-        if object.tier then
-            object.code = data.code .. object.tier
+
+        -- Camp objects can define a custom code (e.g., "CO" for Iron Oven), otherwise it is generated from the profession code and tier (e.g., "A2" for Fermenter)
+        object.code = object.code or object.tier and data.code .. object.tier
+        if object.code then
             addon.campObjectsByCode[object.code] = object
         end
     end

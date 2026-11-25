@@ -112,7 +112,7 @@ end
 ---@param entry table # camp object from addon.campObjects
 ---@return table? # the nearest pin, if any
 function pins:ObserveCampObject(entry)
-    if InCombatLockdown() or not entry.tier then return end
+    if InCombatLockdown() or not entry.code then return end
 
     local x, y, instanceID = HBD:GetPlayerWorldPosition()
     local mapID = C_Map.GetBestMapForUnit("player")
@@ -137,8 +137,10 @@ function pins:ObserveCampObject(entry)
 
     -- Only pins within 20 yards are updated
     if nearest and nearestDistance <= 20 then
+        local isCampfire = entry.profession == "Cooking" and entry.tier
+
         -- Update the campfire tier
-        if entry.profession == "Cooking" and entry.tier > nearest.tier then
+        if isCampfire and entry.tier > nearest.tier then
             nearest.tier = entry.tier
             addon.PrintDebug("Set campfire tier=%s", entry.tier)
         end
@@ -156,7 +158,7 @@ function pins:ObserveCampObject(entry)
             addon.PrintDebug("Set campfire layer=%s", layer)
         end
 
-        if entry.profession == "Cooking" then return nearest end
+        if isCampfire then return nearest end
 
         -- Get the camp objects for this pin and add/update the list with this object
         nearest.objects = nearest.objects or {}
@@ -291,7 +293,7 @@ local function CreatePin(pin)
     if pin.objects then
         for index = #pin.objects, 1, -1 do
             local object = addon.campObjectsByCode[pin.objects[index]]
-            if not object or object.profession == "Cooking" then
+            if not object or (object.profession == "Cooking" and object.tier) then
                 table.remove(pin.objects, index)
             end
         end

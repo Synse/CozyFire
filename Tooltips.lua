@@ -85,7 +85,7 @@ local function AddCampingDetails(tooltip, data)
     end
 
     -- Add the object count and buffs to the campfire tooltip
-    if pin and entry.profession == "Cooking" then
+    if pin and entry.profession == "Cooking" and entry.tier then
         GameTooltipTextRight1:SetText(addon.pins.FormatObjectCount(pin))
         GameTooltipTextRight1:SetTextColor(0.6, 0.6, 0.6)
         GameTooltipTextRight1:Show()
