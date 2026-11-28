@@ -6,7 +6,7 @@ local professions = {
     Alchemy = {
         code = "A",
         objects = {
-            { tier = 1, name = "Mana Well", icon = 135738 },
+            { tier = 1, name = "Mana Well", icon = 135738, requiredSkill = 20},
             { tier = 2, name = "Fermenter", icon = 3566827, perk = "Required for certain reagents", requiredSkill = 140},
             { tier = 3, name = "Alchemy Laboratory", icon = 4777830, perk = "Required for certain recipes", requiredSkill = 300},
         },
@@ -23,7 +23,7 @@ local professions = {
     Blacksmithing = {
         code = "B",
         objects = {
-            { tier = 1, name = "Sharpening Wheel", icon = 135243 },
+            { tier = 1, name = "Sharpening Wheel", icon = 135243, requiredSkill = 20 },
             { tier = 2, name = "Anvil", icon = 1020356, perk = "Required for certain recipes", requiredSkill = 140 },
             { tier = 3, name = "Master Forge", icon = 4374708, perk = "Required for certain recipes", requiredSkill = 300 },
         },
@@ -39,7 +39,7 @@ local professions = {
     Cooking = {
         code = "C",
         objects = {
-            { tier = 1, name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features" },
+            { tier = 1, name = "Basic Campfire", perk = "Allows Cooking and up to 3 camp features", requiredSkill = 1 },
             { tier = 2, name = "Journeyman Campfire", perk = "Allows Cooking and up to 5 camp features", requiredSkill = 90 },
             { tier = 3, name = "Expert Campfire", perk = "Allows Cooking and up to 10 camp features", requiredSkill = 220 },  -- Blueprint only requires 200
             { name = "Cookie's Feast", perk ="Contains Stamina-boosting food", requiredSkill = 140 },
@@ -49,7 +49,7 @@ local professions = {
     Enchanting = {
         code = "E",
         objects = {
-            { tier = 1, name = "Enchanted Lute", icon = 4631367 },
+            { tier = 1, name = "Enchanted Lute", icon = 4631367, requiredSkill = 20 },
             { tier = 2, name = "Arcane Salvager", icon = 986482, perk = "More efficient Disenchanting", requiredSkill = 140 },
             { tier = 3, name = "Arcane Forge", icon = 3622205, perk = "Required for certain recipes", requiredSkill = 300 },
         },
@@ -68,7 +68,7 @@ local professions = {
     Engineering = {
         code = "G",
         objects = {
-            { tier = 1, name = "Reagent Bot", icon = 133871, perk = "Buy reagents" },
+            { tier = 1, name = "Reagent Bot", icon = 133871, perk = "Buy reagents", requiredSkill = 20 },
             { tier = 2, name = "Repair Bot", icon = 1336885, perk = "Buy reagents and repair gear", requiredSkill = 140 },
             { tier = 3, name = "Anarchist's Workbench", icon = 4624728, perk = "Required for certain recipes", requiredSkill = 300 },
         },
@@ -76,7 +76,7 @@ local professions = {
     ["First Aid"] = {
         code = "D",
         objects = {
-            { tier = 1, name = "First Aid Kit", icon = 133681 },
+            { tier = 1, name = "First Aid Kit", icon = 133681, requiredSkill = 20 },
             { tier = 2, name = "Toxin Study", icon = 463860, perk = "Contains healing potions and anti-venom", requiredSkill = 140 },
             { tier = 3, name = "Plague Doctor's Laboratory", icon = 4626285, perk = "Contains healing potions and poultices", requiredSkill = 300 },
         },
@@ -94,7 +94,7 @@ local professions = {
     Fishing = {
         code = "F",
         objects = {
-            { tier = 1, name = "Fish Bowl", icon = 4777763 },
+            { tier = 1, name = "Fish Bowl", icon = 4777763, requiredSkill = 20 },
             { tier = 2, name = "Fishing Rack", icon = 1053359, perk = "Allows catching uncommon fish for 1 hour\nContains fishing lures", requiredSkill = 140 },
             { tier = 3, name = "Fishing Hut", icon = 132930, perk = "Allows catching rare fish for 1 hour\nContains fishing lures", requiredSkill = 300 },
         },
@@ -105,7 +105,7 @@ local professions = {
     Herbalism = {
         code = "H",
         objects = {
-            { tier = 1, name = "Incense Candle", icon = 133751 },
+            { tier = 1, name = "Incense Candle", icon = 133751, requiredSkill = 20 },
             { tier = 2, name = "Greenhouse", icon = 134188, perk = "Grow herbs from planted seeds", requiredSkill = 140 },
             { tier = 3, name = "Seed Hybridizer", icon = 656440,perk = "Multiply or combine seeds", requiredSkill = 300 },
         },
@@ -122,7 +122,7 @@ local professions = {
     Leatherworking = {
         code = "L",
         objects = {
-            { tier = 1, name = "Camp Tent", icon = 134250 },
+            { tier = 1, name = "Camp Tent", icon = 134250, requiredSkill = 20 },
             { tier = 2, name = "Tanning Rack", icon = 4559256, perk = "Required for certain reagents", requiredSkill = 125 },
             { tier = 3, name = "Sewing Machine", icon = 3622223, perk = "Required for certain recipes", requiredSkill = 300 },
         },
@@ -133,7 +133,7 @@ local professions = {
     Mining = {
         code = "M",
         objects = {
-            { tier = 1, name = "Lodestone", icon = 134419 },
+            { tier = 1, name = "Lodestone", icon = 134419, requiredSkill = 20 },
             { tier = 2, name = "Rock Garden", icon = 134385, perk = "Spawns a common mining node", requiredSkill = 140 },
             { tier = 3, name = "Molten Foundry", icon = 5931157, perk = "Required for certain recipes", requiredSkill = 300 },
         },
@@ -152,7 +152,7 @@ local professions = {
         code = "S",
         objects = {
             -- The used item is "Camp Chair" but it appears as just "Chair" when placed
-            { tier = 1, name = "Chair", icon = 132761 },
+            { tier = 1, name = "Chair", icon = 132761, requiredSkill = 20 },
             { tier = 2, name = "Field Guide", icon = 133735, perk = "Grants Track Beasts", requiredSkill = 140 },
             { tier = 3, name = "Trapper's Workbench", icon = 5948139, perk = "Contains 1 trap", requiredSkill = 300 },
         },
@@ -163,7 +163,7 @@ local professions = {
     Tailoring = {
         code = "T",
         objects = {
-            { tier = 1, name = "Faction Banner", icon = 132484 },
+            { tier = 1, name = "Faction Banner", icon = 132484, requiredSkill = 20 },
             { tier = 2, name = "Spinning Wheel", icon = 4777839, perk = "Required for certain reagents", requiredSkill = 140 },
             { tier = 3, name = "Loom", icon = 2067081, perk = "Required for certain recipes", requiredSkill = 300 },
         },
